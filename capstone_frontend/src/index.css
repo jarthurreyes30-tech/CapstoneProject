@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Brand Colors - Charity Platform Palette */
+    --brand-accent: 40 95% 46%;        /* #ECA400 - Primary CTAs, highlights */
+    --brand-success: 74 67% 86%;       /* #EAF8BF - Success states, soft backgrounds */
+    --brand-secondary: 195 100% 29%;   /* #006992 - Secondary actions */
+    --brand-surface: 210 47% 29%;      /* #27476E - Cards, surfaces */
+    --brand-ink: 217 100% 15%;         /* #001D4A - Text, headings */
+    
+    /* Semantic Tokens - Light Mode */
+    --background: 0 0% 98%;            /* Light body background */
+    --foreground: 217 100% 15%;        /* brand-ink - Dark text on light bg */
+
+    --card: 0 0% 100%;                 /* White cards for readability in light mode */
+    --card-foreground: 217 100% 15%;   /* Dark text on light cards */
+
+    --popover: 0 0% 100%;              /* White popovers in light mode */
+    --popover-foreground: 217 100% 15%;/* Dark text on popovers */
+
+    --primary: 40 95% 46%;             /* brand-accent */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 195 100% 29%;         /* brand-secondary */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;              /* Light gray-blue for muted elements */
+    --muted-foreground: 217 40% 45%;   /* Medium dark text for readability */
+
+    --accent: 74 67% 86%;              /* brand-success - Light cream */
+    --accent-foreground: 217 100% 15%; /* Dark text on light accent */
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;             /* Light borders for subtle definition */
+    --input: 0 0% 100%;                /* White input backgrounds */
+    --ring: 40 95% 46%;
+
+    --radius: 0.75rem;
+
+    /* Auth-specific tokens */
+    --auth-surface: 0 0% 100%;         /* White auth cards in light mode */
+    --auth-surface-foreground: 217 100% 15%;
+    
+    /* Sidebar colors - Light sidebar for light mode */
+    --sidebar-background: 0 0% 100%;          /* White sidebar in light mode */
+    --sidebar-foreground: 217 100% 15%;       /* Dark text */
+    --sidebar-primary: 40 95% 46%;            /* Orange for active items */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 195 100% 29%;           /* Teal for hover */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 214 32% 91%;            /* Light border */
+    --sidebar-ring: 40 95% 46%;               /* Orange ring */
+    
+    /* Professional panel colors (for special components) */
+    --panel-professional: 210 47% 29%;        /* Dark blue for featured panels */
+    --panel-professional-foreground: 0 0% 98%; /* Light text on dark panels */
+    --panel-accent: 195 100% 29%;             /* Teal for accent panels */
+    --panel-accent-foreground: 0 0% 100%;     /* White text on teal */
+    
+    /* Spacing scale */
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-2xl: 3rem;     /* 48px */
+  }
+
+  .dark {
+    /* Dark Mode Theme */
+    --background: 217 100% 10%;        /* Dark navy background */
+    --foreground: 0 0% 98%;            /* Light text on dark bg */
+
+    --card: 217 100% 15%;              /* Slightly lighter navy for cards */
+    --card-foreground: 0 0% 98%;       /* Light text on dark cards */
+
+    --popover: 217 100% 15%;           /* Dark popovers */
+    --popover-foreground: 0 0% 98%;    /* Light text on popovers */
+
+    --primary: 40 95% 46%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 195 100% 35%;         /* Lighter teal for dark mode */
+    --secondary-foreground: 0 0% 100%; /* White text on teal */
+
+    --muted: 210 40% 20%;              /* Darker muted for dark mode */
+    --muted-foreground: 217 20% 65%;   /* Medium light text */
+
+    --accent: 74 67% 70%;              /* Brighter cream for dark mode */
+    --accent-foreground: 217 100% 15%; /* Dark text on bright accent */
+
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 40% 25%;             /* Subtle borders in dark mode */
+    --input: 210 40% 22%;              /* Slightly lighter inputs */
+    --ring: 40 95% 46%;
+
+    --auth-surface: 210 47% 18%;       /* Dark auth cards */
+    --auth-surface-foreground: 0 0% 98%;/* Light text */
+    
+    /* Sidebar colors for dark mode */
+    --sidebar-background: 217 100% 8%;        /* Darker sidebar */
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 40 95% 52%;            /* Slightly brighter orange */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 195 100% 35%;           /* Lighter teal for visibility */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 40% 25%;            /* Subtle border */
+    --sidebar-ring: 40 95% 52%;               /* Bright orange ring */
+    
+    /* Professional panel colors for dark mode */
+    --panel-professional: 210 47% 22%;        /* Lighter dark blue panels */
+    --panel-professional-foreground: 0 0% 98%;
+    --panel-accent: 195 100% 35%;             /* Lighter teal */
+    --panel-accent-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Typography */
+  h1 {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+
+  small {
+    @apply text-sm;
+  }
+}
+
+@layer utilities {
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Focus styles for accessibility */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Auth card styling */
+  .auth-card {
+    @apply bg-card border border-border rounded-xl shadow-lg p-8;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+
+  /* Custom Scrollbar - Facebook Style (Hidden by default, visible on hover) */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+  }
+
+  .dark .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.7);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(55, 65, 81, 0.7);
+  }
+
+  /* Brand Color Utilities - Direct access to brand palette */
+  .bg-brand-accent {
+    background-color: hsl(var(--brand-accent));
+  }
+
+  .bg-brand-success {
+    background-color: hsl(var(--brand-success));
+  }
+
+  .bg-brand-secondary {
+    background-color: hsl(var(--brand-secondary));
+  }
+
+  .bg-brand-surface {
+    background-color: hsl(var(--brand-surface));
+  }
+
+  .bg-brand-ink {
+    background-color: hsl(var(--brand-ink));
+  }
+
+  .text-brand-accent {
+    color: hsl(var(--brand-accent));
+  }
+
+  .text-brand-success {
+    color: hsl(var(--brand-success));
+  }
+
+  .text-brand-secondary {
+    color: hsl(var(--brand-secondary));
+  }
+
+  .text-brand-surface {
+    color: hsl(var(--brand-surface));
+  }
+
+  .text-brand-ink {
+    color: hsl(var(--brand-ink));
+  }
+
+  .border-brand-accent {
+    border-color: hsl(var(--brand-accent));
+  }
+
+  .border-brand-secondary {
+    border-color: hsl(var(--brand-secondary));
+  }
+
+  .border-brand-surface {
+    border-color: hsl(var(--brand-surface));
+  }
+
+  /* Professional Panel Styles - Theme Responsive */
+  .panel-primary {
+    @apply bg-card text-card-foreground border-border rounded-lg shadow-md;
+  }
+
+  .panel-secondary {
+    @apply bg-muted text-muted-foreground border-border rounded-lg;
+  }
+
+  /* Professional colored panels (dark blue) - for special components */
+  .panel-professional {
+    background-color: hsl(var(--panel-professional));
+    color: hsl(var(--panel-professional-foreground));
+    @apply rounded-lg shadow-lg border;
+  }
+
+  .panel-accent {
+    background-color: hsl(var(--panel-accent));
+    color: hsl(var(--panel-accent-foreground));
+    @apply rounded-lg shadow-lg border;
+  }
+
+  /* Badge variants with theme support */
+  .badge-professional {
+    background-color: hsl(var(--panel-professional));
+    color: hsl(var(--panel-professional-foreground));
+  }
+
+  .badge-accent {
+    background-color: hsl(var(--panel-accent));
+    color: hsl(var(--panel-accent-foreground));
+  }
+}
