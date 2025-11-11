@@ -122,25 +122,52 @@ class ReportController extends Controller
                 case 'user':
                     $entityData = \App\Models\User::select('id', 'name', 'email', 'profile_image', 'role')
                         ->find($report->reported_entity_id);
+                    // Add full URL for profile image
+                    if ($entityData && $entityData->profile_image) {
+                        $entityData->profile_picture_url = url('storage/' . $entityData->profile_image);
+                    }
                     break;
                 case 'charity':
-                    $entityData = \App\Models\Charity::with('owner:id,name,email')
+                    $entityData = \App\Models\Charity::with('owner:id,name,email,profile_image')
                         ->select('id', 'name', 'contact_email', 'logo_path', 'owner_id')
                         ->find($report->reported_entity_id);
+                    // Add full URL for charity logo
+                    if ($entityData && $entityData->logo_path) {
+                        $entityData->logo_url = url('storage/' . $entityData->logo_path);
+                    }
                     break;
                 case 'campaign':
-                    $entityData = \App\Models\Campaign::with('charity:id,name')
+                    $entityData = \App\Models\Campaign::with('charity:id,name,logo_path')
                         ->select('id', 'title', 'charity_id')
                         ->find($report->reported_entity_id);
                     break;
                 case 'donation':
-                    $entityData = \App\Models\Donation::with(['donor:id,name', 'charity:id,name'])
+                    $entityData = \App\Models\Donation::with(['donor:id,name,profile_image', 'charity:id,name,logo_path'])
                         ->select('id', 'donor_id', 'charity_id', 'amount')
                         ->find($report->reported_entity_id);
                     break;
             }
             
             $report->reported_entity = $entityData;
+            
+            // Add reporter profile picture URL
+            if ($report->reporter && $report->reporter->profile_image) {
+                $report->reporter->profile_picture_url = url('storage/' . $report->reporter->profile_image);
+            }
+            
+            // If reporter is charity admin, load their charity logo too
+            if ($report->reporter && $report->reporter->role === 'charity_admin') {
+                $charity = \App\Models\Charity::where('owner_id', $report->reporter->id)
+                    ->select('id', 'name', 'logo_path')
+                    ->first();
+                if ($charity) {
+                    $report->reporter->charity_info = $charity;
+                    if ($charity->logo_path) {
+                        $report->reporter->charity_logo_url = url('storage/' . $charity->logo_path);
+                    }
+                }
+            }
+            
             return $report;
         });
 
@@ -159,9 +186,17 @@ class ReportController extends Controller
         switch ($report->reported_entity_type) {
             case 'user':
                 $entityData = \App\Models\User::find($report->reported_entity_id);
+                // Add profile picture URL
+                if ($entityData && $entityData->profile_image) {
+                    $entityData->profile_picture_url = url('storage/' . $entityData->profile_image);
+                }
                 break;
             case 'charity':
                 $entityData = \App\Models\Charity::with('owner')->find($report->reported_entity_id);
+                // Add logo URL
+                if ($entityData && $entityData->logo_path) {
+                    $entityData->logo_url = url('storage/' . $entityData->logo_path);
+                }
                 break;
             case 'campaign':
                 $entityData = \App\Models\Campaign::with('charity')->find($report->reported_entity_id);
@@ -169,6 +204,24 @@ class ReportController extends Controller
             case 'donation':
                 $entityData = \App\Models\Donation::with(['donor', 'charity'])->find($report->reported_entity_id);
                 break;
+        }
+
+        // Add reporter profile picture URL
+        if ($report->reporter && $report->reporter->profile_image) {
+            $report->reporter->profile_picture_url = url('storage/' . $report->reporter->profile_image);
+        }
+        
+        // If reporter is charity admin, load their charity info
+        if ($report->reporter && $report->reporter->role === 'charity_admin') {
+            $charity = \App\Models\Charity::where('owner_id', $report->reporter->id)
+                ->select('id', 'name', 'logo_path')
+                ->first();
+            if ($charity) {
+                $report->reporter->charity_info = $charity;
+                if ($charity->logo_path) {
+                    $report->reporter->charity_logo_url = url('storage/' . $charity->logo_path);
+                }
+            }
         }
 
         return response()->json([

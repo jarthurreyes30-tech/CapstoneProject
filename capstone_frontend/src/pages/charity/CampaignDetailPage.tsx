@@ -116,7 +116,8 @@ const CampaignDetailPage = () => {
     );
   }
 
-  const progress = (campaign.raised / campaign.goal) * 100;
+  const hasGoal = typeof campaign.goal === 'number' && campaign.goal > 0;
+  const progress = hasGoal ? (campaign.raised / campaign.goal) * 100 : 0;
   const COLORS = ["hsl(var(--primary))", "hsl(var(--accent))", "hsl(var(--success))"];
 
   return (
@@ -186,18 +187,20 @@ const CampaignDetailPage = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-md">
-          <div className="space-y-sm">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="font-medium">
-                ${campaign.raised.toLocaleString()} / ${campaign.goal.toLocaleString()}
-              </span>
+          {hasGoal && (
+            <div className="space-y-sm">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Progress</span>
+                <span className="font-medium">
+                  ${campaign.raised.toLocaleString()} / ${campaign.goal.toLocaleString()}
+                </span>
+              </div>
+              <Progress value={progress} className="h-3" />
+              <p className="text-xs text-muted-foreground text-right">
+                {progress.toFixed(1)}% of goal reached
+              </p>
             </div>
-            <Progress value={progress} className="h-3" />
-            <p className="text-xs text-muted-foreground text-right">
-              {progress.toFixed(1)}% of goal reached
-            </p>
-          </div>
+          )}
         </CardContent>
       </Card>
 

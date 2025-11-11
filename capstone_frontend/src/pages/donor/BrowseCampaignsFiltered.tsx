@@ -275,12 +275,12 @@ export default function BrowseCampaignsFiltered() {
             {/* Campaign Type */}
             <div className="space-y-2">
               <Label>Campaign Type</Label>
-              <Select value={filters.campaign_type} onValueChange={(v) => handleFilterChange('campaign_type', v)}>
+              <Select value={filters.campaign_type || undefined} onValueChange={(v) => handleFilterChange('campaign_type', v === 'all' ? '' : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="All types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All types</SelectItem>
+                  <SelectItem value="all">All types</SelectItem>
                   {filterOptions.types.map((type: any) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
@@ -293,12 +293,12 @@ export default function BrowseCampaignsFiltered() {
             {/* Region */}
             <div className="space-y-2">
               <Label>Region</Label>
-              <Select value={filters.region} onValueChange={(v) => handleFilterChange('region', v)}>
+              <Select value={filters.region || undefined} onValueChange={(v) => handleFilterChange('region', v === 'all' ? '' : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="All regions" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All regions</SelectItem>
+                  <SelectItem value="all">All regions</SelectItem>
                   {filterOptions.regions.map((region: string) => (
                     <SelectItem key={region} value={region}>
                       {region}
@@ -311,12 +311,12 @@ export default function BrowseCampaignsFiltered() {
             {/* Province */}
             <div className="space-y-2">
               <Label>Province</Label>
-              <Select value={filters.province} onValueChange={(v) => handleFilterChange('province', v)}>
+              <Select value={filters.province || undefined} onValueChange={(v) => handleFilterChange('province', v === 'all' ? '' : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="All provinces" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All provinces</SelectItem>
+                  <SelectItem value="all">All provinces</SelectItem>
                   {filterOptions.provinces.map((province: string) => (
                     <SelectItem key={province} value={province}>
                       {province}
@@ -329,12 +329,12 @@ export default function BrowseCampaignsFiltered() {
             {/* City */}
             <div className="space-y-2">
               <Label>City</Label>
-              <Select value={filters.city} onValueChange={(v) => handleFilterChange('city', v)}>
+              <Select value={filters.city || undefined} onValueChange={(v) => handleFilterChange('city', v === 'all' ? '' : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="All cities" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All cities</SelectItem>
+                  <SelectItem value="all">All cities</SelectItem>
                   {filterOptions.cities.map((city: string) => (
                     <SelectItem key={city} value={city}>
                       {city}

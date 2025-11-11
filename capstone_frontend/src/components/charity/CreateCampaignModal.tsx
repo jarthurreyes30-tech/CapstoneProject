@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -58,6 +59,8 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
     region: "",
     full_address: "",
     image: null as File | null,
+    // Amount mode
+    amountBased: true,
     // Recurring campaign fields
     isRecurring: false,
     recurrenceType: "monthly" as "weekly" | "monthly" | "quarterly" | "yearly",
@@ -94,6 +97,7 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
       region: "",
       full_address: "",
       image: null,
+      amountBased: true,
       isRecurring: false,
       recurrenceType: "monthly",
       recurrenceInterval: "1",
@@ -119,6 +123,26 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
       setForm(prev => ({ ...prev, isRecurring: true }));
     }
   }, [form.donationType]);
+
+  // If toggled to non-amount-based, clear targetAmount and reset donation/recurrence fields
+  useEffect(() => {
+    if (!form.amountBased && form.targetAmount) {
+      setForm(prev => ({ ...prev, targetAmount: "" }));
+    }
+    if (!form.amountBased) {
+      // Reset donation/recurrence to safe defaults when without amount
+      setForm(prev => ({
+        ...prev,
+        donationType: 'one_time',
+        isRecurring: false,
+        recurrenceType: 'monthly',
+        recurrenceInterval: '1',
+        recurrenceStartDate: '',
+        recurrenceEndDate: '',
+        autoPublish: true,
+      }));
+    }
+  }, [form.amountBased]);
 
   const fetchChannels = async () => {
     try {
@@ -158,7 +182,10 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
     if (!form.problem || form.problem.trim().length < 50) e.problem = "Problem must be at least 50 characters";
     if (!form.solution || form.solution.trim().length < 50) e.solution = "Solution must be at least 50 characters";
     if (form.outcome && (form.outcome.trim().length < 30 || form.outcome.trim().length > 300)) e.outcome = "Expected Outcome must be 30–300 characters";
-    if (!form.targetAmount || Number(form.targetAmount) <= 0) e.targetAmount = "Target amount must be greater than 0";
+    // If amount-based, target is required and must be > 0; otherwise ignore
+    if (form.amountBased) {
+      if (!form.targetAmount || Number(form.targetAmount) <= 0) e.targetAmount = "Target amount must be greater than 0";
+    }
     if (form.startDate && form.endDate && new Date(form.endDate) < new Date(form.startDate)) e.endDate = "End date must be after start date";
     
     // Beneficiary category validation
@@ -196,11 +223,15 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
       setSubmitting(true);
       
       // Prepare campaign data
-      const campaignData = {
+      const campaignData: any = {
         title: form.title,
         description: form.description,
-        target_amount: Number(form.targetAmount),
-        donation_type: form.donationType,
+        // Amount-based vs without amount
+        ...(form.amountBased
+          ? { target_amount: Number(form.targetAmount), requires_target_amount: true }
+          : { requires_target_amount: false }
+        ),
+        donation_type: form.amountBased ? form.donationType : 'one_time',
         campaign_type: form.campaignType,
         status: form.status,
         start_date: form.startDate || undefined,
@@ -215,12 +246,12 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
         city: form.city, // Required field
         barangay: form.barangay, // Required field
         // Recurring campaign fields
-        is_recurring: form.isRecurring,
-        recurrence_type: form.isRecurring ? form.recurrenceType : undefined,
-        recurrence_interval: form.isRecurring ? Number(form.recurrenceInterval) : undefined,
-        recurrence_start_date: form.isRecurring ? form.recurrenceStartDate : undefined,
-        recurrence_end_date: form.isRecurring && form.recurrenceEndDate ? form.recurrenceEndDate : undefined,
-        auto_publish: form.isRecurring ? form.autoPublish : undefined,
+        is_recurring: form.amountBased ? form.isRecurring : false,
+        recurrence_type: form.amountBased && form.isRecurring ? form.recurrenceType : undefined,
+        recurrence_interval: form.amountBased && form.isRecurring ? Number(form.recurrenceInterval) : undefined,
+        recurrence_start_date: form.amountBased && form.isRecurring ? form.recurrenceStartDate : undefined,
+        recurrence_end_date: form.amountBased && form.isRecurring && form.recurrenceEndDate ? form.recurrenceEndDate : undefined,
+        auto_publish: form.amountBased && form.isRecurring ? form.autoPublish : undefined,
       };
       
       console.log('Submitting campaign data:', campaignData);
@@ -289,6 +320,25 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
           <DialogTitle>Create New Campaign</DialogTitle>
           <DialogDescription>Provide details for your fundraising campaign</DialogDescription>
         </DialogHeader>
+
+        {/* Amount toggle */}
+        <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/40">
+          <div className="space-y-1">
+            <Label className="text-sm font-medium">Campaign Funding Mode</Label>
+            <p className="text-xs text-muted-foreground">
+              Toggle between a campaign with a target amount vs without a target amount.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs ${form.amountBased ? 'text-muted-foreground' : 'text-foreground'}`}>Without amount</span>
+            <Switch
+              checked={form.amountBased}
+              onCheckedChange={(checked) => setForm({ ...form, amountBased: checked as boolean })}
+              aria-label="Toggle amount-based campaign"
+            />
+            <span className={`text-xs ${form.amountBased ? 'text-foreground' : 'text-muted-foreground'}`}>With amount</span>
+          </div>
+        </div>
 
         {/* Basic Info */}
         <div className="grid gap-5 py-2">
@@ -468,35 +518,39 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
 
           {/* Financials & Media */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="cc-target">Target Amount (₱) *</Label>
-              <Input id="cc-target" type="number" inputMode="numeric" value={form.targetAmount} onChange={(e) => setForm({ ...form, targetAmount: e.target.value })} />
-              {errors.targetAmount && <p className="text-xs text-destructive mt-1">{errors.targetAmount}</p>}
-            </div>
+            {form.amountBased && (
+              <div className="space-y-1.5">
+                <Label htmlFor="cc-target">Target Amount (₱) *</Label>
+                <Input id="cc-target" type="number" inputMode="numeric" value={form.targetAmount} onChange={(e) => setForm({ ...form, targetAmount: e.target.value })} />
+                {errors.targetAmount && <p className="text-xs text-destructive mt-1">{errors.targetAmount}</p>}
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label htmlFor="cc-image">Campaign Image</Label>
               <Input id="cc-image" type="file" accept="image/*" onChange={(e) => setForm({ ...form, image: e.target.files?.[0] || null })} />
             </div>
           </div>
 
-          {/* Settings - Donation Type (moved before scheduling) */}
-          <div className="space-y-1.5">
-            <Label htmlFor="cc-donation-type">Donation Type *</Label>
-            <Select value={form.donationType} onValueChange={(v: any) => setForm({ ...form, donationType: v })}>
-              <SelectTrigger id="cc-donation-type">
-                <SelectValue placeholder="Select donation type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="one_time">One-Time</SelectItem>
-                <SelectItem value="recurring">Recurring</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              Choose whether this campaign accepts one-time donations or recurring donations
-            </p>
-          </div>
+          {/* Settings - Donation Type (only when with amount) */}
+          {form.amountBased && (
+            <div className="space-y-1.5">
+              <Label htmlFor="cc-donation-type">Donation Type *</Label>
+              <Select value={form.donationType} onValueChange={(v: any) => setForm({ ...form, donationType: v })}>
+                <SelectTrigger id="cc-donation-type">
+                  <SelectValue placeholder="Select donation type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="one_time">One-Time</SelectItem>
+                  <SelectItem value="recurring">Recurring</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Choose whether this campaign accepts one-time donations or recurring donations
+              </p>
+            </div>
+          )}
 
-          {/* Scheduling - Only show after donation type is selected */}
+          {/* Scheduling - Show when donation type is one-time (even without amount) */}
           {form.donationType && form.donationType === "one_time" && (
             <>
               <Separator />
@@ -557,7 +611,7 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
           </div>
 
           {/* Recurring Campaign Settings */}
-          {form.donationType === "recurring" && (
+          {form.amountBased && form.donationType === "recurring" && (
             <>
               <Separator />
               <div className="space-y-4 bg-primary/5 p-4 rounded-lg border border-primary/20">

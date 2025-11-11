@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\Charity;
 use App\Models\Campaign;
 use App\Models\RefundRequest;
+use App\Models\Report;
 use Illuminate\Support\Facades\Log;
 
 class NotificationHelper
@@ -887,5 +888,54 @@ class NotificationHelper
                 ]
             );
         }
+    }
+
+    /**
+     * Notify charity about new volunteer request
+     */
+    public static function volunteerRequestSubmitted($volunteer, $campaign)
+    {
+        if (!$campaign->charity || !$campaign->charity->owner) {
+            return;
+        }
+
+        self::create(
+            $campaign->charity->owner,
+            'volunteer_request',
+            'New Volunteer Request',
+            "{$volunteer->user->name} wants to volunteer for '{$campaign->title}'.",
+            [
+                'volunteer_id' => $volunteer->id,
+                'campaign_id' => $campaign->id,
+                'user_id' => $volunteer->user_id,
+            ]
+        );
+    }
+
+    /**
+     * Notify volunteer about request response
+     */
+    public static function volunteerRequestResponded($volunteer, $campaign, $status)
+    {
+        if (!$volunteer->user) {
+            return;
+        }
+
+        $title = $status === 'approved' ? 'Volunteer Request Approved' : 'Volunteer Request Update';
+        $message = $status === 'approved'
+            ? "Great news! Your volunteer request for '{$campaign->title}' has been approved."
+            : "Your volunteer request for '{$campaign->title}' has been {$status}.";
+
+        self::create(
+            $volunteer->user,
+            'volunteer_response',
+            $title,
+            $message,
+            [
+                'volunteer_id' => $volunteer->id,
+                'campaign_id' => $campaign->id,
+                'status' => $status,
+            ]
+        );
     }
 }

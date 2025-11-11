@@ -38,7 +38,7 @@ class DashboardController extends Controller
         
         // Get all donations for this donor
         $donations = Donation::where('donor_id', $user->id)->get();
-        $completedDonations = $donations->where('status', 'completed');
+        $completedDonations = $donations->where('status', 'completed')->where('is_refunded', false);
         
         // Calculate stats
         $stats = [
@@ -56,6 +56,7 @@ class DashboardController extends Controller
             ->join('charities', 'donations.charity_id', '=', 'charities.id')
             ->where('donations.donor_id', $user->id)
             ->where('donations.status', 'completed')
+            ->where('donations.is_refunded', false)
             ->select('charities.id', 'charities.name', 'charities.logo_path', 
                      DB::raw('SUM(donations.amount) as total_amount'),
                      DB::raw('COUNT(donations.id) as donation_count'))
@@ -69,6 +70,7 @@ class DashboardController extends Controller
             ->join('campaigns', 'donations.campaign_id', '=', 'campaigns.id')
             ->where('donations.donor_id', $user->id)
             ->where('donations.status', 'completed')
+            ->where('donations.is_refunded', false)
             ->select('campaigns.campaign_type', 
                      DB::raw('SUM(donations.amount) as total_amount'),
                      DB::raw('COUNT(donations.id) as donation_count'))
@@ -80,6 +82,7 @@ class DashboardController extends Controller
         $monthlyTrend = DB::table('donations')
             ->where('donor_id', $user->id)
             ->where('status', 'completed')
+            ->where('is_refunded', false)
             ->where('donated_at', '>=', now()->subMonths(6))
             ->select(
                 DB::raw('DATE_FORMAT(donated_at, "%Y-%m") as month'),
@@ -117,7 +120,7 @@ class DashboardController extends Controller
         
         // Get all donations for this charity
         $donations = Donation::where('charity_id', $charity->id)->get();
-        $completedDonations = $donations->where('status', 'completed');
+        $completedDonations = $donations->where('status', 'completed')->where('is_refunded', false);
         
         // Calculate stats - using accurate calculations
         $stats = [
@@ -141,6 +144,7 @@ class DashboardController extends Controller
         $donationsOverTime = DB::table('donations')
             ->where('charity_id', $charity->id)
             ->where('status', 'completed')
+            ->where('is_refunded', false)
             ->where('donated_at', '>=', now()->subMonths(6))
             ->select(
                 DB::raw('DATE_FORMAT(donated_at, "%Y-%m-%d") as date'),
@@ -245,7 +249,7 @@ class DashboardController extends Controller
             'closed_campaigns' => Campaign::where('status', 'closed')->count(),
             
             'total_donations' => Donation::count(),
-            'completed_donations' => Donation::where('status', 'completed')->count(),
+            'completed_donations' => Donation::where('status', 'completed')->where('is_refunded', false)->count(),
             'pending_donations' => Donation::where('status', 'pending')->count(),
             'total_donated_amount' => Donation::where('status', 'completed')->where('is_refunded', false)->sum('amount'),
         ];

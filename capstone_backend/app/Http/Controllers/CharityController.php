@@ -168,7 +168,7 @@ class CharityController extends Controller
         ]);
     }
 
-    public function show(Charity $charity){
+    public function show(Request $r, Charity $charity){
         // Calculate total received from completed donations
         $totalReceived = $charity->donations()
             ->where('status', 'completed')
@@ -194,8 +194,28 @@ class CharityController extends Controller
             'owner:id,name,email'
         ]);
         
+        // Check if the current user should see total_received
+        // Only charity owners, charity admins of this charity, and system admins can see it
+        $user = $r->user();
+        $canViewFinancials = false;
+        
+        if ($user) {
+            if ($user->role === 'admin') {
+                // System admin can view all financial data
+                $canViewFinancials = true;
+            } elseif ($user->role === 'charity_admin' && $charity->owner_id === $user->id) {
+                // Charity owner can view their own financial data
+                $canViewFinancials = true;
+            }
+        }
+        
         // Add stats to the charity object
-        $charity->total_received = (float) $totalReceived;
+        // Hide total_received from donors for privacy
+        if ($canViewFinancials) {
+            $charity->total_received = (float) $totalReceived;
+        }
+        // Don't set total_received at all for donors (privacy)
+        
         $charity->followers_count = $followersCount;
         $charity->total_campaigns = $campaignsCount;
         $charity->total_updates = $updatesCount;

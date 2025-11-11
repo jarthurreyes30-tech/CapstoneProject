@@ -187,7 +187,7 @@ export default function DonateToCampaign() {
   };
 
   const calculateProgress = () => {
-    if (!campaign) return 0;
+    if (!campaign || typeof campaign.target_amount !== 'number' || campaign.target_amount <= 0) return 0;
     return Math.min(Math.round((campaign.current_amount / campaign.target_amount) * 100), 100);
   };
 
@@ -246,6 +246,8 @@ export default function DonateToCampaign() {
     );
   }
 
+  const hasGoal = !!(campaign && typeof campaign.target_amount === 'number' && campaign.target_amount > 0);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-8">
       <div className="max-w-6xl mx-auto px-4">
@@ -296,13 +298,15 @@ export default function DonateToCampaign() {
                 <div className="h-px bg-border" />
 
                 {/* Progress */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">Campaign Progress</span>
-                    <span className="text-lg font-bold text-primary">{calculateProgress()}%</span>
+                {hasGoal && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground">Campaign Progress</span>
+                      <span className="text-lg font-bold text-primary">{calculateProgress()}%</span>
+                    </div>
+                    <Progress value={calculateProgress()} className="h-3" />
                   </div>
-                  <Progress value={calculateProgress()} className="h-3" />
-                </div>
+                )}
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4">
@@ -315,15 +319,17 @@ export default function DonateToCampaign() {
                       ₱{campaign.current_amount.toLocaleString()}
                     </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Target className="h-4 w-4 text-primary" />
-                      <p className="text-xs font-medium text-muted-foreground">Goal</p>
+                  {hasGoal && (
+                    <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Target className="h-4 w-4 text-primary" />
+                        <p className="text-xs font-medium text-muted-foreground">Goal</p>
+                      </div>
+                      <p className="text-lg font-bold text-primary">
+                        ₱{campaign.target_amount.toLocaleString()}
+                      </p>
                     </div>
-                    <p className="text-lg font-bold text-primary">
-                      ₱{campaign.target_amount.toLocaleString()}
-                    </p>
-                  </div>
+                  )}
                 </div>
 
                 <div className="p-4 rounded-lg bg-muted/50 border border-border/40">

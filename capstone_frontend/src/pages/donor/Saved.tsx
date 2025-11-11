@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bookmark, Trash2, Heart, Calendar, DollarSign, Coins, TrendingUp, Building2, FileText, Eye, MapPin, Sparkles, BookmarkCheck, Users, Target } from "lucide-react";
+import { Bookmark, Trash2, Heart, Calendar, Coins, TrendingUp, Building2, FileText, Eye, MapPin, Sparkles, BookmarkCheck, Users, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,

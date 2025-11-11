@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Share2, MapPin, Globe, Phone, Mail, Calendar, Award, Users, TrendingUp, FileText, Target, Coins, Clock, Download, Eye, CheckCircle, AlertCircle, Loader2, FileCheck, Building2, Receipt, BarChart3, FolderOpen, Upload, X, Flag } from "lucide-react";
+import { Heart, MessageCircle, Share2, MapPin, Globe, Phone, Mail, Calendar, Award, Users, TrendingUp, FileText, Target, Coins, Clock, Download, Eye, CheckCircle, AlertCircle, Loader2, FileCheck, Building2, Receipt, BarChart3, FolderOpen, Upload, X, Flag, Edit, Plus } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +36,14 @@ interface CharityProfile {
   verified_at?: string;
   total_received?: number;
   documents?: any[];
+}
+
+interface Officer {
+  id: number;
+  name: string;
+  title?: string;
+  contact?: string;
+  avatar_path?: string;
 }
 
 interface Update {
@@ -106,6 +116,7 @@ export default function CharityProfile() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState<number | null>(null);
   const [documentUrl, setDocumentUrl] = useState<string>('');
+  const [officers, setOfficers] = useState<Officer[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -113,8 +124,28 @@ export default function CharityProfile() {
       loadCharityUpdates();
       loadCharityCampaigns();
       checkFollowStatus();
+      loadOfficers();
     }
   }, [id]);
+
+  const loadOfficers = async () => {
+    try {
+      const response = await fetch(buildApiUrl(`/charities/${id}` + `/officers`));
+      if (response.ok) {
+        const data = await response.json();
+        const list = (data.data || data || [])
+          .filter((o: any) => o && (o.name || o.title))
+          .map((o: any) => ({
+            id: o.id,
+            name: o.name || '',
+            title: o.title || o.role || '',
+            contact: o.contact || o.email || '',
+            avatar_path: o.avatar_path || o.photo_path || o.profile_image || '',
+          })) as Officer[];
+        setOfficers(list);
+      }
+    } catch {}
+  };
 
   const loadCharityProfile = async () => {
     try {
@@ -569,7 +600,7 @@ export default function CharityProfile() {
                     <SaveButton 
                       itemId={charity?.id || 0} 
                       itemType="charity"
-                      variant="outline"
+                      variant="ghost"
                       size="default"
                       className="hover:bg-primary/10 transition-all duration-200"
                     />
@@ -590,16 +621,8 @@ export default function CharityProfile() {
               </div>
             </div>
 
-            {/* Stats Section */}
-            <div className="grid grid-cols-3 gap-3 md:gap-4 pb-6">
-              <div className="text-center p-3 md:p-4 rounded-xl bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-950/10 border-2 border-green-200 dark:border-green-800/50 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-                <div className="text-lg md:text-2xl font-bold text-green-600 dark:text-green-500 mb-1">
-                  ₱{charity.total_received?.toLocaleString() || '0'}
-                </div>
-                <div className="text-xs md:text-sm font-medium text-green-700 dark:text-green-400">
-                  Total Raised
-                </div>
-              </div>
+            {/* Stats Section (donor view: hide Total Raised) */}
+            <div className="grid grid-cols-2 gap-3 md:gap-4 pb-6">
               <div className="text-center p-3 md:p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-950/10 border-2 border-blue-200 dark:border-blue-800/50 hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
                 <div className="text-lg md:text-2xl font-bold text-blue-600 dark:text-blue-500 mb-1">
                   {campaigns?.length || 0}
@@ -636,74 +659,101 @@ export default function CharityProfile() {
                 Campaigns {campaigns && campaigns.length > 0 && <Badge variant="secondary" className="ml-2">{campaigns.length}</Badge>}
               </TabsTrigger>
             </TabsList>
+            
+ {/* About Tab */}
+          <TabsContent value="about" className="space-y-6 mt-6">
+            {/* Mission & Vision */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Mission
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{charity.mission}</p>
+                </CardContent>
+              </Card>
 
-            {/* About Tab */}
-            <TabsContent value="about" className="space-y-6 mt-6">
-              {/* Mission & Vision */}
-              <div className="grid md:grid-cols-2 gap-6">
+              {charity.vision && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Award className="w-5 h-5" />
-                      Mission
+                      <TrendingUp className="w-5 h-5" />
+                      Vision
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{charity.mission}</p>
+                    <p className="text-muted-foreground">{charity.vision}</p>
                   </CardContent>
                 </Card>
+              )}
+            </div>
 
-                {charity.vision && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5" />
-                        Vision
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{charity.vision}</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Contact Info */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {charity.contact_email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                        <span>{charity.contact_email}</span>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="flex items-center gap-2">Founders & Board</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {officers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No officers listed.</p>
+                ) : (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {officers.map((o) => (
+                      <div key={o.id} className="flex items-center gap-3 p-3 rounded-lg border">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={buildStorageUrl(o.avatar_path || '') || ''} />
+                          <AvatarFallback>{o.name?.substring(0,2).toUpperCase() || 'OF'}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{o.name}</p>
+                          {o.title && <p className="text-xs text-muted-foreground truncate">{o.title}</p>}
+                          {o.contact && <p className="text-xs text-muted-foreground truncate">{o.contact}</p>}
+                        </div>
                       </div>
-                    )}
-                    {charity.contact_phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span>{charity.contact_phone}</span>
-                      </div>
-                    )}
-                    {charity.website && (
-                      <div className="flex items-center gap-2">
-                        <Globe className="w-4 h-4 text-muted-foreground" />
-                        <a href={charity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                          {charity.website}
-                        </a>
-                      </div>
-                    )}
-                    {charity.address && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground" />
-                        <span>{charity.address}</span>
-                      </div>
-                    )}
+                    ))}
                   </div>
-                </CardContent>
-              </Card>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Contact Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {charity.contact_email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-muted-foreground" />
+                      <span>{charity.contact_email}</span>
+                    </div>
+                  )}
+                  {charity.contact_phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span>{charity.contact_phone}</span>
+                    </div>
+                  )}
+                  {charity.website && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                      <a href={charity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        {charity.website}
+                      </a>
+                    </div>
+                  )}
+                  {charity.address && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                      <span>{charity.address}</span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
               {/* Documents & Certificates - Redesigned */}
               {charity.documents && charity.documents.length > 0 && (

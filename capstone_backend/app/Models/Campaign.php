@@ -100,6 +100,10 @@ class Campaign extends Model
         'completion_report_submitted_at',
         'has_fund_usage_logs',
         'ended_at',
+        'is_volunteer_based',
+        'requires_target_amount',
+        'volunteers_needed',
+        'volunteer_description',
     ];
 
     protected $casts = [
@@ -122,6 +126,9 @@ class Campaign extends Model
         'completion_report_submitted_at' => 'datetime',
         'has_fund_usage_logs' => 'boolean',
         'ended_at' => 'datetime',
+        'is_volunteer_based' => 'boolean',
+        'requires_target_amount' => 'boolean',
+        'volunteers_needed' => 'integer',
     ];
 
     protected $appends = ['current_amount', 'display_status'];
@@ -140,6 +147,16 @@ class Campaign extends Model
     public function videos()
     {
         return $this->hasMany(\App\Models\Video::class);
+    }
+
+    public function volunteers()
+    {
+        return $this->hasMany(\App\Models\CampaignVolunteer::class);
+    }
+
+    public function approvedVolunteers()
+    {
+        return $this->hasMany(\App\Models\CampaignVolunteer::class)->where('status', 'approved');
     }
 
     // Accessors
@@ -211,11 +228,6 @@ class Campaign extends Model
     public function approvedComments()
     {
         return $this->hasMany(CampaignComment::class)->where('status', 'approved');
-    }
-
-    public function volunteers()
-    {
-        return $this->hasMany(Volunteer::class);
     }
 
     public function donationChannels()

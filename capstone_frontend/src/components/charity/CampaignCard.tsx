@@ -73,11 +73,11 @@ export const CampaignCard = ({
   const [isSaved, setIsSaved] = useState(initialSaved);
   const [savingState, setSavingState] = useState(false);
 
-  // Calculate progress percentage
-  const progressPercentage = Math.min(
-    Math.round((campaign.amountRaised / campaign.goal) * 100),
-    100
-  );
+  // Calculate progress percentage (only when goal > 0)
+  const hasGoal = typeof campaign.goal === 'number' && campaign.goal > 0;
+  const progressPercentage = hasGoal
+    ? Math.min(Math.round((campaign.amountRaised / campaign.goal) * 100), 100)
+    : 0;
 
   // Calculate days left
   const daysLeft = Math.max(
@@ -96,8 +96,8 @@ export const CampaignCard = ({
     // Check if campaign has ended
     const hasEnded = daysLeft === 0;
     
-    // Check if goal is reached
-    const goalReached = progressPercentage >= 100;
+    // Check if goal is reached (only meaningful when a goal exists)
+    const goalReached = hasGoal && progressPercentage >= 100;
     
     // If ended or goal reached, mark as completed
     if (hasEnded || goalReached) {
@@ -319,21 +319,8 @@ export const CampaignCard = ({
           {campaign.description}
         </p>
       </CardHeader>
-
-      <CardContent className="space-y-4 flex flex-col flex-1">
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground font-medium">Progress</span>
-            <span className="text-primary font-bold text-base">
-              {progressPercentage}%
-            </span>
-          </div>
-          <Progress value={progressPercentage} className="h-2.5" />
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 pt-2">
+      <CardContent>
+        <div className="grid grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-3">
             <div className="flex items-start gap-2">
@@ -358,15 +345,17 @@ export const CampaignCard = ({
 
           {/* Right Column */}
           <div className="space-y-3">
-            <div className="flex items-start gap-2">
-              <Target className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-muted-foreground">Goal</p>
-                <p className="text-lg font-bold text-foreground">
-                  {formatCurrency(campaign.goal)}
-                </p>
+            {hasGoal && (
+              <div className="flex items-start gap-2">
+                <Target className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Goal</p>
+                  <p className="text-lg font-bold text-foreground">
+                    {formatCurrency(campaign.goal)}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex items-start gap-2">
               <Calendar className="h-4 w-4 text-accent-foreground mt-0.5 flex-shrink-0" />
               <div>
@@ -378,6 +367,18 @@ export const CampaignCard = ({
             </div>
           </div>
         </div>
+
+        {/* Progress Bar - Only show when campaign has a goal */}
+        {hasGoal && (
+          <div className="space-y-2 mt-4">
+            <Progress value={progressPercentage} className="h-2" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>{progressPercentage}% funded</span>
+              <span>{formatCurrency(campaign.amountRaised)} of {formatCurrency(campaign.goal)}</span>
+            </div>
+          </div>
+        )}
+      </CardContent>
 
         {/* Action Buttons */}
         <div className="flex gap-2 pt-2 mt-auto">
@@ -435,7 +436,6 @@ export const CampaignCard = ({
             </>
           )}
         </div>
-      </CardContent>
     </Card>
 
     {/* Donations Modal */}

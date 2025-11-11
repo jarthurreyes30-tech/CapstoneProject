@@ -183,34 +183,37 @@ All colors MUST be HSL.
     scrollbar-width: thin;
   }
 
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
-  }
+  /* Wrap WebKit-only selectors to avoid warnings in Firefox */
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 8px;
+    }
 
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 4px;
-    transition: background 0.2s ease;
-  }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
 
-  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
-    background: rgba(156, 163, 175, 0.5);
-  }
+    .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.5);
+    }
 
-  .dark .scrollbar-thin:hover::-webkit-scrollbar-thumb {
-    background: rgba(75, 85, 99, 0.5);
-  }
+    .dark .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+      background: rgba(75, 85, 99, 0.5);
+    }
 
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: rgba(107, 114, 128, 0.7);
-  }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: rgba(107, 114, 128, 0.7);
+    }
 
-  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: rgba(55, 65, 81, 0.7);
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: rgba(55, 65, 81, 0.7);
+    }
   }
 
   /* Brand Color Utilities - Direct access to brand palette */

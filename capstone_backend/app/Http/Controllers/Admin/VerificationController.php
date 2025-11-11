@@ -24,17 +24,18 @@ class VerificationController extends Controller
     }
 
     public function getAllCharities(Request $request){
-        $query = Charity::with([
-            'owner:id,name,email',
-            'documents' => function($q) {
-                $q->orderBy('created_at', 'desc');
-            },
-            'campaigns' => function($q) {
-                $q->select('id', 'charity_id', 'title', 'description', 'target_amount', 'status', 'start_date', 'end_date')
-                  ->withCount('donations as donors');
-            }
-        ])
-        ->withCount(['campaigns', 'donations', 'followers']);
+        try {
+            $query = Charity::with([
+                'owner:id,name,email',
+                'documents' => function($q) {
+                    $q->orderBy('created_at', 'desc');
+                },
+                'campaigns' => function($q) {
+                    $q->select('id', 'charity_id', 'title', 'description', 'target_amount', 'status', 'start_date', 'end_date')
+                      ->withCount('donations as donors');
+                }
+            ])
+            ->withCount(['campaigns', 'donations', 'followers']);
 
         // Filter by status if provided
         if ($request->has('status') && $request->status && $request->status !== 'all') {
@@ -76,6 +77,16 @@ class VerificationController extends Controller
         });
 
         return $charities;
+        } catch (\Exception $e) {
+            \Log::error('getAllCharities error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch charities',
+                'error' => $e->getMessage(),
+                'data' => []
+            ], 500);
+        }
     }
 
     public function getUsers(Request $request){
@@ -215,6 +226,44 @@ class VerificationController extends Controller
         $user->update(['status'=>'suspended']);
         return response()->json(['message'=>'User suspended']);
     }
+    
+    // Debug endpoint to check charity document statuses
+    public function checkCharityDocuments($charityId)
+    {
+        $charity = Charity::with('documents')->findOrFail($charityId);
+        
+        $totalDocs = $charity->documents()->count();
+        $approvedDocs = $charity->documents()->where('verification_status', 'approved')->count();
+        $pendingDocs = $charity->documents()->where('verification_status', 'pending')->count();
+        $rejectedDocs = $charity->documents()->where('verification_status', 'rejected')->count();
+        
+        return response()->json([
+            'charity_name' => $charity->name,
+            'charity_status' => $charity->verification_status,
+            'document_summary' => [
+                'total' => $totalDocs,
+                'approved' => $approvedDocs,
+                'pending' => $pendingDocs,
+                'rejected' => $rejectedDocs,
+            ],
+            'documents' => $charity->documents->map(function($doc) {
+                return [
+                    'id' => $doc->id,
+                    'type' => $doc->document_type ?? $doc->doc_type,
+                    'status' => $doc->verification_status,
+                    'verified_at' => $doc->verified_at,
+                    'rejection_reason' => $doc->rejection_reason,
+                ];
+            }),
+            'can_auto_approve' => (
+                in_array($charity->verification_status, ['pending', 'rejected']) &&
+                $totalDocs > 0 &&
+                $approvedDocs === $totalDocs &&
+                $pendingDocs === 0 &&
+                $rejectedDocs === 0
+            ),
+        ]);
+    }
 
     public function approveDocument(Request $request, $documentId)
     {
@@ -229,30 +278,60 @@ class VerificationController extends Controller
         ]);
 
         // Check if ALL documents are approved, then auto-approve charity
-        $charity = $document->charity;
+        $charity = $document->charity->fresh(); // Get fresh charity data
+        
+        // Refresh document counts
         $totalDocs = $charity->documents()->count();
         $approvedDocs = $charity->documents()->where('verification_status', 'approved')->count();
         $pendingDocs = $charity->documents()->where('verification_status', 'pending')->count();
         $rejectedDocs = $charity->documents()->where('verification_status', 'rejected')->count();
         
+        // Log for debugging
+        \Log::info("Document Approval Check for Charity: {$charity->name}", [
+            'charity_id' => $charity->id,
+            'charity_status' => $charity->verification_status,
+            'total_docs' => $totalDocs,
+            'approved_docs' => $approvedDocs,
+            'pending_docs' => $pendingDocs,
+            'rejected_docs' => $rejectedDocs,
+        ]);
+        
         $charityAutoApproved = false;
         
         // Auto-approve charity if:
-        // 1. Charity is currently pending
+        // 1. Charity is currently pending OR rejected
         // 2. All documents are approved (no pending or rejected)
         // 3. At least one document exists
-        if ($charity->verification_status === 'pending' && 
+        $canAutoApprove = in_array($charity->verification_status, ['pending', 'rejected']) && 
             $totalDocs > 0 && 
             $approvedDocs === $totalDocs && 
             $pendingDocs === 0 && 
-            $rejectedDocs === 0) {
+            $rejectedDocs === 0;
+            
+        \Log::info("Auto-Approval Check Result", [
+            'charity_name' => $charity->name,
+            'can_auto_approve' => $canAutoApprove,
+            'status_check' => in_array($charity->verification_status, ['pending', 'rejected']),
+            'has_docs' => $totalDocs > 0,
+            'all_approved' => $approvedDocs === $totalDocs,
+            'no_pending' => $pendingDocs === 0,
+            'no_rejected' => $rejectedDocs === 0,
+        ]);
+        
+        if ($canAutoApprove) {
+            
+            $wasRejected = $charity->verification_status === 'rejected';
             
             $charity->update([
                 'verification_status' => 'approved',
                 'verified_at' => now(),
                 'status' => 'active', // Also activate the charity
-                'verification_notes' => 'All documents verified and approved. Charity automatically activated.'
+                'verification_notes' => $wasRejected 
+                    ? 'All documents re-verified and approved. Charity status changed from rejected to approved and activated.'
+                    : 'All documents verified and approved. Charity automatically activated.'
             ]);
+            
+            \Log::info("✅ Charity Auto-Approved!", ['charity_name' => $charity->name]);
             
             $charityAutoApproved = true;
             

@@ -75,10 +75,18 @@ class AdminDashboardController extends Controller
         $startDate = Carbon::now()->subMonths($months)->startOfMonth();
         
         // Get monthly donation totals (only confirmed donations)
-        $donations = Donation::where('status', 'confirmed')
-            ->where('created_at', '>=', $startDate)
+        $donations = Donation::where('status', 'completed')
+            ->where('is_refunded', false)
+            ->where(function($q) use ($startDate) {
+                $q->whereNotNull('donated_at')
+                  ->where('donated_at', '>=', $startDate)
+                  ->orWhere(function($q2) use ($startDate) {
+                      $q2->whereNull('donated_at')
+                         ->where('created_at', '>=', $startDate);
+                  });
+            })
             ->select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                DB::raw('DATE_FORMAT(COALESCE(donated_at, created_at), "%Y-%m") as month'),
                 DB::raw('SUM(amount) as total'),
                 DB::raw('COUNT(*) as count')
             )

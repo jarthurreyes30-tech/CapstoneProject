@@ -113,7 +113,10 @@ Route::get('/charities/{charity}', [CharityController::class,'show']);
 Route::get('/charities/{charity}/channels', [CharityController::class,'channels']);
 Route::get('/charities/{charity}/campaigns', [CampaignController::class,'index']);
 
-// Public campaign filtering (MUST come BEFORE wildcard routes!)
+// Public campaigns list (MUST come BEFORE wildcard routes!)
+Route::get('/campaigns', [CampaignController::class,'publicIndex']);
+
+// Public campaign filtering
 Route::get('/campaigns/filter', [AnalyticsController::class,'filterCampaigns']);
 Route::get('/campaigns/filter-options', [AnalyticsController::class,'filterOptions']);
 
@@ -157,6 +160,9 @@ Route::get('/charities/{charity}/leaderboard', [LeaderboardController::class,'to
 
 // Public charity documents (for viewing by donors and public)
 Route::get('/charities/{charity}/documents', [CharityController::class,'getDocuments']);
+
+// Public charity officers (for viewing organization info)
+Route::get('/charities/{charity}/officers', [\App\Http\Controllers\CharityOfficerController::class,'index']);
 
 // Document viewing and downloading (authenticated users)
 Route::middleware(['auth:sanctum'])->group(function(){
@@ -253,9 +259,20 @@ Route::middleware(['auth:sanctum','role:donor'])->group(function(){
   // Notification Preferences
   Route::get('/me/notification-preferences', [\App\Http\Controllers\NotificationPreferenceController::class,'index']);
   Route::post('/me/notification-preferences', [\App\Http\Controllers\NotificationPreferenceController::class,'store']);
-  
+
+  // Charity Refund Requests (controller enforces charity ownership)
+  Route::get('/charity/refunds', [\App\Http\Controllers\CharityRefundController::class,'index']);
+  Route::get('/charity/refunds/{id}', [\App\Http\Controllers\CharityRefundController::class,'show']);
+  Route::post('/charity/refunds/{id}/respond', [\App\Http\Controllers\CharityRefundController::class,'respond']);
+  Route::get('/charity/refunds/statistics', [\App\Http\Controllers\CharityRefundController::class,'statistics']);
+
   // Campaign Comments (Donor can comment)
   Route::post('/campaigns/{campaign}/comments', [CampaignCommentController::class,'store']);
+  
+  // Volunteer Requests (Donor)
+  Route::post('/campaigns/{campaign}/volunteer', [\App\Http\Controllers\CampaignVolunteerController::class,'store']);
+  Route::get('/me/volunteer-requests', [\App\Http\Controllers\CampaignVolunteerController::class,'myRequests']);
+  Route::delete('/volunteer-requests/{volunteer}', [\App\Http\Controllers\CampaignVolunteerController::class,'cancel']);
 });
 
 // Notifications (available to any authenticated user role)
@@ -357,15 +374,20 @@ Route::middleware(['auth:sanctum','role:charity_admin'])->group(function(){
   Route::post('/donation-channels/{channel}/toggle', [\App\Http\Controllers\DonationChannelController::class,'toggleActive']);
   Route::post('/campaigns/{campaign}/donation-channels/attach', [\App\Http\Controllers\DonationChannelController::class,'attachToCampaign']);
 
+  // Charity Officers Management (CRUD) - GET is public on line 165
+  Route::post('/charities/{charity}/officers', [\App\Http\Controllers\CharityOfficerController::class,'store']);
+  Route::put('/charity-officers/{officer}', [\App\Http\Controllers\CharityOfficerController::class,'update']);
+  Route::delete('/charity-officers/{officer}', [\App\Http\Controllers\CharityOfficerController::class,'destroy']);
+
+  // Campaign Volunteers Management
+  Route::get('/campaigns/{campaign}/volunteers', [\App\Http\Controllers\CampaignVolunteerController::class,'index']);
+  Route::post('/campaigns/{campaign}/volunteers/{volunteer}/respond', [\App\Http\Controllers\CampaignVolunteerController::class,'respond']);
+
   Route::get('/charities/{charity}/donations', [DonationController::class,'charityInbox']);
   Route::patch('/donations/{donation}/confirm', [DonationController::class,'confirm']);
   Route::patch('/donations/{donation}/status', [DonationController::class,'updateStatus']);
 
-  // Refund Requests (Charity)
-  Route::get('/charity/refunds', [\App\Http\Controllers\CharityRefundController::class,'index']);
-  Route::get('/charity/refunds/{id}', [\App\Http\Controllers\CharityRefundController::class,'show']);
-  Route::post('/charity/refunds/{id}/respond', [\App\Http\Controllers\CharityRefundController::class,'respond']);
-  Route::get('/charity/refunds/statistics', [\App\Http\Controllers\CharityRefundController::class,'statistics']);
+  // Refund Requests (Charity) — moved to auth:sanctum group below; controller enforces ownership
 
   // Fund Usage Management (CRUD)
   Route::get('/campaigns/{campaignId}/fund-usage', [FundUsageController::class,'index']);
@@ -435,6 +457,7 @@ Route::middleware(['auth:sanctum','role:admin'])->group(function(){
   Route::patch('/admin/charities/{charity}/reject', [VerificationController::class,'reject']);
   Route::patch('/admin/documents/{document}/approve', [VerificationController::class,'approveDocument']);
   Route::patch('/admin/documents/{document}/reject', [VerificationController::class,'rejectDocument']);
+  Route::get('/admin/charities/{charity}/check-documents', [VerificationController::class,'checkCharityDocuments']); // Debug endpoint
   Route::patch('/admin/users/{user}/suspend', [VerificationController::class,'suspendUser']);
   Route::patch('/admin/users/{user}/activate', [VerificationController::class,'activateUser']);
   // Charity reactivation requests
@@ -575,13 +598,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // routes/api.php
 Route::get('/metrics', function () {
-    return [
-        'total_users' => \App\Models\User::count(),
-        'total_donors' => \App\Models\User::where('role', 'donor')->count(),
-        'total_charity_admins' => \App\Models\User::where('role', 'charity_admin')->count(),
-        'charities' => \App\Models\Charity::where('verification_status','approved')->count(),
-        'pending_verifications' => \App\Models\Charity::where('verification_status','pending')->count(),
-        'campaigns' => \App\Models\Campaign::count(),
-        'donations' => \App\Models\Donation::count(),
-    ];
+    try {
+        return response()->json([
+            'total_users' => \App\Models\User::count(),
+            'total_donors' => \App\Models\User::where('role', 'donor')->count(),
+            'total_charity_admins' => \App\Models\User::where('role', 'charity_admin')->count(),
+            'charities' => \App\Models\Charity::where('verification_status','approved')->count(),
+            'pending_verifications' => \App\Models\Charity::where('verification_status','pending')->count(),
+            'campaigns' => \App\Models\Campaign::count(),
+            'donations' => \App\Models\Donation::count(),
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Metrics endpoint error: ' . $e->getMessage());
+        return response()->json([
+            'total_users' => 0,
+            'total_donors' => 0,
+            'total_charity_admins' => 0,
+            'charities' => 0,
+            'pending_verifications' => 0,
+            'campaigns' => 0,
+            'donations' => 0,
+            'error' => 'Unable to fetch metrics'
+        ], 200);
+    }
 });

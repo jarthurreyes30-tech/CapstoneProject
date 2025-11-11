@@ -465,7 +465,8 @@ export default function CampaignPage() {
     }).format(amount);
   };
 
-  const progressPercentage = campaign
+  const hasGoal = !!(campaign && typeof campaign.goal === 'number' && campaign.goal > 0);
+  const progressPercentage = campaign && hasGoal
     ? Math.min(Math.round((campaign.amountRaised / campaign.goal) * 100), 100)
     : 0;
 
@@ -980,13 +981,17 @@ export default function CampaignPage() {
                         </span>
                         <span className="text-muted-foreground">raised</span>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        of {formatCurrency(campaign.goal)} goal
-                      </p>
-                      <Progress value={progressPercentage} className="h-3" />
-                      <p className="text-sm text-primary font-semibold mt-2">
-                        {progressPercentage}% funded
-                      </p>
+                      {hasGoal && (
+                        <>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            of {formatCurrency(campaign.goal)} goal
+                          </p>
+                          <Progress value={progressPercentage} className="h-3" />
+                          <p className="text-sm text-primary font-semibold mt-2">
+                            {progressPercentage}% funded
+                          </p>
+                        </>
+                      )}
                     </div>
 
                     <Separator />

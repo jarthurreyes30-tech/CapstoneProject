@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Services\{NotificationService, SecurityService};
+use Illuminate\Support\Facades\Schema;
 use App\Mail\RefundResponseMail;
 
 class CharityRefundController extends Controller
@@ -40,8 +41,16 @@ class CharityRefundController extends Controller
         $status = $request->get('status', 'all');
 
         $query = RefundRequest::with(['donation.campaign', 'user', 'reviewer'])
-            ->where('charity_id', $charity->id)
             ->orderBy('created_at', 'desc');
+
+        if (Schema::hasColumn('refund_requests', 'charity_id')) {
+            $query->where('charity_id', $charity->id);
+        } else {
+            // Fallback for older schema: filter via donations table
+            $query->whereHas('donation', function($q) use ($charity) {
+                $q->where('charity_id', $charity->id);
+            });
+        }
 
         if ($status !== 'all') {
             $query->where('status', $status);
@@ -73,10 +82,16 @@ class CharityRefundController extends Controller
             ], 403);
         }
 
-        $refund = RefundRequest::with(['donation.campaign', 'user', 'reviewer'])
-            ->where('id', $id)
-            ->where('charity_id', $charity->id)
-            ->first();
+        $refundQuery = RefundRequest::with(['donation.campaign', 'user', 'reviewer'])
+            ->where('id', $id);
+        if (Schema::hasColumn('refund_requests', 'charity_id')) {
+            $refundQuery->where('charity_id', $charity->id);
+        } else {
+            $refundQuery->whereHas('donation', function($q) use ($charity) {
+                $q->where('charity_id', $charity->id);
+            });
+        }
+        $refund = $refundQuery->first();
 
         if (!$refund) {
             return response()->json([
@@ -261,21 +276,47 @@ class CharityRefundController extends Controller
             ], 403);
         }
 
-        $stats = [
-            'total' => RefundRequest::where('charity_id', $charity->id)->count(),
-            'pending' => RefundRequest::where('charity_id', $charity->id)->pending()->count(),
-            'approved' => RefundRequest::where('charity_id', $charity->id)->approved()->count(),
-            'denied' => RefundRequest::where('charity_id', $charity->id)->denied()->count(),
-            'total_amount_requested' => RefundRequest::where('charity_id', $charity->id)
-                ->sum('refund_amount'),
-            'total_amount_approved' => RefundRequest::where('charity_id', $charity->id)
-                ->approved()
-                ->sum('refund_amount'),
-        ];
+        try {
+            // Build base query depending on schema
+            $base = RefundRequest::query();
+            if (Schema::hasColumn('refund_requests', 'charity_id')) {
+                $base->where('charity_id', $charity->id);
+            } else {
+                $base->whereHas('donation', function($q) use ($charity) {
+                    $q->where('charity_id', $charity->id);
+                });
+            }
 
-        return response()->json([
-            'success' => true,
-            'statistics' => $stats
-        ]);
+            $stats = [
+                'total' => (clone $base)->count(),
+                'pending' => (clone $base)->pending()->count(),
+                'approved' => (clone $base)->approved()->count(),
+                'denied' => (clone $base)->denied()->count(),
+                'total_amount_requested' => (clone $base)->sum('refund_amount'),
+                'total_amount_approved' => (clone $base)->approved()->sum('refund_amount'),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'statistics' => $stats
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to compute refund statistics', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'success' => true,
+                'statistics' => [
+                    'total' => 0,
+                    'pending' => 0,
+                    'approved' => 0,
+                    'denied' => 0,
+                    'total_amount_requested' => 0,
+                    'total_amount_approved' => 0,
+                ],
+                'warning' => 'Statistics temporarily unavailable',
+            ]);
+        }
     }
 }

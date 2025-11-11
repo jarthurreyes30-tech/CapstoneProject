@@ -64,5 +64,7 @@ class Charity extends Model
     public function activeFollowers(){ return $this->hasMany(CharityFollow::class)->where('is_following', true); }
     public function volunteers(){ return $this->hasMany(Volunteer::class); }
     public function activeVolunteers(){ return $this->hasMany(Volunteer::class)->where('status', 'active'); }
+    public function officers(){ return $this->hasMany(CharityOfficer::class); }
+    public function activeOfficers(){ return $this->hasMany(CharityOfficer::class)->where('is_active', true)->orderBy('display_order'); }
     public function reports(){ return $this->morphMany(Report::class, 'reported_entity'); }
 }

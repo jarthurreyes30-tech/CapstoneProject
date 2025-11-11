@@ -31,8 +31,8 @@ class DonorAnalyticsController extends Controller
             
             $donationStats = Donation::where('status', 'completed')
                 ->where('is_refunded', false)
-                ->when($filters['date_from'], fn($q) => $q->where('created_at', '>=', $filters['date_from']))
-                ->when($filters['date_to'], fn($q) => $q->where('created_at', '<=', $filters['date_to']))
+                ->when($filters['date_from'], fn($q) => $q->whereRaw('COALESCE(donated_at, created_at) >= ?', [$filters['date_from']]))
+                ->when($filters['date_to'], fn($q) => $q->whereRaw('COALESCE(donated_at, created_at) <= ?', [$filters['date_to']]))
                 ->when($filters['campaign_ids'], fn($q) => $q->whereIn('campaign_id', $filters['campaign_ids']))
                 ->selectRaw('SUM(amount) as total, AVG(amount) as average, COUNT(*) as count')
                 ->first();
@@ -82,6 +82,7 @@ class DonorAnalyticsController extends Controller
             
             $donations = Donation::where('campaign_id', $id)
                 ->where('status', 'completed')
+                ->where('is_refunded', false)
                 ->selectRaw('
                     COUNT(*) as count,
                     SUM(amount) as total,
@@ -93,7 +94,8 @@ class DonorAnalyticsController extends Controller
             
             $timelineSeries = Donation::where('campaign_id', $id)
                 ->where('status', 'completed')
-                ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total')
+                ->where('is_refunded', false)
+                ->selectRaw('DATE(COALESCE(donated_at, created_at)) as date, COUNT(*) as count, SUM(amount) as total')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get();
@@ -151,8 +153,8 @@ class DonorAnalyticsController extends Controller
         $recentTrend = Donation::where('donor_id', $id)
             ->where('status', 'completed')
             ->where('is_refunded', false)
-            ->where('created_at', '>=', now()->subDays(30))
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count, SUM(amount) as total')
+            ->whereRaw('COALESCE(donated_at, created_at) >= ?', [now()->subDays(30)])
+            ->selectRaw('DATE(COALESCE(donated_at, created_at)) as date, COUNT(*) as count, SUM(amount) as total')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -255,13 +257,13 @@ class DonorAnalyticsController extends Controller
                 'campaigns.campaign_type',
                 'campaigns.target_amount',
                 'campaigns.charity_id',
-                DB::raw('COUNT(donations.id) as donation_count'),
-                DB::raw('SUM(CASE WHEN donations.status = "completed" THEN donations.amount ELSE 0 END) as total_amount'),
-                DB::raw('AVG(CASE WHEN donations.status = "completed" THEN donations.amount ELSE NULL END) as avg_amount')
+                DB::raw('SUM(CASE WHEN donations.status = "completed" AND donations.is_refunded = 0 THEN 1 ELSE 0 END) as donation_count'),
+                DB::raw('SUM(CASE WHEN donations.status = "completed" AND donations.is_refunded = 0 THEN donations.amount ELSE 0 END) as total_amount'),
+                DB::raw('AVG(CASE WHEN donations.status = "completed" AND donations.is_refunded = 0 THEN donations.amount ELSE NULL END) as avg_amount')
             )
             ->leftJoin('donations', function ($join) use ($days) {
                 $join->on('campaigns.id', '=', 'donations.campaign_id')
-                    ->where('donations.created_at', '>=', now()->subDays($days));
+                    ->whereRaw('COALESCE(donated_at, donations.created_at) >= ?', [now()->subDays($days)]);
             })
             ->where('campaigns.status', 'published')
             ->when(!empty($filters['campaign_types']), fn($q) => $q->whereIn('campaigns.campaign_type', $filters['campaign_types']))
@@ -302,7 +304,8 @@ class DonorAnalyticsController extends Controller
             ->leftJoin('campaigns', 'charities.id', '=', 'campaigns.charity_id')
             ->leftJoin('donations', function ($join) {
                 $join->on('campaigns.id', '=', 'donations.campaign_id')
-                    ->where('donations.status', '=', 'completed');
+                    ->where('donations.status', '=', 'completed')
+                    ->where('donations.is_refunded', '=', 0);
             })
             ->where('charities.verification_status', 'approved');
         
@@ -338,18 +341,19 @@ class DonorAnalyticsController extends Controller
         };
         
         $query = Donation::select(
-                DB::raw("DATE_FORMAT(created_at, '{$dateFormat}') as period"),
+                DB::raw("DATE_FORMAT(COALESCE(donated_at, created_at), '{$dateFormat}') as period"),
                 DB::raw('COUNT(*) as count'),
                 DB::raw('SUM(amount) as total'),
                 DB::raw('AVG(amount) as average')
             )
-            ->where('status', 'completed');
+            ->where('status', 'completed')
+            ->where('is_refunded', false);
         
         if ($filters['date_from']) {
-            $query->where('created_at', '>=', $filters['date_from']);
+            $query->whereRaw('COALESCE(donated_at, created_at) >= ?', [$filters['date_from']]);
         }
         if ($filters['date_to']) {
-            $query->where('created_at', '<=', $filters['date_to']);
+            $query->whereRaw('COALESCE(donated_at, created_at) <= ?', [$filters['date_to']]);
         }
         if (!empty($filters['campaign_ids'])) {
             $query->whereIn('campaign_id', $filters['campaign_ids']);

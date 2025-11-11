@@ -81,8 +81,9 @@ class UserActivityLogController extends Controller
      */
     public function statistics()
     {
-        // Only count logs with existing users
-        $baseQuery = ActivityLog::whereHas('user');
+        try {
+            // Only count logs with existing users
+            $baseQuery = ActivityLog::whereHas('user');
         
         // Get unique actions from valid logs only
         $uniqueActions = $baseQuery->distinct()->pluck('action')->toArray();
@@ -133,6 +134,22 @@ class UserActivityLogController extends Controller
         ];
 
         return response()->json($stats);
+        } catch (\Exception $e) {
+            \Log::error('Activity statistics error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch activity statistics',
+                'error' => $e->getMessage(),
+                'total' => 0,
+                'donations' => 0,
+                'campaigns' => 0,
+                'registrations' => 0,
+                'logins_today' => 0,
+                'unique_actions' => [],
+                'by_action' => [],
+                'recent_activities' => []
+            ], 500);
+        }
     }
 
     /**

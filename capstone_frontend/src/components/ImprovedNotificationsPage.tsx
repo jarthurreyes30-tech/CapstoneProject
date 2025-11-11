@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bell, Check, CheckCheck, Trash2, Filter, RefreshCw, ExternalLink, Settings2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/context/AuthContext';
 import {
   Select,
   SelectContent,
@@ -37,6 +38,7 @@ export function ImprovedNotificationsPage({ title, description }: ImprovedNotifi
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const fetchNotifications = async () => {
     try {
@@ -152,12 +154,28 @@ export function ImprovedNotificationsPage({ title, description }: ImprovedNotifi
 
   const getNotificationLink = (notification: NotificationItem): string | null => {
     const data = notification.data || {};
+    const userRole = user?.role;
     
     switch (notification.type) {
       case 'donation_confirmed':
-      case 'donation_received':
       case 'donation_verified':
-        return data.donation_id ? `/donations/${data.donation_id}` : null;
+        // Donor sees their donation history, charity sees donation management
+        if (userRole === 'donor') {
+          return '/donor/history';
+        } else if (userRole === 'charity_admin') {
+          return '/charity/donations';
+        }
+        return null;
+      
+      case 'donation_received':
+      case 'new_donation':
+        // Charity receives notification about new donation
+        if (userRole === 'charity_admin') {
+          return '/charity/donations';
+        } else if (userRole === 'admin') {
+          return '/admin/fund-tracking';
+        }
+        return null;
       
       case 'new_campaign':
       case 'campaign_update_posted':
@@ -174,20 +192,23 @@ export function ImprovedNotificationsPage({ title, description }: ImprovedNotifi
       
       case 'refund_status':
       case 'refund_request':
-        return '/refunds';
+        // Route based on user role
+        if (userRole === 'donor') {
+          return '/donor/refunds';
+        } else if (userRole === 'charity_admin') {
+          return '/charity/refunds';
+        }
+        return null;
       
       case 'new_user':
       case 'charity_registration':
-        return '/admin/users';
-      
-      case 'new_donation':
-        return '/admin/donations';
+        return userRole === 'admin' ? '/admin/users' : null;
       
       case 'new_report':
-        return '/admin/reports';
+        return userRole === 'admin' ? '/admin/reports' : null;
       
       case 'new_fund_usage':
-        return '/admin/fund-usage';
+        return userRole === 'admin' ? '/admin/fund-tracking' : null;
       
       default:
         return null;

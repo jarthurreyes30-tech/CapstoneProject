@@ -24,6 +24,8 @@ import {
   UserPlus,
   UserCheck,
   Flag,
+  Edit,
+  Plus,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { charityService } from "@/services/charity";
 import { updatesService } from "@/services/updates";
@@ -55,6 +60,14 @@ interface Update {
   is_liked?: boolean;
 }
 
+interface Officer {
+  id: number;
+  name: string;
+  title?: string;
+  contact?: string;
+  avatar_path?: string;
+}
+
 interface Comment {
   id: number;
   update_id: number;
@@ -68,7 +81,6 @@ interface Comment {
     profile_image?: string;
     charity?: {
       id: number;
-      owner_id: number;
       name: string;
       logo_path?: string;
     };
@@ -130,13 +142,102 @@ export default function CharityPublicProfile() {
   const [newComment, setNewComment] = useState<Record<number, string>>({});
   const [loadingComments, setLoadingComments] = useState<Set<number>>(new Set());
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [officers, setOfficers] = useState<Officer[]>([]);
+  const [officerModalOpen, setOfficerModalOpen] = useState(false);
+  const [editingOfficer, setEditingOfficer] = useState<Officer | null>(null);
+  const [officerForm, setOfficerForm] = useState<{ name: string; title: string; contact: string; avatar_path: string }>({ name: "", title: "", contact: "", avatar_path: "" });
 
   useEffect(() => {
     if (id) {
       loadCharityData();
       loadCurrentUser();
+      loadOfficers();
     }
   }, [id]);
+
+  const loadOfficers = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/charities/${id}/officers`);
+      if (res.ok) {
+        const data = await res.json();
+        const list = (data.data || data || [])
+          .filter((o: any) => o && (o.name || o.title))
+          .map((o: any) => ({
+            id: o.id,
+            name: o.name || "",
+            title: o.title || o.role || "",
+            contact: o.contact || o.email || "",
+            avatar_path: o.avatar_path || o.photo_path || o.profile_image || "",
+          })) as Officer[];
+        setOfficers(list);
+      }
+    } catch {}
+  };
+
+  const canManageOfficers = () => {
+    const role = currentUser?.role;
+    const isCharityRole = role === "charity_admin" || role === "charity" || role === "charity_staff";
+    return isCharityRole && (currentUser?.charity?.id?.toString() === id);
+  };
+
+  const openAddOfficer = () => {
+    if (!canManageOfficers()) {
+      toast.error("Only the charity can manage officers");
+      return;
+    }
+    setEditingOfficer(null);
+    setOfficerForm({ name: "", title: "", contact: "", avatar_path: "" });
+    setOfficerModalOpen(true);
+  };
+
+  const openEditOfficer = (o: Officer) => {
+    if (!canManageOfficers()) {
+      toast.error("Only the charity can manage officers");
+      return;
+    }
+    setEditingOfficer(o);
+    setOfficerForm({ name: o.name || "", title: o.title || "", contact: o.contact || "", avatar_path: o.avatar_path || "" });
+    setOfficerModalOpen(true);
+  };
+
+  const handleSaveOfficer = async () => {
+    try {
+      if (!canManageOfficers()) {
+        toast.error("You do not have permission to perform this action");
+        return;
+      }
+      const token = authService.getToken();
+      if (!token) {
+        toast.error("Please login");
+        return;
+      }
+      const payload = { name: officerForm.name, title: officerForm.title, contact: officerForm.contact, avatar_path: officerForm.avatar_path };
+      let res: Response;
+      if (editingOfficer) {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/charity-officers/${editingOfficer.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/charities/${id}/officers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload),
+        });
+      }
+      if (res.ok) {
+        toast.success("Saved");
+        setOfficerModalOpen(false);
+        await loadOfficers();
+      } else {
+        const errText = await res.text();
+        toast.error(errText || "Failed to save");
+      }
+    } catch {
+      toast.error("Failed to save");
+    }
+  };
 
   const loadCurrentUser = async () => {
     try {
@@ -743,6 +844,33 @@ export default function CharityPublicProfile() {
                     </Card>
                   )}
 
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <h2 className="text-2xl font-bold">Founders & Board</h2>
+                    </CardHeader>
+                    <CardContent>
+                      {officers.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No officers listed.</p>
+                      ) : (
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {officers.map((o) => (
+                            <div key={o.id} className="flex items-center gap-3 p-3 rounded-lg border">
+                              <Avatar className="h-12 w-12">
+                                <AvatarImage src={getStorageUrl(o.avatar_path || "") || ''} />
+                                <AvatarFallback>{o.name?.substring(0,2).toUpperCase() || 'OF'}</AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium truncate">{o.name}</p>
+                                {o.title && <p className="text-xs text-muted-foreground truncate">{o.title}</p>}
+                                {o.contact && <p className="text-xs text-muted-foreground truncate">{o.contact}</p>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
                   {charity.services && (
                     <Card>
                       <CardHeader>
@@ -869,6 +997,40 @@ export default function CharityPublicProfile() {
           targetName={charity.name}
         />
       )}
+
+      {/* Officer Add/Edit Dialog */}
+      <Dialog open={officerModalOpen} onOpenChange={setOfficerModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingOfficer ? 'Edit Officer' : 'Add Officer'}</DialogTitle>
+            <DialogDescription>
+              Add founders, board directors, or officers for this organization.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="officer_name_public">Name</Label>
+              <Input id="officer_name_public" value={officerForm.name} onChange={(e) => setOfficerForm({ ...officerForm, name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="officer_title_public">Title/Role</Label>
+              <Input id="officer_title_public" value={officerForm.title} onChange={(e) => setOfficerForm({ ...officerForm, title: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="officer_contact_public">Contact</Label>
+              <Input id="officer_contact_public" value={officerForm.contact} onChange={(e) => setOfficerForm({ ...officerForm, contact: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="officer_avatar_public">Profile Image URL</Label>
+              <Input id="officer_avatar_public" value={officerForm.avatar_path} onChange={(e) => setOfficerForm({ ...officerForm, avatar_path: e.target.value })} placeholder="https://..." />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" onClick={() => setOfficerModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveOfficer}>{editingOfficer ? 'Update' : 'Save'}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

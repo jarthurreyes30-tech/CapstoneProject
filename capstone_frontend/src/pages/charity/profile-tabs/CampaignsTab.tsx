@@ -53,6 +53,7 @@ export default function CampaignsTab({ campaigns, setCampaigns, charityId }: Cam
   };
 
   const calculateProgress = (current: number, goal: number) => {
+    if (!goal || goal <= 0) return 0;
     return Math.min((current / goal) * 100, 100);
   };
 
@@ -109,27 +110,29 @@ export default function CampaignsTab({ campaigns, setCampaigns, charityId }: Cam
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Progress */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="font-semibold">
-                          {calculateProgress(campaign.current_amount, campaign.goal_amount).toFixed(0)}%
-                        </span>
+                    {/* Progress (only when campaign has a goal) */}
+                    {campaign.goal_amount > 0 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Progress</span>
+                          <span className="font-semibold">
+                            {calculateProgress(campaign.current_amount, campaign.goal_amount).toFixed(0)}%
+                          </span>
+                        </div>
+                        <Progress 
+                          value={calculateProgress(campaign.current_amount, campaign.goal_amount)} 
+                          className="h-2"
+                        />
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-semibold text-primary">
+                            ₱{campaign.current_amount.toLocaleString()}
+                          </span>
+                          <span className="text-muted-foreground">
+                            of ₱{campaign.goal_amount.toLocaleString()}
+                          </span>
+                        </div>
                       </div>
-                      <Progress 
-                        value={calculateProgress(campaign.current_amount, campaign.goal_amount)} 
-                        className="h-2"
-                      />
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold text-primary">
-                          ₱{campaign.current_amount.toLocaleString()}
-                        </span>
-                        <span className="text-muted-foreground">
-                          of ₱{campaign.goal_amount.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
+                    )}
 
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-3 pt-3 border-t">

@@ -131,8 +131,9 @@ class FundTrackingController extends Controller
      */
     public function getTransactions(Request $request)
     {
-        $days = $request->input('days', 30);
-        $startDate = Carbon::now()->subDays($days);
+        try {
+            $days = $request->input('days', 30);
+            $startDate = Carbon::now()->subDays($days);
 
         // Fetch ALL donations (including pending, confirmed, rejected)
         $donations = Donation::with(['donor', 'charity', 'campaign'])
@@ -186,6 +187,16 @@ class FundTrackingController extends Controller
             'transactions' => $transactions,
             'total' => $transactions->count(),
         ]);
+        } catch (\Exception $e) {
+            \Log::error('getTransactions error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch transactions',
+                'error' => $e->getMessage(),
+                'transactions' => [],
+                'total' => 0
+            ], 500);
+        }
     }
 
     /**

@@ -161,7 +161,7 @@ const CharityDashboardPage = () => {
                 tick={{ fill: "hsl(var(--muted-foreground))" }}
               />
               <Tooltip 
-                content={<CustomChartTooltip type="donations" valuePrefix="$" />}
+                content={<CustomChartTooltip type="donations" valuePrefix="₱" />}
               />
               <Line
                 type="monotone"

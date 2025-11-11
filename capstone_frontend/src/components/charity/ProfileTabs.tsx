@@ -123,6 +123,17 @@ interface Campaign {
   deadline?: string;
 }
 
+interface Officer {
+  id: number;
+  name: string;
+  position?: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  profile_image_path?: string;
+  profile_image_url?: string;
+}
+
 interface ProfileTabsProps {
   charity: {
     id?: number;
@@ -261,6 +272,14 @@ export function ProfileTabs({
   // Donation Channel modal states (for Campaigns tab)
   const [isDonationChannelModalOpen, setIsDonationChannelModalOpen] = useState(false);
 
+  // Officers state
+  const [officers, setOfficers] = useState<Officer[]>([]);
+  const [officersLoading, setOfficersLoading] = useState(false);
+  const [officerModalOpen, setOfficerModalOpen] = useState(false);
+  const [editingOfficer, setEditingOfficer] = useState<Officer | null>(null);
+  const [officerForm, setOfficerForm] = useState<{ name: string; position: string; email: string; phone: string; bio: string; imageFile: File | null }>({ name: "", position: "", email: "", phone: "", bio: "", imageFile: null });
+  const [deleteOfficerId, setDeleteOfficerId] = useState<number | null>(null);
+
   const filteredCampaigns = useMemo(() => {
     let list = [...campaigns];
     
@@ -299,6 +318,125 @@ export function ProfileTabs({
     window.addEventListener('open-campaign-create', handler as EventListener);
     return () => window.removeEventListener('open-campaign-create', handler as EventListener);
   }, []);
+
+  // Load officers when About tab is shown or charity changes
+  useEffect(() => {
+    const cid = charity?.id;
+    if (!cid) return;
+    if (activeTab !== 'about') return;
+    const load = async () => {
+      try {
+        setOfficersLoading(true);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/charities/${cid}/officers`);
+        if (res.ok) {
+          const data = await res.json();
+          const list = (data.officers || data.data || data || []).map((o: any) => ({
+            id: o.id,
+            name: o.name,
+            position: o.position,
+            email: o.email,
+            phone: o.phone,
+            bio: o.bio,
+            profile_image_path: o.profile_image_path,
+            profile_image_url: o.profile_image_url,
+          })) as Officer[];
+          setOfficers(list);
+        }
+      } finally {
+        setOfficersLoading(false);
+      }
+    };
+    load();
+  }, [charity?.id, activeTab]);
+
+  const canManageOfficers = () => {
+    return user?.role === 'charity_admin' && user?.charity?.id && user.charity.id === charity?.id;
+  };
+
+  const openAddOfficer = () => {
+    if (!canManageOfficers()) return;
+    setEditingOfficer(null);
+    setOfficerForm({ name: "", position: "", email: "", phone: "", bio: "", imageFile: null });
+    setOfficerModalOpen(true);
+  };
+
+  const openEditOfficer = (o: Officer) => {
+    if (!canManageOfficers()) return;
+    setEditingOfficer(o);
+    setOfficerForm({ name: o.name || "", position: o.position || "", email: o.email || "", phone: o.phone || "", bio: o.bio || "", imageFile: null });
+    setOfficerModalOpen(true);
+  };
+
+  const saveOfficer = async () => {
+    try {
+      if (!canManageOfficers() || !charity?.id) return;
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      if (!token) {
+        toast.error('Please login');
+        return;
+      }
+      const form = new FormData();
+      form.append('name', officerForm.name);
+      if (officerForm.position) form.append('position', officerForm.position);
+      if (officerForm.email) form.append('email', officerForm.email);
+      if (officerForm.phone) form.append('phone', officerForm.phone);
+      if (officerForm.bio) form.append('bio', officerForm.bio);
+      if (officerForm.imageFile) form.append('profile_image', officerForm.imageFile);
+
+      let res: Response;
+      if (editingOfficer) {
+        // Laravel PUT method override for FormData
+        form.append('_method', 'PUT');
+        res = await fetch(`${import.meta.env.VITE_API_URL}/charity-officers/${editingOfficer.id}`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form,
+        });
+      } else {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/charities/${charity.id}/officers`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: form,
+        });
+      }
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ message: 'Failed to save officer' }));
+        throw new Error(errData.message || 'Failed to save officer');
+      }
+      const responseData = await res.json();
+      toast.success(responseData.message || 'Saved');
+      setOfficerModalOpen(false);
+      // refresh list
+      const listRes = await fetch(`${import.meta.env.VITE_API_URL}/charities/${charity.id}/officers`);
+      const data = await listRes.json();
+      setOfficers((data.officers || data.data || []) as Officer[]);
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to save');
+    }
+  };
+
+  const confirmDeleteOfficer = async () => {
+    if (!deleteOfficerId) return;
+    try {
+      if (!canManageOfficers()) return;
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/charity-officers/${deleteOfficerId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to delete officer');
+      toast.success('Deleted');
+      setDeleteOfficerId(null);
+      // refresh
+      if (charity?.id) {
+        const listRes = await fetch(`${import.meta.env.VITE_API_URL}/charities/${charity.id}/officers`);
+        const data = await listRes.json();
+        setOfficers((data.officers || data.data || []) as Officer[]);
+      }
+    } catch (e: any) {
+      toast.error(e?.message || 'Failed to delete');
+    }
+  };
 
   // Listen for open event from UpdatesSidebar to open modal in-place
   useEffect(() => {
@@ -753,6 +891,56 @@ export function ProfileTabs({
 
       {/* About Tab */}
       <TabsContent value="about" id="about-panel" role="tabpanel" className="space-y-6">
+        {/* Founders & Board */}
+        <Card className="hover:shadow-md transition-shadow duration-200">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Founders & Board</h2>
+              {canManageOfficers() && (
+                <Button variant="outline" size="sm" onClick={openAddOfficer}>
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            {officersLoading ? (
+              <div className="flex items-center justify-center py-6 text-muted-foreground text-sm">
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Loading officers...
+              </div>
+            ) : officers.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No officers listed.</p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {officers.map((o) => (
+                  <div key={o.id} className="flex items-center gap-3 p-3 rounded-lg border">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={(o.profile_image_url || (o.profile_image_path ? getStorageUrl(o.profile_image_path) : '')) || ''} />
+                      <AvatarFallback>{(o.name || 'OF').substring(0,2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{o.name}</p>
+                      {o.position && <p className="text-xs text-muted-foreground truncate">{o.position}</p>}
+                      {o.email && <p className="text-xs text-muted-foreground truncate">{o.email}</p>}
+                      {o.phone && <p className="text-xs text-muted-foreground truncate">{o.phone}</p>}
+                    </div>
+                    {canManageOfficers() && (
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openEditOfficer(o)} aria-label="Edit officer">
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => setDeleteOfficerId(o.id)} aria-label="Delete officer">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Mission Card */}
         {charity.mission && (
           <Card className="hover:shadow-md transition-shadow duration-200">
@@ -821,6 +1009,8 @@ export function ProfileTabs({
             </CardContent>
           </Card>
         )}
+
+        
       </TabsContent>
 
       {/* Updates Tab */}
@@ -955,7 +1145,7 @@ export function ProfileTabs({
                       <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
                         {update.likes_count > 0 && (
                           <button className="hover:underline" onClick={() => handleToggleLike(update.id)}>
-                            <Heart className="h-3.5 w-3.5 inline mr-1 fill-red-500 text-red-500" />
+                            <Heart className="h-3.5 w-3.5 fill-red-500 text-red-500" />
                             {update.likes_count} {update.likes_count === 1 ? 'like' : 'likes'}
                           </button>
                         )}
@@ -1379,6 +1569,72 @@ export function ProfileTabs({
               </div>
             </div>
           </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+
+    {/* Officer Add/Edit Modal */}
+    <Dialog open={officerModalOpen} onOpenChange={setOfficerModalOpen}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">{editingOfficer ? 'Edit Officer' : 'Add Officer'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={officerForm.imageFile ? URL.createObjectURL(officerForm.imageFile) : undefined} />
+              <AvatarFallback>OF</AvatarFallback>
+            </Avatar>
+            <div>
+              <Label htmlFor="officer_image">Profile Image</Label>
+              <Input id="officer_image" type="file" accept="image/*" onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                if (!file) { setOfficerForm({ ...officerForm, imageFile: null }); return; }
+                if (file.size > 2 * 1024 * 1024) { toast.error('Image size must be less than 2MB'); return; }
+                setOfficerForm({ ...officerForm, imageFile: file });
+              }} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="officer_name">Name</Label>
+            <Input id="officer_name" value={officerForm.name} onChange={(e) => setOfficerForm({ ...officerForm, name: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="officer_position">Position</Label>
+            <Input id="officer_position" value={officerForm.position} onChange={(e) => setOfficerForm({ ...officerForm, position: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="officer_email">Email</Label>
+              <Input id="officer_email" type="email" value={officerForm.email} onChange={(e) => setOfficerForm({ ...officerForm, email: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="officer_phone">Phone</Label>
+              <Input id="officer_phone" type="tel" value={officerForm.phone} onChange={(e) => setOfficerForm({ ...officerForm, phone: e.target.value })} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="officer_bio">Bio</Label>
+            <Textarea id="officer_bio" rows={4} value={officerForm.bio} onChange={(e) => setOfficerForm({ ...officerForm, bio: e.target.value })} />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOfficerModalOpen(false)}>Cancel</Button>
+          <Button onClick={saveOfficer} disabled={!canManageOfficers() || !officerForm.name.trim()}>Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    {/* Officer Delete Confirmation */}
+    <Dialog open={!!deleteOfficerId} onOpenChange={(open) => !open && setDeleteOfficerId(null)}>
+      <DialogContent className="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">Delete officer</DialogTitle>
+          <DialogDescription>Are you sure you want to delete this officer? This action cannot be undone.</DialogDescription>
+        </DialogHeader>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={() => setDeleteOfficerId(null)}>Cancel</Button>
+          <Button variant="destructive" onClick={confirmDeleteOfficer}>Delete</Button>
         </div>
       </DialogContent>
     </Dialog>

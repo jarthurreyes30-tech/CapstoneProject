@@ -14,7 +14,7 @@ class RefundRequest extends Model
         'user_id',
         'charity_id',
         'reason',
-        'proof_path',
+        'proof_url',
         'status',
         'charity_notes',
         'charity_response',

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertTriangle, Eye, CheckCircle, XCircle, Clock, Search, Filter, User, Building2, TrendingUp, DollarSign, Ban, Shield, FileText, Calendar, AlertCircle, Info, Image as ImageIcon, Mail } from "lucide-react";
+import { AlertTriangle, Eye, CheckCircle, XCircle, Clock, Search, Filter, User, Building2, TrendingUp, Coins, Ban, Shield, FileText, Calendar, AlertCircle, Info, Image as ImageIcon, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import axios from "axios";
@@ -395,7 +395,7 @@ export default function AdminReports() {
                 case 'user': return User;
                 case 'charity': return Building2;
                 case 'campaign': return TrendingUp;
-                case 'donation': return DollarSign;
+                case 'donation': return Coins;
                 default: return AlertTriangle;
               }
             };
@@ -521,7 +521,7 @@ export default function AdminReports() {
                   <label className="text-sm font-medium">Evidence</label>
                   <p className="text-sm mt-1">
                     <a 
-                      href={`/storage/${selectedReport.evidence_path}`} 
+                      href={`${import.meta.env.VITE_API_URL}/storage/${selectedReport.evidence_path}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
@@ -607,15 +607,19 @@ export default function AdminReports() {
                           <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
                             {selectedReport.reporter.profile_image ? (
                               <img 
-                                src={`/storage/${selectedReport.reporter.profile_image}`}
+                                src={`${import.meta.env.VITE_API_URL}/storage/${selectedReport.reporter.profile_image}`}
                                 alt={selectedReport.reporter.name}
                                 className="h-12 w-12 rounded-full object-cover border-2 border-blue-300"
+                                onError={(e) => {
+                                  console.error('Failed to load reporter image:', selectedReport.reporter.profile_image);
+                                  e.currentTarget.style.display = 'none';
+                                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                }}
                               />
-                            ) : (
-                              <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center border-2 border-blue-300">
-                                <User className="h-6 w-6 text-blue-600" />
-                              </div>
-                            )}
+                            ) : null}
+                            <div className={`h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center border-2 border-blue-300 ${selectedReport.reporter.profile_image ? 'hidden' : ''}`}>
+                              <User className="h-6 w-6 text-blue-600" />
+                            </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold truncate">{selectedReport.reporter.name}</p>
                               <p className="text-xs text-muted-foreground truncate">{selectedReport.reporter.email}</p>
@@ -632,19 +636,23 @@ export default function AdminReports() {
                               <>
                                 {(selectedReport.reported_entity.profile_image || selectedReport.reported_entity.logo_path) ? (
                                   <img 
-                                    src={`/storage/${selectedReport.reported_entity.profile_image || selectedReport.reported_entity.logo_path}`}
+                                    src={`${import.meta.env.VITE_API_URL}/storage/${selectedReport.reported_entity.profile_image || selectedReport.reported_entity.logo_path}`}
                                     alt={selectedReport.reported_entity.name}
                                     className="h-12 w-12 rounded-full object-cover border-2 border-red-300"
+                                    onError={(e) => {
+                                      console.error('Failed to load entity image:', selectedReport.reported_entity.profile_image || selectedReport.reported_entity.logo_path);
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                    }}
                                   />
-                                ) : (
-                                  <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center border-2 border-red-300">
-                                    {selectedReport.reported_entity_type === 'charity' ? (
-                                      <Building2 className="h-6 w-6 text-red-600" />
-                                    ) : (
-                                      <User className="h-6 w-6 text-red-600" />
-                                    )}
-                                  </div>
-                                )}
+                                ) : null}
+                                <div className={`h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center border-2 border-red-300 ${(selectedReport.reported_entity.profile_image || selectedReport.reported_entity.logo_path) ? 'hidden' : ''}`}>
+                                  {selectedReport.reported_entity_type === 'charity' ? (
+                                    <Building2 className="h-6 w-6 text-red-600" />
+                                  ) : (
+                                    <User className="h-6 w-6 text-red-600" />
+                                  )}
+                                </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="font-semibold truncate">{selectedReport.reported_entity.name}</p>
                                   {selectedReport.reported_entity.email && (
@@ -683,7 +691,7 @@ export default function AdminReports() {
                       <div className="border-t pt-4">
                         <p className="text-xs text-muted-foreground mb-2">Evidence Submitted</p>
                         <a 
-                          href={`/storage/${selectedReport.evidence_path}`} 
+                          href={`${import.meta.env.VITE_API_URL}/storage/${selectedReport.evidence_path}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-950/50 rounded-lg text-purple-700 dark:text-purple-300 transition-colors"

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Search, Eye, CheckCircle, XCircle, AlertCircle, Building2, Mail, Phone, MapPin, FileText, Image as ImageIcon, TrendingUp, Calendar, ExternalLink, Download, Globe, Facebook, Instagram, Twitter, Linkedin, Youtube, Users, DollarSign, Target, Clock } from "lucide-react";
+import { Search, Eye, CheckCircle, XCircle, AlertCircle, Building2, Mail, Phone, MapPin, FileText, Image as ImageIcon, TrendingUp, Calendar, ExternalLink, Download, Globe, Facebook, Instagram, Twitter, Linkedin, Youtube, Users, Coins, Target, Clock, UserCircle } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -53,6 +54,8 @@ export default function Charities() {
   const [isViewDocDialogOpen, setIsViewDocDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [officers, setOfficers] = useState<any[]>([]);
+  const [officersLoading, setOfficersLoading] = useState(false);
 
   useEffect(() => {
     fetchCharities();
@@ -78,8 +81,25 @@ export default function Charities() {
       const details = await adminService.getCharityDetails(charity.id);
       setSelectedCharity(details);
       setIsDetailDialogOpen(true);
+      // Fetch officers for this charity
+      fetchOfficers(charity.id);
     } catch (error) {
       toast.error('Failed to load charity details');
+    }
+  };
+
+  const fetchOfficers = async (charityId: number) => {
+    try {
+      setOfficersLoading(true);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/charities/${charityId}/officers`);
+      if (response.ok) {
+        const data = await response.json();
+        setOfficers(data.officers || data.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch officers:', error);
+    } finally {
+      setOfficersLoading(false);
     }
   };
 
@@ -120,8 +140,17 @@ export default function Charities() {
 
   const handleApproveDocument = async (documentId: number) => {
     try {
-      await adminService.approveDocument(documentId);
+      const response = await adminService.approveDocument(documentId);
       toast.success("Document approved successfully");
+      
+      // Check if charity was auto-approved
+      if (response.charity_auto_approved) {
+        toast.success(
+          "🎉 All documents approved! Charity has been automatically activated and approved.",
+          { duration: 5000 }
+        );
+      }
+      
       // Refresh charity details
       if (selectedCharity) {
         const details = await adminService.getCharityDetails(selectedCharity.id);
@@ -322,7 +351,7 @@ export default function Charities() {
                       )}
                       {charity.donations_count !== undefined && (
                         <div className="flex items-center gap-1 text-muted-foreground">
-                          <DollarSign className="h-3 w-3" />
+                          <Coins className="h-3 w-3" />
                           <span>{charity.donations_count}</span>
                         </div>
                       )}
@@ -619,6 +648,57 @@ export default function Charities() {
                         </p>
                       </div>
                     )}
+
+                    {/* Founders & Board Members */}
+                    <div className="p-4 border rounded-lg hover:shadow-md transition-shadow bg-card col-span-2">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-cyan-100 dark:bg-cyan-900/50 rounded-full">
+                          <UserCircle className="h-5 w-5 text-cyan-600" />
+                        </div>
+                        <Label className="font-semibold text-lg">Founders & Board Members</Label>
+                      </div>
+                      <div className="ml-11">
+                        {officersLoading ? (
+                          <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mr-2"></div>
+                            Loading officers...
+                          </div>
+                        ) : officers.length === 0 ? (
+                          <p className="text-sm text-muted-foreground py-4">No officers listed.</p>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {officers.map((officer) => (
+                              <div key={officer.id} className="flex items-center gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors">
+                                <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
+                                  <AvatarImage src={officer.profile_image_url || (officer.profile_image_path ? `${import.meta.env.VITE_API_URL}/storage/${officer.profile_image_path}` : '')} />
+                                  <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-semibold">
+                                    {(officer.name || 'OF').substring(0, 2).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm truncate">{officer.name}</p>
+                                  {officer.position && (
+                                    <p className="text-xs text-muted-foreground truncate">{officer.position}</p>
+                                  )}
+                                  {officer.email && (
+                                    <p className="text-xs text-muted-foreground truncate flex items-center gap-1 mt-0.5">
+                                      <Mail className="h-3 w-3" />
+                                      {officer.email}
+                                    </p>
+                                  )}
+                                  {officer.phone && (
+                                    <p className="text-xs text-muted-foreground truncate flex items-center gap-1 mt-0.5">
+                                      <Phone className="h-3 w-3" />
+                                      {officer.phone}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   </ScrollArea>
                 </TabsContent>
@@ -626,7 +706,61 @@ export default function Charities() {
                 <TabsContent value="documents" className="space-y-4 mt-4">
                   <ScrollArea className="h-[500px] pr-4">
                   {selectedCharity.documents && selectedCharity.documents.length > 0 ? (
-                    <div className="grid gap-3">
+                    <>
+                      {/* Document Progress Indicator */}
+                      {(() => {
+                        const totalDocs = selectedCharity.documents.length;
+                        const approvedDocs = selectedCharity.documents.filter(d => d.verification_status === 'approved').length;
+                        const pendingDocs = selectedCharity.documents.filter(d => d.verification_status === 'pending').length;
+                        const rejectedDocs = selectedCharity.documents.filter(d => d.verification_status === 'rejected').length;
+                        const allApproved = approvedDocs === totalDocs && totalDocs > 0;
+                        
+                        return (
+                          <div className={`p-4 mb-4 rounded-lg border-2 ${allApproved ? 'bg-green-50 dark:bg-green-950/30 border-green-500' : 'bg-blue-50 dark:bg-blue-950/30 border-blue-300'}`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <FileText className={`h-5 w-5 ${allApproved ? 'text-green-600' : 'text-blue-600'}`} />
+                                <h4 className="font-semibold">Document Verification Progress</h4>
+                              </div>
+                              {allApproved && (
+                                <Badge className="bg-green-600">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  All Approved
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="grid grid-cols-4 gap-3 text-sm">
+                              <div>
+                                <p className="text-muted-foreground">Total</p>
+                                <p className="font-bold text-lg">{totalDocs}</p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground">Approved</p>
+                                <p className="font-bold text-lg text-green-600">{approvedDocs}</p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground">Pending</p>
+                                <p className="font-bold text-lg text-yellow-600">{pendingDocs}</p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground">Rejected</p>
+                                <p className="font-bold text-lg text-red-600">{rejectedDocs}</p>
+                              </div>
+                            </div>
+                            <Progress 
+                              value={(approvedDocs / totalDocs) * 100} 
+                              className="h-2 mt-3"
+                            />
+                            <p className="text-xs text-muted-foreground mt-2">
+                              {allApproved 
+                                ? "✅ All documents have been verified. Charity will be auto-approved." 
+                                : `${approvedDocs} of ${totalDocs} documents approved`
+                              }
+                            </p>
+                          </div>
+                        );
+                      })()}
+                      <div className="grid gap-3">
                       {selectedCharity.documents.map((doc, index) => (
                         <motion.div
                           key={doc.id}
@@ -711,6 +845,7 @@ export default function Charities() {
                         </motion.div>
                       ))}
                     </div>
+                    </> // Added this closing tag
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />

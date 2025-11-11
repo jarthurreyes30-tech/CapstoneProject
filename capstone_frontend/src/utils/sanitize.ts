@@ -118,16 +118,10 @@ export const containsXSS = (content: string): boolean => {
  * Safe component for rendering user-generated HTML
  * Usage: <SafeHTML html={userContent} />
  */
-export const SafeHTML: React.FC<{ html: string; className?: string }> = ({ 
-  html, 
-  className 
-}) => {
+export const SafeHTML: React.FC<{ html: string; className?: string }> = ({ html, className }) => {
   const sanitized = sanitizeHTML(html);
-  
-  return (
-    <div 
-      className={className}
-      dangerouslySetInnerHTML={{ __html: sanitized }} 
-    />
-  );
+  return React.createElement('div', {
+    className,
+    dangerouslySetInnerHTML: { __html: sanitized },
+  });
 };

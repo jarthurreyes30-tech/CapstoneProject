@@ -276,7 +276,7 @@ export default function DonorReports() {
                 <div>
                   <p className="text-sm font-medium">Evidence:</p>
                   <a 
-                    href={`/storage/${report.evidence_path}`} 
+                    href={`${import.meta.env.VITE_API_URL}/storage/${report.evidence_path}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline text-sm"

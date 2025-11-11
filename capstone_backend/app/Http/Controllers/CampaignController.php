@@ -37,6 +37,52 @@ class CampaignController extends Controller
         return $charity->campaigns()->latest()->paginate(12);
     }
 
+    /**
+     * Get public list of all campaigns (for public campaign directory)
+     */
+    public function publicIndex(Request $r){
+        $query = Campaign::where('status', 'published')
+            ->with(['charity:id,name,logo_path,description']);
+        
+        // Optional filters
+        if ($r->has('campaign_type')) {
+            $query->where('campaign_type', $r->campaign_type);
+        }
+        
+        if ($r->has('region')) {
+            $query->where('region', $r->region);
+        }
+        
+        if ($r->has('search')) {
+            $search = $r->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Sort options
+        $sortBy = $r->get('sort', 'latest');
+        switch($sortBy) {
+            case 'popular':
+                $query->orderByDesc('donors_count');
+                break;
+            case 'ending_soon':
+                $query->whereNotNull('deadline_at')
+                      ->where('deadline_at', '>', now())
+                      ->orderBy('deadline_at', 'asc');
+                break;
+            case 'almost_funded':
+                $query->whereColumn('total_donations_received', '>=', 'target_amount')
+                      ->orderByDesc('total_donations_received');
+                break;
+            default: // latest
+                $query->latest();
+        }
+        
+        return $query->paginate(12);
+    }
+
     public function index(Request $r, Charity $charity){
         // If authenticated user owns the charity, show all campaigns
         // display_status is automatically appended by the Campaign model accessor
@@ -88,6 +134,7 @@ class CampaignController extends Controller
                 'city' => 'required|string|max:255',
                 'barangay' => 'required|string|max:255',
                 'target_amount' => 'nullable|numeric|min:0',
+                'requires_target_amount' => 'nullable|boolean',
                 'deadline_at' => 'nullable|date|after:today',
                 'status' => 'in:draft,published,paused,closed,archived',
                 'donation_type' => 'required|in:one_time,recurring',
@@ -103,6 +150,13 @@ class CampaignController extends Controller
                 'recurrence_end_date' => 'nullable|date|after:recurrence_start_date',
                 'auto_publish' => 'nullable|boolean',
             ]);
+
+            // Normalize target amount based on requires_target_amount flag
+            if (array_key_exists('requires_target_amount', $data)) {
+                if (!$data['requires_target_amount']) {
+                    $data['target_amount'] = null;
+                }
+            }
 
             // Map 'outcome' to 'expected_outcome' if provided
             if (isset($data['outcome'])) {
@@ -232,6 +286,7 @@ class CampaignController extends Controller
             'city' => 'nullable|string|max:255',
             'barangay' => 'nullable|string|max:255',
             'target_amount' => 'nullable|numeric|min:0',
+            'requires_target_amount' => 'nullable|boolean',
             'deadline_at' => 'nullable|date',
             'status' => 'sometimes|in:draft,published,paused,closed,archived',
             // donation_type is NOT editable after creation - removed from validation
@@ -247,6 +302,13 @@ class CampaignController extends Controller
             'recurrence_end_date' => 'nullable|date|after:recurrence_start_date',
             'auto_publish' => 'nullable|boolean',
         ]);
+
+        // Normalize target amount based on requires_target_amount flag on update
+        if (array_key_exists('requires_target_amount', $data)) {
+            if (!$data['requires_target_amount']) {
+                $data['target_amount'] = null;
+            }
+        }
 
         // Map 'outcome' to 'expected_outcome' if provided
         if (isset($data['outcome'])) {
