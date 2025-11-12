@@ -14,8 +14,25 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // Core data
+            CategorySeeder::class,
             UsersSeeder::class,
             DemoDataSeeder::class,
+            
+            // Test data with comprehensive scenarios
+            TestDataSeeder::class,
+            
+            // Content and activity data
+            CharityPostSeeder::class,
+            CampaignUpdateSeeder::class,
+            
+            // Analytics and demo data
+            AnalyticsDemoSeeder::class,
+            
+            // Milestones and logs
+            DonorMilestoneSeeder::class,
+            ActivityLogSeeder::class,
+            FundUsageSeeder::class,
         ]);
     }
 }

@@ -675,19 +675,20 @@ export default function ReportsAnalytics() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden" style={{ scrollbarGutter: 'stable both-edges' }}>
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container px-4 py-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-foreground mb-2">Reports & Analytics</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Reports & Analytics</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Track donation performance, campaign effectiveness, and generate transparency reports
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-row flex-nowrap items-center gap-2 sm:gap-3 w-full lg:w-auto justify-start lg:justify-end overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] min-w-max">
               <Button
+                className="h-10 shrink-0 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap"
                 onClick={async () => {
                   try {
                     const token = getAuthToken();
@@ -724,17 +725,24 @@ export default function ReportsAnalytics() {
                     toast.error(error.message || 'Failed to download campaign analytics');
                   }
                 }}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                <Download className="mr-2 h-4 w-4" />
-                Download Analytics (PDF)
+                <div className="flex items-center justify-center gap-2">
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:inline">Download Analytics (PDF)</span>
+                  <span className="sm:hidden">Download PDF</span>
+                </div>
               </Button>
               <Select value={timeframe} onValueChange={setTimeframe}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="h-10 w-[160px] sm:w-[180px] shrink-0 text-sm">
                   <Calendar className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent 
+                  position="popper" 
+                  side="bottom" 
+                  align="start" 
+                  className="w-56 max-w-[95vw] z-[60]"
+                >
                   <SelectItem value="week">This Week</SelectItem>
                   <SelectItem value="month">This Month</SelectItem>
                   <SelectItem value="quarter">This Quarter</SelectItem>
@@ -749,20 +757,20 @@ export default function ReportsAnalytics() {
       {/* Main Tabs */}
       <Tabs defaultValue="donations" className="w-full">
         <div className="border-b bg-background/95">
-          <div className="container px-4">
-            <TabsList className="bg-transparent p-0 h-auto" role="tablist">
-              <div className="flex items-center gap-4">
+          <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <TabsList className="!block !bg-transparent !p-0 !rounded-none !justify-start h-auto w-full overflow-x-auto whitespace-nowrap px-2 [-ms-overflow-style:none] [scrollbar-width:none]" role="tablist">
+              <div className="inline-flex min-w-max items-center gap-2 sm:gap-4">
                 <TabsTrigger 
                   value="donations" 
                   role="tab" 
-                  className="rounded-none border-b-2 border-transparent px-4 py-3 text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent"
+                  className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                 >
                   Donation Reports
                 </TabsTrigger>
                 <TabsTrigger 
                   value="campaigns" 
                   role="tab" 
-                  className="rounded-none border-b-2 border-transparent px-4 py-3 text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent"
+                  className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                 >
                   Campaign Analytics
                 </TabsTrigger>
@@ -775,7 +783,7 @@ export default function ReportsAnalytics() {
         <TabsContent value="donations" role="tabpanel" className="mt-0">
 
       {/* Main Content */}
-      <div className="container px-4 py-6">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Content (2 cols) */}
           <div className="lg:col-span-2 space-y-6">
@@ -1438,13 +1446,13 @@ export default function ReportsAnalytics() {
     {/* Campaign Analytics Tabs */}
     <Tabs defaultValue="overview" className="w-full">
       <div className="w-full mb-4">
-        <TabsList className="bg-transparent p-0" role="tablist">
-          <div className="flex items-center gap-4">
-            <TabsTrigger value="overview" role="tab" className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground">Campaign Overview</TabsTrigger>
-            <TabsTrigger value="type-insights" role="tab" className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground">Type Analysis</TabsTrigger>
-            <TabsTrigger value="distribution" role="tab" className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground">Geographic Insights</TabsTrigger>
-            <TabsTrigger value="trends" role="tab" className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground">Trends & Timing</TabsTrigger>
-            <TabsTrigger value="completed" role="tab" className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground">Completed Campaigns</TabsTrigger>
+        <TabsList className="!block !bg-transparent !p-0 !rounded-none !justify-start w-full overflow-x-auto whitespace-nowrap px-2 [-ms-overflow-style:none] [scrollbar-width:none]" role="tablist">
+          <div className="inline-flex min-w-max items-center gap-2 sm:gap-4">
+            <TabsTrigger value="overview" role="tab" className="rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground shrink-0">Campaign Overview</TabsTrigger>
+            <TabsTrigger value="type-insights" role="tab" className="rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground shrink-0">Type Analysis</TabsTrigger>
+            <TabsTrigger value="distribution" role="tab" className="rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground shrink-0">Geographic Insights</TabsTrigger>
+            <TabsTrigger value="trends" role="tab" className="rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground shrink-0">Trends & Timing</TabsTrigger>
+            <TabsTrigger value="completed" role="tab" className="rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground shrink-0">Completed Campaigns</TabsTrigger>
           </div>
         </TabsList>
       </div>

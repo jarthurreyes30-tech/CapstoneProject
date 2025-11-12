@@ -8,6 +8,7 @@ import { buildApiUrl, getAuthToken } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { CustomChartTooltip } from '@/components/ui/enhanced-tooltip';
+import { DonorAnalyticsSkeleton } from "@/components/ui/skeleton/DonorDashboardSkeleton";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d', '#ffc658'];
 
@@ -62,26 +63,12 @@ export default function DonorAnalytics() {
   };
 
   if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
-        <div className="space-y-2">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-4 w-96" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-        </div>
-        <Skeleton className="h-96 rounded-lg" />
-      </div>
-    );
+    return <DonorAnalyticsSkeleton />;
   }
 
   if (!donorData) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10">
         <Card>
           <CardContent className="pt-6 text-center">
             <Heart className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -95,12 +82,19 @@ export default function DonorAnalytics() {
   const stats = donorData.statistics;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Your Giving Impact</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">Track your donations and see the difference you're making</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Your Giving Impact
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">
+            Track your donations and see the difference you're making
+          </p>
+        </div>
+
+        <div className="space-y-8">
 
       {/* Insight Card */}
       <Card className="border-primary/20 bg-gradient-to-r from-green-500/10 to-background">
@@ -111,19 +105,19 @@ export default function DonorAnalytics() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg">{generateInsight()}</p>
+          <p className="text-base sm:text-lg">{generateInsight()}</p>
         </CardContent>
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Donated</CardTitle>
             <Coins className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₱{stats.total_donated.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold">₱{stats.total_donated.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Lifetime contributions</p>
           </CardContent>
         </Card>
@@ -134,7 +128,7 @@ export default function DonorAnalytics() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total_donations}</div>
+            <div className="text-xl sm:text-2xl font-bold">{stats.total_donations}</div>
             <p className="text-xs text-muted-foreground">Completed donations</p>
           </CardContent>
         </Card>
@@ -145,7 +139,7 @@ export default function DonorAnalytics() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₱{stats.avg_donation.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold">₱{stats.avg_donation.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Per donation</p>
           </CardContent>
         </Card>
@@ -156,18 +150,20 @@ export default function DonorAnalytics() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₱{stats.pending_amount.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold">₱{stats.pending_amount.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Awaiting verification</p>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="breakdown" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="breakdown">By Type</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
-          <TabsTrigger value="charities">Top Charities</TabsTrigger>
-          <TabsTrigger value="recent">Recent Donations</TabsTrigger>
+      <Tabs defaultValue="breakdown" className="space-y-3 sm:space-y-4">
+        <TabsList className="!block !bg-transparent !p-0 !rounded-none !justify-start h-auto w-full overflow-x-auto whitespace-nowrap px-2 [-ms-overflow-style:none] [scrollbar-width:none]" role="tablist">
+          <div className="inline-flex min-w-max items-center gap-2 sm:gap-4">
+            <TabsTrigger value="breakdown" role="tab" className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0">By Type</TabsTrigger>
+            <TabsTrigger value="timeline" role="tab" className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0">Timeline</TabsTrigger>
+            <TabsTrigger value="charities" role="tab" className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0">Top Charities</TabsTrigger>
+            <TabsTrigger value="recent" role="tab" className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0">Recent Donations</TabsTrigger>
+          </div>
         </TabsList>
 
         {/* Donations by Type */}
@@ -180,7 +176,7 @@ export default function DonorAnalytics() {
             <CardContent>
               {donorData.by_type.length > 0 ? (
                 <>
-                  <ResponsiveContainer width="100%" height={350}>
+                  <ResponsiveContainer width="100%" height={260}>
                     <PieChart>
                       <Pie
                         data={donorData.by_type}
@@ -188,7 +184,7 @@ export default function DonorAnalytics() {
                         nameKey="label"
                         cx="50%"
                         cy="50%"
-                        outerRadius={120}
+                        outerRadius={100}
                         label={({ label, total }) => `${label}: ₱${total.toLocaleString()}`}
                       >
                         {donorData.by_type.map((entry: any, index: number) => (
@@ -200,7 +196,7 @@ export default function DonorAnalytics() {
                     </PieChart>
                   </ResponsiveContainer>
 
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="mt-6 grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-2">
                     {donorData.by_type.map((type: any, index: number) => (
                       <div key={type.type} className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
@@ -238,7 +234,7 @@ export default function DonorAnalytics() {
             <CardContent>
               {donorData.monthly_trend.length > 0 ? (
                 <>
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={donorData.monthly_trend}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
@@ -251,11 +247,11 @@ export default function DonorAnalytics() {
                     </LineChart>
                   </ResponsiveContainer>
 
-                  <div className="mt-6 grid grid-cols-2 md:grid-cols-6 gap-3">
+                  <div className="mt-6 grid gap-2 sm:gap-3 lg:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
                     {donorData.monthly_trend.slice(-6).map((month: any) => (
                       <div key={month.month} className="p-3 rounded-lg border text-center">
                         <p className="text-xs text-muted-foreground">{month.month}</p>
-                        <p className="text-lg font-bold">₱{month.total.toLocaleString()}</p>
+                        <p className="text-base font-bold">₱{month.total.toLocaleString()}</p>
                         <p className="text-xs text-muted-foreground">{month.count} donation{month.count > 1 ? 's' : ''}</p>
                       </div>
                     ))}
@@ -307,11 +303,11 @@ export default function DonorAnalytics() {
 
                   return topCharities.length > 0 ? (
                     <>
-                      <ResponsiveContainer width="100%" height={300}>
+                      <ResponsiveContainer width="100%" height={280}>
                         <BarChart data={topCharities} layout="vertical">
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis type="number" />
-                          <YAxis dataKey="name" type="category" width={150} />
+                          <YAxis dataKey="name" type="category" width={120} />
                           <Tooltip content={<CustomChartTooltip type="donations" valuePrefix="₱" />} />
                           <Bar dataKey="total" fill="#0088FE" name="Total Donated" />
                         </BarChart>
@@ -330,7 +326,7 @@ export default function DonorAnalytics() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-lg font-bold">₱{charity.total.toLocaleString()}</p>
+                              <p className="text-base sm:text-lg font-bold">₱{charity.total.toLocaleString()}</p>
                               <p className="text-sm text-muted-foreground">{charity.count} donation{charity.count > 1 ? 's' : ''}</p>
                             </div>
                           </div>
@@ -389,7 +385,7 @@ export default function DonorAnalytics() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xl font-bold">₱{donation.amount.toLocaleString()}</p>
+                        <p className="text-lg sm:text-xl font-bold">₱{donation.amount.toLocaleString()}</p>
                         {donation.campaign?.type && (
                           <p className="text-xs text-muted-foreground capitalize">
                             {donation.campaign.type.replace('_', ' ')}
@@ -451,6 +447,8 @@ export default function DonorAnalytics() {
           </CardContent>
         </Card>
       )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -228,7 +228,7 @@ export const CampaignCard = ({
 
   return (
     <>
-    <Card className="group h-full flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 border-border/40 bg-card">
+    <Card className="group h-full flex flex-col overflow-hidden rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300 border-border/40 bg-card">
       {/* Banner Image Section */}
       <div className="relative h-44 md:h-48 overflow-hidden bg-muted">
         <img
@@ -263,12 +263,12 @@ export const CampaignCard = ({
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="h-8 w-8 bg-card hover:bg-card/90 shadow-lg backdrop-blur-sm border border-border"
+                  className="h-7 w-7 sm:h-8 sm:w-8 bg-card hover:bg-card/90 shadow-lg backdrop-blur-sm border border-border"
                 >
-                  <MoreVertical className="h-4 w-4 text-card-foreground" />
+                  <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-card-foreground" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 z-[60]">
                 <DropdownMenuItem onClick={() => onEdit?.(campaign.id)}>
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Campaign
@@ -311,15 +311,15 @@ export const CampaignCard = ({
       </div>
 
       {/* Content Section */}
-      <CardHeader className="pb-3 min-h-[120px]">
-        <h3 className="text-xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+      <CardHeader className="pb-3 pt-4 px-4 sm:px-5 lg:px-6 min-h-[120px]">
+        <h3 className="text-lg sm:text-xl font-bold text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
           {campaign.title}
         </h3>
         <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
           {campaign.description}
         </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 sm:px-5 lg:px-6 pb-4">
         <div className="grid grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-3">
@@ -380,32 +380,32 @@ export const CampaignCard = ({
         )}
       </CardContent>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 pt-2 mt-auto">
+      {/* Action Buttons */}
+      <CardFooter className="grid grid-cols-2 gap-2 px-4 sm:px-5 lg:px-6 pt-3 pb-4 mt-auto">
           {viewMode === "admin" ? (
             <>
               <Button
                 variant="outline"
-                className="flex-1 h-10"
+                className="h-9 sm:h-10 min-w-0 px-3 sm:px-4 text-xs sm:text-sm"
                 onClick={() => navigate(`/campaigns/${campaign.id}`)}
               >
-                <Eye className="mr-2 h-4 w-4" />
-                View Campaign
+                <Eye className="mr-1 h-4 w-4 flex-shrink-0" />
+                <span className="whitespace-nowrap">View Campaign</span>
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-10"
+                className="h-9 sm:h-10 min-w-0 px-3 sm:px-4 text-xs sm:text-sm"
                 onClick={() => setShowDonationsModal(true)}
               >
-                <Heart className="mr-2 h-4 w-4" />
-                View Donations
+                <Heart className="mr-1 h-4 w-4 flex-shrink-0" />
+                <span className="whitespace-nowrap">View Donations</span>
               </Button>
             </>
           ) : (
             <>
               <Button
                 variant="default"
-                className="flex-1 h-10 bg-primary hover:bg-primary/90"
+                className="flex-1 h-9 sm:h-10 bg-primary hover:bg-primary/90"
                 onClick={() => navigate(`/donor/campaigns/${campaign.id}/donate`)}
               >
                 <Heart className="mr-2 h-4 w-4" />
@@ -413,7 +413,7 @@ export const CampaignCard = ({
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-10"
+                className="flex-1 h-9 sm:h-10"
                 onClick={() => navigate(`/campaigns/${campaign.id}`)}
               >
                 <Eye className="mr-2 h-4 w-4" />
@@ -435,7 +435,7 @@ export const CampaignCard = ({
               </Button>
             </>
           )}
-        </div>
+      </CardFooter>
     </Card>
 
     {/* Donations Modal */}

@@ -249,7 +249,7 @@ export default function AccountSettings() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Account Settings</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">Account Settings</h1>
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
                 Manage your account details, preferences, and security
               </p>
@@ -261,29 +261,33 @@ export default function AccountSettings() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <Tabs defaultValue="security" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto">
-            <TabsTrigger value="security">Security</TabsTrigger>
-            <TabsTrigger value="preferences">Preferences</TabsTrigger>
-            <TabsTrigger value="danger">Danger Zone</TabsTrigger>
+          <TabsList className="flex w-full h-auto gap-2 bg-transparent p-0">
+            <TabsTrigger value="security" className="flex-1 whitespace-nowrap text-xs sm:text-sm py-2 px-3">Security</TabsTrigger>
+            <TabsTrigger value="preferences" className="flex-1 whitespace-nowrap text-xs sm:text-sm py-2 px-3">Preferences</TabsTrigger>
+            <TabsTrigger value="danger" className="flex-1 whitespace-nowrap text-xs sm:text-sm py-2 px-3">Danger Zone</TabsTrigger>
           </TabsList>
 
           {/* Security Tab */}
           <TabsContent value="security" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>Manage your password</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Password</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Manage your password</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between p-3 sm:p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Change Password</p>
                     <p className="text-sm text-muted-foreground">
                       Update your password regularly to keep your account secure
                     </p>
                   </div>
-                  <Button onClick={() => setIsPasswordDialogOpen(true)}>
-                    <Lock className="mr-2 h-4 w-4" />
+                  <Button
+                    size="sm"
+                    className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm"
+                    onClick={() => setIsPasswordDialogOpen(true)}
+                  >
+                    <Lock className="mr-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Change Password
                   </Button>
                 </div>
@@ -292,18 +296,18 @@ export default function AccountSettings() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Two-Factor Authentication</CardTitle>
-                <CardDescription>Add an extra layer of security</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Two-Factor Authentication</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Add an extra layer of security</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center justify-between p-3 sm:p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">2FA Protection</p>
                     <p className="text-sm text-muted-foreground">
                       Add an additional security layer to your account
                     </p>
                   </div>
-                  <Button variant="outline" onClick={() => window.location.href = '/donor/settings/2fa'}>
+                  <Button size="sm" variant="outline" onClick={() => window.location.href = '/donor/settings/2fa'}>
                     Manage 2FA
                   </Button>
                 </div>
@@ -315,12 +319,12 @@ export default function AccountSettings() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Active Sessions</CardTitle>
-                <CardDescription>Manage your active sessions</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Active Sessions</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Manage your active sessions</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center justify-between p-2 sm:p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Current Device</p>
                       <p className="text-sm text-muted-foreground">Last active: Now</p>
@@ -338,15 +342,15 @@ export default function AccountSettings() {
           <TabsContent value="preferences" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Notification Settings</CardTitle>
-                <CardDescription>Manage how you receive updates</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Notification Settings</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Manage how you receive updates</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
                       <Bell className="h-4 w-4 text-muted-foreground" />
-                      <Label htmlFor="email-updates">Email Updates</Label>
+                      <Label htmlFor="email-updates" className="text-sm sm:text-base">Email Updates</Label>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Receive email notifications about your donations
@@ -361,9 +365,9 @@ export default function AccountSettings() {
 
                 <Separator />
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="campaign-alerts">New Campaign Alerts</Label>
+                    <Label htmlFor="campaign-alerts" className="text-sm sm:text-base">New Campaign Alerts</Label>
                     <p className="text-sm text-muted-foreground">
                       Get notified when charities you follow launch new campaigns
                     </p>
@@ -377,9 +381,9 @@ export default function AccountSettings() {
 
                 <Separator />
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="charity-updates">Charity Updates</Label>
+                    <Label htmlFor="charity-updates" className="text-sm sm:text-base">Charity Updates</Label>
                     <p className="text-sm text-muted-foreground">
                       Receive updates from charities you've donated to
                     </p>
@@ -393,9 +397,9 @@ export default function AccountSettings() {
 
                 <Separator />
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
-                    <Label htmlFor="monthly-report">Monthly Impact Report</Label>
+                    <Label htmlFor="monthly-report" className="text-sm sm:text-base">Monthly Impact Report</Label>
                     <p className="text-sm text-muted-foreground">
                       Get a monthly summary of your donation impact
                     </p>
@@ -411,11 +415,11 @@ export default function AccountSettings() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Theme Preference</CardTitle>
-                <CardDescription>Choose your display theme</CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Theme Preference</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Choose your display theme</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <Palette className="h-4 w-4 text-muted-foreground" />
                   <div className="flex gap-2">
                     <Button
@@ -460,13 +464,13 @@ export default function AccountSettings() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Data Portability</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg sm:text-xl">Data Portability</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
                   Download all your personal data in machine-readable format
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
                   <p className="text-sm font-medium mb-2">Your export will include:</p>
                   <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                     <li>Profile information</li>
@@ -483,6 +487,7 @@ export default function AccountSettings() {
                 </p>
 
                 <Button 
+                  size="sm"
                   variant="outline" 
                   onClick={handleDownloadData}
                   disabled={downloadingData}
@@ -496,13 +501,13 @@ export default function AccountSettings() {
 
             <Card className="border-yellow-600">
               <CardHeader>
-                <CardTitle className="text-yellow-600">Deactivate Account</CardTitle>
+                <CardTitle className="text-lg sm:text-xl text-yellow-600">Deactivate Account</CardTitle>
                 <CardDescription>
                   Temporarily deactivate your account - you can reactivate it later
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-950 rounded-lg border border-yellow-200 dark:border-yellow-800">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 bg-yellow-50 dark:bg-yellow-950 rounded-lg border border-yellow-200 dark:border-yellow-800">
                   <p className="text-sm font-medium mb-2">Deactivation will:</p>
                   <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                     <li>Hide your profile from public view</li>
@@ -517,6 +522,7 @@ export default function AccountSettings() {
                 </p>
 
                 <Button 
+                  size="sm"
                   variant="outline"
                   onClick={() => setIsDeactivateDialogOpen(true)}
                   className="w-full border-yellow-600 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950"
@@ -529,13 +535,13 @@ export default function AccountSettings() {
 
             <Card className="border-destructive">
               <CardHeader>
-                <CardTitle className="text-destructive">Delete Account</CardTitle>
+                <CardTitle className="text-lg sm:text-xl text-destructive">Delete Account</CardTitle>
                 <CardDescription>
                   Permanently delete your account and all associated data
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-destructive/10 rounded-lg">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 bg-destructive/10 rounded-lg">
                   <p className="text-sm font-medium mb-2">This action will:</p>
                   <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                     <li>Permanently delete your account</li>
@@ -546,6 +552,7 @@ export default function AccountSettings() {
                 </div>
 
                 <Button 
+                  size="sm"
                   variant="destructive" 
                   onClick={() => setIsDeleteDialogOpen(true)}
                   className="w-full"

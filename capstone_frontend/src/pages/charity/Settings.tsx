@@ -59,8 +59,38 @@ export default function Settings() {
       {/* Main Content with Sidebar */}
       <div className="container px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Mobile Nav */}
+          <Card className="lg:hidden h-fit">
+            <nav className="p-2">
+              <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none]">
+                {sections.map((section) => {
+                  const Icon = section.icon;
+                  const isActive = activeSection === section.id;
+                  const isDanger = section.id === "danger";
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={cn(
+                        "shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-full border text-xs sm:text-sm",
+                        isActive
+                          ? isDanger
+                            ? "bg-destructive/10 text-destructive border-destructive/30"
+                            : "bg-primary/10 text-primary border-primary/30"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground border-border"
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{section.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+          </Card>
+
           {/* Sidebar Navigation */}
-          <Card className="lg:col-span-1 h-fit sticky top-20">
+          <Card className="hidden lg:block lg:col-span-1 h-fit lg:sticky lg:top-20">
             <nav className="p-2 space-y-1">
               {sections.map((section) => {
                 const Icon = section.icon;
@@ -96,4 +126,4 @@ export default function Settings() {
       </div>
     </div>
   );
-}
+} 

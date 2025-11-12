@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Heart, Moon, Sun, User, LogOut, UserCircle, History, TrendingUp, Bell, AlertTriangle, Settings, HelpCircle, BarChart3, Target } from "lucide-react";
+import { Heart, Moon, Sun, User, LogOut, UserCircle, History, TrendingUp, Bell, AlertTriangle, Settings, HelpCircle, BarChart3, Target, Menu, X, Home, Newspaper, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ export const DonorNavbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -47,19 +48,33 @@ export const DonorNavbar = () => {
   };
 
   return (
+    <>
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/donor')}>
-            <Heart className="h-8 w-8 text-primary fill-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              CharityHub
-            </span>
+          {/* Logo & Mobile Menu Button */}
+          <div className="flex items-center gap-3">
+            {/* Burger Menu Button - Mobile/Tablet */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+            
+            {/* Logo */}
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/donor')}>
+              <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-primary fill-primary" />
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                CharityHub
+              </span>
+            </div>
           </div>
 
-          {/* Main Navigation - Website Style */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Main Navigation - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             <NavLink
               to="/donor"
               end
@@ -124,7 +139,7 @@ export const DonorNavbar = () => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Notifications */}
             <Button
               variant="ghost"
@@ -143,9 +158,10 @@ export const DonorNavbar = () => {
               )}
             </Button>
             {/* Donate Button */}
-            <Button onClick={() => navigate('/donor/donate')} size="sm" className="hidden md:flex">
+            <Button onClick={() => navigate('/donor/donate')} size="sm" className="hidden sm:flex">
               <Heart className="mr-2 h-4 w-4" />
-              Donate Now
+              <span className="hidden md:inline">Donate Now</span>
+              <span className="md:hidden">Donate</span>
             </Button>
 
             {/* Theme Toggle */}
@@ -207,26 +223,6 @@ export const DonorNavbar = () => {
                 
                 <DropdownMenuSeparator />
                 
-                {/* Mobile-only navigation items */}
-                <div className="md:hidden">
-                  <DropdownMenuItem onClick={() => navigate('/donor/campaigns/browse')} className="cursor-pointer hover:bg-muted transition-colors py-2">
-                    <Target className="mr-3 h-4 w-4" />
-                    Browse Campaigns
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/donor/campaign-analytics')} className="cursor-pointer hover:bg-muted transition-colors py-2">
-                    <BarChart3 className="mr-3 h-4 w-4" />
-                    Analytics
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/donor/history')} className="cursor-pointer hover:bg-muted transition-colors py-2">
-                    <History className="mr-3 h-4 w-4" />
-                    Donation History
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/donor/transparency')} className="cursor-pointer hover:bg-muted transition-colors py-2">
-                    <TrendingUp className="mr-3 h-4 w-4" />
-                    Fund Transparency
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                </div>
                 
                 {/* Logout */}
                 <DropdownMenuItem 
@@ -242,5 +238,200 @@ export const DonorNavbar = () => {
         </div>
       </div>
     </nav>
+
+    {/* Mobile/Tablet Slide-in Menu */}
+    {mobileMenuOpen && (
+      <div className="fixed inset-0 z-40 lg:hidden">
+        {/* Overlay */}
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm" 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        
+        {/* Slide-in Menu */}
+        <div className="fixed inset-y-0 left-0 w-64 sm:w-72 bg-background border-r shadow-xl overflow-y-auto">
+          <div className="p-4">
+            {/* Menu Header */}
+            <div className="flex items-center justify-between mb-6 pb-4 border-b">
+              <div className="flex items-center gap-2">
+                <Heart className="h-6 w-6 text-primary fill-primary" />
+                <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  Menu
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="space-y-1">
+              <NavLink
+                to="/donor"
+                end
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <Home className="h-5 w-5" />
+                <span>Home</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/news-feed"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <Newspaper className="h-5 w-5" />
+                <span>News Feed</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/campaigns/browse"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <Target className="h-5 w-5" />
+                <span>Campaigns</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/charities"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <Building2 className="h-5 w-5" />
+                <span>Charities</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/campaign-analytics"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <BarChart3 className="h-5 w-5" />
+                <span>Analytics</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/history"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <History className="h-5 w-5" />
+                <span>My Donations</span>
+              </NavLink>
+
+              <div className="my-4 border-t" />
+
+              {/* Account Section */}
+              <NavLink
+                to="/donor/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <UserCircle className="h-5 w-5" />
+                <span>My Profile</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <Settings className="h-5 w-5" />
+                <span>Settings</span>
+              </NavLink>
+              
+              <NavLink
+                to="/donor/help"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`
+                }
+              >
+                <HelpCircle className="h-5 w-5" />
+                <span>Help Center</span>
+              </NavLink>
+            </nav>
+
+            {/* User Info & Logout */}
+            <div className="mt-6 pt-4 border-t">
+              <div className="px-3 py-2 mb-2">
+                <p className="text-sm font-medium">{user?.name || 'Donor'}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </div>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+              >
+                <LogOut className="mr-3 h-5 w-5" />
+                <span>Logout</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };

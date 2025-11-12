@@ -311,17 +311,8 @@ export default function CharityUpdates() {
     }
   };
 
-  const handleToggleThread = (updateId: number) => {
-    setExpandedThreads((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(updateId)) {
-        newSet.delete(updateId);
-      } else {
-        newSet.add(updateId);
-      }
-      return newSet;
-    });
-  };
+  // Threading removed - this function is no longer needed
+  // const handleToggleThread = (updateId: number) => { ... };
 
   const handleToggleComments = async (updateId: number) => {
     const isExpanded = expandedComments.has(updateId);
@@ -485,7 +476,7 @@ export default function CharityUpdates() {
     return (
       <div key={update.id}>
         <Card className="mb-4 bg-card border-border/40 hover:shadow-lg transition-all duration-200 hover:border-border/60">
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6 pt-4 sm:pt-6">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3 flex-1">
                 <Avatar 
@@ -571,7 +562,7 @@ export default function CharityUpdates() {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4 pt-0">
+          <CardContent className="space-y-3 sm:space-y-4 pt-0 px-4 sm:px-6 pb-4 sm:pb-6">
             <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">
               {update.content}
             </p>
@@ -646,38 +637,38 @@ export default function CharityUpdates() {
             )}
             
             <Separator className="!mt-3" />
-            <div className="flex items-center gap-2 !mt-2">
+            <div className="flex items-center gap-1 sm:gap-2 !mt-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex-1 h-10 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
+                className="flex-1 h-9 sm:h-10 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
                 onClick={() => handleToggleLike(update.id)}
               >
                 <Heart
-                  className={`mr-2 h-4 w-4 transition-all ${update.is_liked ? "fill-red-500 text-red-500 scale-110" : "hover:scale-110"}`}
+                  className={`mr-1 sm:mr-2 h-4 w-4 transition-all ${update.is_liked ? "fill-red-500 text-red-500 scale-110" : "hover:scale-110"}`}
                 />
-                <span className="font-medium">Like</span>
+                <span className="font-medium text-xs sm:text-sm">Like</span>
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex-1 h-10 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                className="flex-1 h-9 sm:h-10 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
                 onClick={() => handleToggleComments(update.id)}
               >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                <span className="font-medium">Comment</span>
+                <MessageCircle className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="font-medium text-xs sm:text-sm">Comment</span>
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex-1 h-10 hover:bg-green-50 dark:hover:bg-green-950/30 hover:text-green-600 dark:hover:text-green-400 transition-all duration-200"
+                className="flex-1 h-9 sm:h-10 hover:bg-green-50 dark:hover:bg-green-950/30 hover:text-green-600 dark:hover:text-green-400 transition-all duration-200"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.origin + '/charity/updates/' + update.id);
                   toast.success('Link copied to clipboard!');
                 }}
               >
-                <Share2 className="mr-2 h-4 w-4" />
-                <span className="font-medium">Share</span>
+                <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="font-medium text-xs sm:text-sm">Share</span>
               </Button>
               
             </div>
@@ -921,7 +912,7 @@ export default function CharityUpdates() {
     <div className="flex min-h-screen bg-background">
        {/* Left Panel - Charity Identity (Sticky) */}
       <aside 
-        className="hidden lg:block w-[320px] fixed left-0 top-16 bottom-0 bg-[#f8f9fb] dark:bg-[#0e1a32] border-r border-border/40 overflow-y-auto"
+        className="hidden xl:block w-[280px] fixed left-0 top-16 bottom-0 bg-[#f8f9fb] dark:bg-[#0e1a32] border-r border-border/40 overflow-y-auto"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: 'transparent transparent'
@@ -1061,36 +1052,97 @@ export default function CharityUpdates() {
       </aside>
 
       {/* Center Column - Scrollable Feed */}
-      <main className="flex-1 lg:ml-[320px] lg:mr-[340px] min-h-screen">
-        <div className="w-full px-8 py-8">
-          {/* Page Header */}
-          <div className="mb-8">
+      <main className="flex-1 xl:ml-[280px] xl:mr-[300px] min-h-screen">
+        <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Mobile/Tablet Header with Stats */}
+          <div className="xl:hidden mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">Updates</h1>
+                <p className="text-sm text-muted-foreground">Share your impact with supporters</p>
+              </div>
+              <Button onClick={() => setIsCreateModalOpen(true)} className="h-10 w-full sm:w-auto">
+                <Plus className="mr-2 h-4 w-4" />
+                Post Update
+              </Button>
+            </div>
+            {/* Compact Stats Grid for Mobile/Tablet */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+              <Card className="bg-card border-border/40">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-2 rounded-lg bg-green-500/10 mb-2">
+                      <Users className="h-4 w-4 text-green-600 dark:text-green-500" />
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{charityData?.followers_count || 0}</p>
+                    <p className="text-xs text-muted-foreground">Followers</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-card border-border/40">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-2 rounded-lg bg-primary/10 mb-2">
+                      <FileText className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{updates.length}</p>
+                    <p className="text-xs text-muted-foreground">Posts</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-card border-border/40">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-2 rounded-lg bg-red-500/10 mb-2">
+                      <Heart className="h-4 w-4 text-red-500" />
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{updates.reduce((sum, u) => sum + u.likes_count, 0)}</p>
+                    <p className="text-xs text-muted-foreground">Likes</p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-card border-border/40">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-2 rounded-lg bg-blue-500/10 mb-2">
+                      <MessageCircle className="h-4 w-4 text-blue-500" />
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold text-foreground">{updates.reduce((sum, u) => sum + u.comments_count, 0)}</p>
+                    <p className="text-xs text-muted-foreground">Comments</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Desktop-only Page Header */}
+          <div className="hidden xl:block mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">Updates</h1>
             <p className="text-muted-foreground">Share your impact with supporters</p>
           </div>
 
           {/* Feed Content */}
           {updates.length === 0 ? (
-            <Card className="p-12 text-center border-dashed bg-card">
+            <Card className="p-6 sm:p-8 md:p-12 text-center border-dashed bg-card">
               <div className="flex flex-col items-center">
-                <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <MessageCircle className="h-10 w-10 text-primary" />
+                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <MessageCircle className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
                 </div>
-                <h3 className="font-semibold text-xl mb-2 text-foreground">
+                <h3 className="font-semibold text-lg sm:text-xl mb-2 text-foreground">
                   No updates yet
                 </h3>
-                <p className="text-muted-foreground text-sm mb-6 max-w-md">
+                <p className="text-muted-foreground text-sm mb-6 max-w-md px-4">
                   🕊️ Share your first story and inspire your supporters!
                 </p>
-                <Button onClick={() => setIsCreateModalOpen(true)} size="lg">
-                  <Plus className="mr-2 h-5 w-5" />
+                <Button onClick={() => setIsCreateModalOpen(true)} className="h-10 sm:h-11">
+                  <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Post an Update
                 </Button>
               </div>
             </Card>
           ) : (
             <div className="space-y-4">
-              {updates.map((update) => renderUpdate(update, 0))}
+              {updates.map((update) => renderUpdate(update))}
             </div>
           )}
         </div>
@@ -1098,8 +1150,8 @@ export default function CharityUpdates() {
 
       {/* Right Panel - Context/Engagement (Sticky) */}
       <aside
-        className={`hidden lg:block fixed right-0 top-16 bottom-0 bg-[#f8f9fb] dark:bg-[#0e1a32] border-l border-border/40 overflow-y-auto transition-all duration-300 ${
-          isRightPanelCollapsed ? "w-12" : "w-[340px]"
+        className={`hidden xl:block fixed right-0 top-16 bottom-0 bg-[#f8f9fb] dark:bg-[#0e1a32] border-l border-border/40 overflow-y-auto transition-all duration-300 ${
+          isRightPanelCollapsed ? "w-12" : "w-[300px]"
         }`}
         style={{
           scrollbarWidth: 'thin',
@@ -1260,13 +1312,13 @@ export default function CharityUpdates() {
         )}
       </aside>
 
-      {/* Floating Action Button */}
+      {/* Floating Action Button - Mobile/Tablet Only */}
       <Button
         size="lg"
-        className="fixed bottom-8 right-8 h-16 w-16 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 z-50 bg-primary hover:bg-primary/90"
+        className="xl:hidden fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-14 w-14 sm:h-16 sm:w-16 rounded-full shadow-2xl hover:shadow-3xl transition-all hover:scale-110 z-50 bg-primary hover:bg-primary/90"
         onClick={() => setIsCreateModalOpen(true)}
       >
-        <Plus className="h-7 w-7" />
+        <Plus className="h-6 w-6 sm:h-7 sm:w-7" />
       </Button>
 
       {/* Modals */}

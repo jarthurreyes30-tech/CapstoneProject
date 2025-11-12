@@ -62,22 +62,22 @@ export default function PublicAbout() {
       <PublicNavbar />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-16">
-        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-          <Badge className="mb-4">About CharityHub</Badge>
-          <h1 className="text-5xl font-bold mb-6">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-16 sm:pt-20 lg:pt-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16 text-center">
+          <Badge className="mb-3 sm:mb-4 text-xs sm:text-sm">About CharityHub</Badge>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2">
             Connecting Generous Hearts with Worthy Causes
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
             CharityHub is a transparent donation platform that connects donors with verified charities,
             ensuring your contributions make a real difference.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate('/auth/register')}>
-              <Heart className="mr-2 h-5 w-5" />
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Button size="lg" onClick={() => navigate('/auth/register')} className="w-full sm:w-auto h-11 sm:h-12">
+              <Heart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Start Donating
             </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/charities')}>
+            <Button size="lg" variant="outline" onClick={() => navigate('/charities')} className="w-full sm:w-auto h-11 sm:h-12">
               Browse Charities
             </Button>
           </div>
@@ -85,18 +85,18 @@ export default function PublicAbout() {
       </div>
 
       {/* Stats Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <Card key={index}>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <stat.icon className="h-6 w-6 text-primary" />
+              <CardContent className="pt-5 sm:pt-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                    <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-3xl font-bold">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    <p className="text-2xl sm:text-3xl font-bold">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
                   </div>
                 </div>
               </CardContent>
@@ -106,12 +106,12 @@ export default function PublicAbout() {
       </div>
 
       {/* Mission & Vision */}
-      <div className="bg-muted/50 py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-2">
+      <div className="bg-muted/50 py-12 sm:py-14 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Our Mission</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl">Our Mission</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
@@ -124,7 +124,7 @@ export default function PublicAbout() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Our Vision</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl">Our Vision</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
@@ -138,15 +138,15 @@ export default function PublicAbout() {
       </div>
 
       {/* Features */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Why Choose CharityHub?</h2>
-          <p className="text-xl text-muted-foreground">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
+        <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-2">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Why Choose CharityHub?</h2>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
             We make charitable giving transparent, secure, and impactful
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
             <Card key={index} className="text-center">
               <CardHeader>
@@ -164,16 +164,16 @@ export default function PublicAbout() {
       </div>
 
       {/* Our Values */}
-      <div className="bg-muted/50 py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Core Values</h2>
-            <p className="text-xl text-muted-foreground">
+      <div className="bg-muted/50 py-12 sm:py-14 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-2">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Our Core Values</h2>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
               The principles that guide everything we do
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
             {values.map((value, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -192,40 +192,40 @@ export default function PublicAbout() {
       </div>
 
       {/* How It Works */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">How It Works</h2>
-          <p className="text-xl text-muted-foreground">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
+        <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-2">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">How It Works</h2>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
             Simple steps to make a difference
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
-          <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mb-4">
+        <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          <div className="text-center px-2">
+            <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4">
               1
             </div>
-            <h3 className="text-xl font-bold mb-2">Browse Charities</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">Browse Charities</h3>
             <p className="text-muted-foreground">
               Explore our list of verified charities and their active campaigns
             </p>
           </div>
 
-          <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mb-4">
+          <div className="text-center px-2">
+            <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4">
               2
             </div>
-            <h3 className="text-xl font-bold mb-2">Make a Donation</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">Make a Donation</h3>
             <p className="text-muted-foreground">
               Choose your amount and payment method. Upload proof of payment
             </p>
           </div>
 
-          <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mb-4">
+          <div className="text-center px-2">
+            <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4">
               3
             </div>
-            <h3 className="text-xl font-bold mb-2">Track Impact</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2">Track Impact</h3>
             <p className="text-muted-foreground">
               See exactly how your donation is being used through transparency reports
             </p>
@@ -234,13 +234,13 @@ export default function PublicAbout() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-primary text-primary-foreground py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
-          <p className="text-xl mb-8 opacity-90">
+      <div className="bg-primary text-primary-foreground py-12 sm:py-14 lg:py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Ready to Make a Difference?</h2>
+          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 opacity-90">
             Join our community of donors and start supporting verified charities today
           </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate('/auth/register')}>
+          <Button size="lg" variant="secondary" onClick={() => navigate('/auth/register')} className="h-11 sm:h-12">
             Get Started
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>

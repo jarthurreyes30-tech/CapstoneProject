@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { authService } from "@/services/auth";
 import CharityCard from "@/components/donor/CharityCard";
+import { DonorCardGridSkeleton } from "@/components/ui/skeleton/DonorDashboardSkeleton";
 
 interface Charity {
   id: number;
@@ -134,12 +135,14 @@ export default function BrowseCharities() {
 
 
   return (
-    <div>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Browse Charities</h1>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Browse Charities
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">
             Discover verified organizations making a difference
           </p>
 
@@ -232,7 +235,7 @@ export default function BrowseCharities() {
 
         {/* Charities Grid */}
         {loading ? (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
               <Card key={i} className="animate-pulse">
                 <div className="h-56 bg-muted rounded-t-lg"></div>
@@ -245,7 +248,7 @@ export default function BrowseCharities() {
             ))}
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+          <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
             {charities.map((charity) => (
               <CharityCard
                 key={charity.id}

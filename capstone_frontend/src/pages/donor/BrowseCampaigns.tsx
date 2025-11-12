@@ -10,6 +10,7 @@ import { Search, Filter, X, Target, ChevronDown, ChevronUp, Loader2 } from 'luci
 import { buildApiUrl, getAuthToken } from '@/lib/api';
 import { toast } from 'sonner';
 import { CampaignCard, type Campaign as CharityCampaign } from '@/components/charity/CampaignCard';
+import { DonorCardGridSkeleton } from "@/components/ui/skeleton/DonorDashboardSkeleton";
 
 interface FilterOptions {
   types: Array<{ value: string; label: string }>;
@@ -157,41 +158,23 @@ export default function BrowseCampaigns() {
   });
 
   if (loading && !campaigns.length) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <Skeleton className="h-10 w-64 mb-4" />
-            <Skeleton className="h-6 w-96" />
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <Skeleton key={i} className="h-96" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <DonorCardGridSkeleton />;
   }
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="flex items-center gap-3 mb-4">
-            <Target className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl md:text-5xl font-bold">Browse Campaigns</h1>
-          </div>
-          <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl">
-            Discover meaningful causes and make an impact today.{' '}
-            {pagination && <span className="font-semibold text-primary">{pagination.total} campaigns</span>} available.
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Browse Campaigns
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">
+            Discover meaningful causes and make an impact today{pagination && <span className="font-semibold"> - {pagination.total} campaigns available</span>}
           </p>
 
           {/* Search Bar */}
-          <div className="flex gap-2 max-w-2xl">
+          <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -222,10 +205,9 @@ export default function BrowseCampaigns() {
             </Button>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Main Content */}
+        <div className="space-y-6">
         {/* Filters Panel */}
         {showFilters && filterOptions && (
           <Card className="shadow-lg">
@@ -447,7 +429,7 @@ export default function BrowseCampaigns() {
         ) : campaigns.length > 0 ? (
           <>
             {/* Campaigns Grid - Using CampaignCard component */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {campaigns.map((campaign) => (
                 <CampaignCard
                   key={campaign.id}
@@ -503,6 +485,7 @@ export default function BrowseCampaigns() {
             </CardContent>
           </Card>
         )}
+        </div>
       </div>
     </div>
   );

@@ -79,20 +79,22 @@ export default function ExportMenu({
         variant="default" 
         onClick={downloadAuditReport} 
         disabled={disabled || exporting}
-        className="bg-emerald-600 hover:bg-emerald-700"
+        className="bg-emerald-600 hover:bg-emerald-700 h-10 shrink-0 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap"
       >
         <Download className="mr-2 h-4 w-4" />
-        {exporting ? 'Downloading...' : 'Download Audit Report'}
+        <span className="sm:hidden">Download</span>
+        <span className="hidden sm:inline">Download Audit Report</span>
       </Button>
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" disabled={disabled || exporting}>
+          <Button variant="outline" size="sm" disabled={disabled || exporting} className="h-10 shrink-0 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
             <Download className="mr-2 h-4 w-4" />
-            Export & Actions
+            <span className="sm:hidden">Export</span>
+            <span className="hidden sm:inline">Export & Actions</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" side="bottom" className="w-56 max-w-[95vw] z-[60]">
           <DropdownMenuLabel>Export Options</DropdownMenuLabel>
           <DropdownMenuItem onClick={downloadCSV}>
             <FileSpreadsheet className="h-4 w-4 mr-2" />

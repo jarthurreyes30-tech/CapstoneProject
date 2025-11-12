@@ -286,7 +286,7 @@ export default function DonorProfilePage() {
       {/* Profile Header - Matching Charity Profile */}
       <div className="relative bg-gradient-to-br from-orange-50/30 via-pink-50/20 to-blue-50/30 dark:from-orange-950/10 dark:via-pink-950/10 dark:to-blue-950/10">
         {/* Back Button */}
-        <div className="container mx-auto px-4 lg:px-8 pt-4">
+        <div className="container mx-auto px-4 lg:px-8 pt-4 hidden lg:block">
           <Button
             variant="ghost"
             size="sm"
@@ -337,11 +337,11 @@ export default function DonorProfilePage() {
 
         {/* Profile Content */}
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="relative -mt-24 lg:-mt-28">
-            <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4 lg:gap-6 lg:pl-6">
+          <div className="relative -mt-20 sm:-mt-24 lg:-mt-28">
+            <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center lg:justify-start gap-4 lg:gap-6 lg:pl-6">
               {/* Avatar */}
               <Avatar
-                className={`h-32 w-32 lg:h-40 lg:w-40 ring-6 ring-white dark:ring-gray-900 shadow-2xl transition-transform duration-200 hover:scale-105 bg-white dark:bg-gray-800 lg:ml-8 ${isOwner ? 'cursor-pointer' : ''}`}
+                className={`h-28 w-28 sm:h-32 sm:w-32 lg:h-40 lg:w-40 ring-6 ring-white dark:ring-gray-900 shadow-2xl transition-transform duration-200 hover:scale-105 bg-white dark:bg-gray-800 mx-auto lg:mx-0 lg:ml-8 ${isOwner ? 'cursor-pointer' : ''}`}
                 onClick={() => isOwner && openImageModal('profile')}
               >
                 {profile.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.name} />}
@@ -354,19 +354,19 @@ export default function DonorProfilePage() {
               <div className="flex-1 pb-2 w-full">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                   {/* Left: Name & Info */}
-                  <div className="flex-1 pt-0">
-                    <h1 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-tight mb-1">
+                  <div className="flex-1 pt-0 text-center lg:text-left">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-tight mb-1">
                       {profile.name}
                     </h1>
                     
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <div className="flex items-center justify-center lg:justify-start gap-2 flex-wrap mb-1">
                       <Badge className="bg-gray-700 hover:bg-gray-600 text-white border-0 px-3 py-1.5 text-sm font-medium">
                         Donor Account
                       </Badge>
                     </div>
                     
                     {profile.location && (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center justify-center lg:justify-start gap-2 text-sm text-muted-foreground">
                         <MapPin className="h-4 w-4 text-primary" />
                         <span>{profile.location}</span>
                       </div>
@@ -375,7 +375,7 @@ export default function DonorProfilePage() {
 
                   {/* Right: Action Buttons */}
                   {isOwner ? (
-                    <div className="flex items-center gap-2 pt-2">
+                    <div className="flex items-center justify-center lg:justify-end gap-2 pt-2 flex-wrap">
                       <Button
                         onClick={openEditDialog}
                         className="bg-[#F2A024] hover:bg-[#E89015] text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-150"
@@ -398,12 +398,12 @@ export default function DonorProfilePage() {
                           <Button 
                             variant="outline" 
                             size="icon"
-                            className="shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+                            className="h-9 w-9 sm:h-10 sm:w-10 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
                           >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="center" side="bottom" sideOffset={6} className="w-44 sm:w-48 max-w-[90vw] z-[60]">
                           <DropdownMenuItem onClick={openEditDialog}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Profile
@@ -416,7 +416,7 @@ export default function DonorProfilePage() {
                       </DropdownMenu>
                     </div>
                   ) : (
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex items-center justify-center lg:justify-end gap-2 pt-2 flex-wrap">
                       <Button 
                         variant="outline" 
                         onClick={handleShare}
@@ -463,13 +463,13 @@ export default function DonorProfilePage() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="w-full mb-4">
-            <TabsList className="bg-transparent p-0" role="tablist">
-              <div className="flex items-center gap-4">
+            <TabsList className="!block !bg-transparent !p-0 !rounded-none !justify-start h-auto w-full overflow-x-auto whitespace-nowrap px-2 [-ms-overflow-style:none] [scrollbar-width:none]" role="tablist">
+              <div className="inline-flex min-w-max items-center gap-2 sm:gap-4">
                 <TabsTrigger
                   value="about"
                   role="tab"
                   aria-controls="about-panel"
-                  className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                 >
                   About
                 </TabsTrigger>
@@ -477,7 +477,7 @@ export default function DonorProfilePage() {
                   value="milestones"
                   role="tab"
                   aria-controls="milestones-panel"
-                  className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                 >
                   Milestones
                 </TabsTrigger>
@@ -485,7 +485,7 @@ export default function DonorProfilePage() {
                   value="activity"
                   role="tab"
                   aria-controls="activity-panel"
-                  className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                 >
                   Recent Activity
                 </TabsTrigger>
@@ -494,7 +494,7 @@ export default function DonorProfilePage() {
                     value="saved"
                     role="tab"
                     aria-controls="saved-panel"
-                    className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-none border-b-2 border-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-muted-foreground hover:text-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent shrink-0"
                   >
                     Saved
                   </TabsTrigger>

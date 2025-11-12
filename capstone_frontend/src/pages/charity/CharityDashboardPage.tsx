@@ -51,8 +51,8 @@ const CharityDashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="p-lg space-y-lg">
-        <div className="grid gap-lg md:grid-cols-2 lg:grid-cols-4">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10 space-y-6">
+        <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-sm">
@@ -80,7 +80,7 @@ const CharityDashboardPage = () => {
 
   if (error || !data) {
     return (
-      <div className="p-lg">
+      <div className="p-4 sm:p-6 lg:p-8">
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-2xl">
             <AlertCircle className="h-12 w-12 text-destructive mb-md" />
@@ -121,9 +121,9 @@ const CharityDashboardPage = () => {
   ];
 
   return (
-    <div className="p-lg space-y-lg">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
       {/* KPI Cards */}
-      <div className="grid gap-lg md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {kpiCards.map((kpi) => (
           <Card key={kpi.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-sm">
@@ -175,7 +175,7 @@ const CharityDashboardPage = () => {
         </CardContent>
       </Card>
 
-      <div className="grid gap-lg lg:grid-cols-2">
+      <div className="grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 lg:grid-cols-2">
         {/* Recent Activity */}
         <Card>
           <CardHeader>

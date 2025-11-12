@@ -170,7 +170,7 @@ All colors MUST be HSL.
 
   /* Auth card styling */
   .auth-card {
-    @apply bg-card border border-border rounded-xl shadow-lg p-8;
+    @apply bg-card border border-border rounded-xl shadow-lg p-5 sm:p-6 md:p-8;
   }
 
   /* Gradient backgrounds */

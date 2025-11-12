@@ -224,17 +224,6 @@ export default function CharityCard({ charity, isFollowing = false, onFollowTogg
           </TooltipProvider>
         )}
 
-        {/* View Profile Overlay */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <div className="text-center text-white">
-            <Eye className="w-12 h-12 mx-auto mb-2" />
-            <p className="text-lg font-semibold">View Profile</p>
-          </div>
-        </div>
       </div>
 
       {/* Card Header - Flexible Content Area */}

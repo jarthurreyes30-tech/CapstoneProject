@@ -212,12 +212,13 @@ export default function CharityDocuments() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Document Management</h1>
-          <p className="text-muted-foreground">Manage your organization's legal documents</p>
-        </div>
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold">Document Management</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Manage your organization's legal documents</p>
+          </div>
         <Dialog open={isUploadOpen} onOpenChange={(open) => {
           setIsUploadOpen(open);
           if (!open) resetUploadForm();
@@ -331,49 +332,49 @@ export default function CharityDocuments() {
 
       {/* Document Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-blue-200">
+        <Card className="border-blue-500/40 bg-blue-500/15">
           <CardHeader className="pb-3">
             <CardDescription className="text-xs font-medium">Total Documents</CardDescription>
-            <CardTitle className="text-3xl font-bold text-blue-600">{documents.length}</CardTitle>
+            <CardTitle className="text-3xl font-bold text-blue-400">{documents.length}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground">All submitted documents</p>
           </CardContent>
         </Card>
 
-        <Card className="border-green-300 bg-green-50/50">
+        <Card className="border-green-500/40 bg-green-500/15">
           <CardHeader className="pb-3">
             <CardDescription className="text-xs font-medium">✅ Approved</CardDescription>
-            <CardTitle className="text-3xl font-bold text-green-600">
+            <CardTitle className="text-3xl font-bold text-green-400">
               {documents.filter(doc => doc.verification_status === 'approved').length}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-green-700 font-medium">Verified by admin</p>
+            <p className="text-xs text-green-300 font-medium">Verified by admin</p>
           </CardContent>
         </Card>
 
-        <Card className="border-yellow-300 bg-yellow-50/50">
+        <Card className="border-amber-500/40 bg-amber-500/15">
           <CardHeader className="pb-3">
             <CardDescription className="text-xs font-medium">⏳ Pending Review</CardDescription>
-            <CardTitle className="text-3xl font-bold text-yellow-600">
+            <CardTitle className="text-3xl font-bold text-amber-400">
               {documents.filter(doc => doc.verification_status === 'pending').length}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-yellow-700 font-medium">Awaiting admin review</p>
+            <p className="text-xs text-amber-300 font-medium">Awaiting admin review</p>
           </CardContent>
         </Card>
 
-        <Card className="border-red-300 bg-red-50/50">
+        <Card className="border-red-500/40 bg-red-500/15">
           <CardHeader className="pb-3">
             <CardDescription className="text-xs font-medium">❌ Needs Resubmission</CardDescription>
-            <CardTitle className="text-3xl font-bold text-red-600">
+            <CardTitle className="text-3xl font-bold text-red-400">
               {documents.filter(doc => doc.verification_status === 'rejected').length}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-red-700 font-medium">Requires resubmission</p>
+            <p className="text-xs text-red-300 font-medium">Requires resubmission</p>
           </CardContent>
         </Card>
       </div>
@@ -382,9 +383,9 @@ export default function CharityDocuments() {
       <div className="space-y-4">
         {/* Rejected Documents Alert */}
         {documents.filter(doc => doc.verification_status === 'rejected').length > 0 && (
-          <Alert className="border-red-300 bg-red-50">
+          <Alert className="border-red-500/30 bg-red-500/10">
             <XCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
+            <AlertDescription className="text-red-300">
               <strong>Action Required:</strong> You have {documents.filter(doc => doc.verification_status === 'rejected').length} rejected document(s). 
               Please review the rejection reasons and re-upload corrected versions.
             </AlertDescription>
@@ -393,9 +394,9 @@ export default function CharityDocuments() {
         
         {/* Pending Review Alert */}
         {documents.filter(doc => doc.verification_status === 'pending').length > 0 && (
-          <Alert className="border-blue-200 bg-blue-50">
+          <Alert className="border-blue-500/30 bg-blue-500/10">
             <Clock className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800">
+            <AlertDescription className="text-blue-300">
               <strong>Under Review:</strong> You have {documents.filter(doc => doc.verification_status === 'pending').length} document(s) 
               pending admin review.
             </AlertDescription>
@@ -405,18 +406,18 @@ export default function CharityDocuments() {
         {documentStatus && (
           <>
             {documentStatus.expired_count > 0 && (
-              <Alert className="border-red-200 bg-red-50">
+              <Alert className="border-red-500/30 bg-red-500/10">
                 <AlertTriangle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-800">
+                <AlertDescription className="text-red-300">
                   <strong>Urgent:</strong> You have {documentStatus.expired_count} expired document(s). 
                   Please renew them immediately to maintain your verification status.
                 </AlertDescription>
               </Alert>
             )}
             {documentStatus.expiring_soon_count > 0 && (
-              <Alert className="border-yellow-200 bg-yellow-50">
+              <Alert className="border-amber-500/30 bg-amber-500/10">
                 <Clock className="h-4 w-4 text-yellow-600" />
-                <AlertDescription className="text-yellow-800">
+                <AlertDescription className="text-amber-300">
                   <strong>Reminder:</strong> You have {documentStatus.expiring_soon_count} document(s) 
                   expiring within 30 days. Please prepare renewals.
                 </AlertDescription>
@@ -429,14 +430,14 @@ export default function CharityDocuments() {
       {/* Filters & Search Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <CardTitle className="text-xl">Submission History</CardTitle>
               <CardDescription>View and manage all your submitted documents</CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
               <select 
-                className="px-3 py-2 border rounded-md text-sm"
+                className="w-full sm:w-[200px] px-3 py-2 rounded-md text-sm bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
               >
@@ -456,22 +457,22 @@ export default function CharityDocuments() {
           .filter(doc => filterStatus === 'all' || doc.verification_status === filterStatus)
           .map((document) => (
           <Card key={document.id} className={
-            document.verification_status === 'rejected' ? "border-red-300 bg-red-50/50" :
-            document.verification_status === 'pending' ? "border-yellow-300 bg-yellow-50/50" :
-            document.is_expired ? "border-red-200" : 
-            document.is_expiring_soon ? "border-yellow-200" : ""
+            document.verification_status === 'rejected' ? "border-red-500/30 bg-red-500/10" :
+            document.verification_status === 'pending' ? "border-amber-500/30 bg-amber-500/10" :
+            document.is_expired ? "border-red-500/30 bg-red-500/10" : 
+            document.is_expiring_soon ? "border-amber-500/30 bg-amber-500/10" : ""
           }>
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2 flex-1">
-                  <FileText className="h-5 w-5 text-blue-600" />
+                  <FileText className="h-5 w-5 text-blue-400" />
                   <div className="flex-1">
                     <CardTitle className="text-base">{formatDocType(document.doc_type)}</CardTitle>
                     <CardDescription className="text-xs">
                       Uploaded {new Date(document.uploaded_at).toLocaleDateString()}
                     </CardDescription>
                     {document.verified_at && document.verification_status === 'approved' && (
-                      <CardDescription className="text-xs text-green-600 font-medium">
+                      <CardDescription className="text-xs text-green-300 font-medium">
                         ✓ Verified on {new Date(document.verified_at).toLocaleDateString()}
                       </CardDescription>
                     )}
@@ -485,29 +486,29 @@ export default function CharityDocuments() {
             <CardContent className="space-y-3">
               {/* Verification Status Info */}
               {document.verification_status === 'rejected' && document.rejection_reason && (
-                <Alert className="border-red-300 bg-red-50">
+                <Alert className="border-red-500/30 bg-red-500/10">
                   <AlertTriangle className="h-4 w-4 text-red-600" />
-                  <AlertDescription className="text-xs text-red-900">
+                  <AlertDescription className="text-xs text-red-300">
                     <strong className="block mb-1">❌ Rejected - Action Required</strong>
-                    <span className="text-red-700">{document.rejection_reason}</span>
+                    <span className="text-red-300">{document.rejection_reason}</span>
                   </AlertDescription>
                 </Alert>
               )}
               {document.verification_status === 'pending' && (
-                <Alert className="border-yellow-300 bg-yellow-50">
+                <Alert className="border-amber-500/30 bg-amber-500/10">
                   <Clock className="h-4 w-4 text-yellow-600" />
-                  <AlertDescription className="text-xs text-yellow-900">
+                  <AlertDescription className="text-xs text-amber-300">
                     <strong>⏳ Awaiting Admin Review</strong>
-                    <p className="text-yellow-700 mt-1">Your document is in the review queue.</p>
+                    <p className="text-amber-300 mt-1">Your document is in the review queue.</p>
                   </AlertDescription>
                 </Alert>
               )}
               {document.verification_status === 'approved' && (
-                <Alert className="border-green-300 bg-green-50">
+                <Alert className="border-green-500/30 bg-green-500/10">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-xs text-green-900">
+                  <AlertDescription className="text-xs text-green-300">
                     <strong>✅ Approved & Verified</strong>
-                    <p className="text-green-700 mt-1">This document has been verified by admin.</p>
+                    <p className="text-green-300 mt-1">This document has been verified by admin.</p>
                   </AlertDescription>
                 </Alert>
               )}
@@ -518,7 +519,7 @@ export default function CharityDocuments() {
                     <span>Expires: {new Date(document.expiry_date).toLocaleDateString()}</span>
                   </div>
                   {document.days_until_expiry !== undefined && (
-                    <p className={`text-xs mt-1 ${document.is_expired ? 'text-red-600' : document.is_expiring_soon ? 'text-yellow-600' : 'text-green-600'}`}>
+                    <p className={`text-xs mt-1 ${document.is_expired ? 'text-red-400' : document.is_expiring_soon ? 'text-amber-400' : 'text-green-400'}`}>
                       {document.is_expired 
                         ? `Expired ${Math.abs(document.days_until_expiry)} days ago`
                         : `${document.days_until_expiry} days remaining`
@@ -603,11 +604,11 @@ export default function CharityDocuments() {
               return (
                 <div key={type} className="flex items-center gap-2">
                   {hasDocument ? (
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-green-400" />
                   ) : (
                     <Clock className="h-4 w-4 text-gray-400" />
                   )}
-                  <span className={`text-sm ${hasDocument ? 'text-green-800' : 'text-muted-foreground'}`}>
+                  <span className={`text-sm ${hasDocument ? 'text-green-300' : 'text-muted-foreground'}`}>
                     {formatDocType(type)}
                   </span>
                 </div>
@@ -616,6 +617,7 @@ export default function CharityDocuments() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

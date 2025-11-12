@@ -67,11 +67,11 @@ export function ProfileStats({
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mb-8">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-3 sm:mt-4 mb-6 sm:mb-8">
       {statItems.map((item, index) => (
         <Card
           key={index}
-          className={`relative overflow-hidden bg-background/40 border-border/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-150 cursor-pointer rounded-2xl ring-1 ${item.ring} hover:ring-2 active:scale-[0.98]`}
+          className={`relative overflow-hidden bg-background/40 border-border/40 hover:shadow-lg hover:-translate-y-1 transition-all duration-150 cursor-pointer rounded-xl sm:rounded-2xl ring-1 ${item.ring} hover:ring-2 active:scale-[0.98]`}
           onClick={item.onClick}
           role="button"
           tabIndex={0}
@@ -79,17 +79,17 @@ export function ProfileStats({
         >
           {/* Gradient tint */}
           <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.gradient}`} />
-          <CardContent className="relative p-5 h-24 lg:h-28 flex items-center justify-between">
+          <CardContent className="relative p-3 sm:p-4 lg:p-5 h-20 sm:h-24 lg:h-28 flex items-center justify-between">
             {/* Left: value + label */}
-            <div>
-              <p className={`text-2xl lg:text-3xl font-extrabold ${item.valueColor}`}>{item.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{item.label}</p>
+            <div className="min-w-0 flex-1 pr-2">
+              <p className={`text-lg sm:text-2xl lg:text-3xl font-extrabold ${item.valueColor} truncate`}>{item.value}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 truncate">{item.label}</p>
             </div>
 
             {/* Right: decorative icon bubble to balance space */}
             <div className="shrink-0">
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
-                <item.icon className={`h-5 w-5 lg:h-6 lg:w-6 ${item.iconColor}`} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
+                <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 ${item.iconColor}`} />
               </div>
             </div>
           </CardContent>

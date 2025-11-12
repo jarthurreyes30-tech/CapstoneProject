@@ -145,36 +145,38 @@ export default function DonationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden" style={{ scrollbarGutter: 'stable both-edges' }}>
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex items-center justify-between px-4 py-6">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Donations</h1>
-            <p className="text-muted-foreground">
-              Review, verify, and manage incoming donations
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/charity/refunds')}
-              className="gap-2"
-            >
-              <FileText className="h-4 w-4" />
-              Refunds
-            </Button>
-            <ExportMenu 
-              onExport={handleExport}
-              selectedCount={selectedRows.length}
-              onBulkAction={handleBulkAction}
-            />
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">Donations</h1>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">Review, verify, and manage incoming donations</p>
+            </div>
+            <div className="flex flex-row flex-nowrap items-center gap-2 sm:gap-3 w-full sm:w-auto justify-start sm:justify-end overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none] min-w-max">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/charity/refunds')}
+                className="gap-2 h-10 shrink-0 px-3 sm:px-4 text-xs sm:text-sm whitespace-nowrap"
+              >
+                <FileText className="h-4 w-4" />
+                Refunds
+              </Button>
+              <div className="shrink-0 inline-flex">
+                <ExportMenu 
+                  onExport={handleExport}
+                  selectedCount={selectedRows.length}
+                  onBulkAction={handleBulkAction}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container px-4 py-6">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left: Filters + Table (3 columns) */}
           <div className="lg:col-span-3 space-y-6">

@@ -285,24 +285,20 @@ export default function DonationHistory() {
   };
 
   return (
-    <div>
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Heart className="h-6 w-6 text-primary" />
-            </div>
-            <h1 className="text-4xl font-bold">My Donations</h1>
-          </div>
-          <p className="text-xl text-muted-foreground">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+        {/* Header */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            My Donations
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">
             View and track your donation history and impact
           </p>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12 space-y-6">
+        {/* Main Content */}
+        <div className="space-y-6">
         {/* Stats */}
         <div className="grid gap-4 md:grid-cols-4">
           <Card className="border-l-4 border-l-green-500">
@@ -430,12 +426,12 @@ export default function DonationHistory() {
         {/* Donations Table */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4">
               <div>
                 <CardTitle>All Donations</CardTitle>
                 <CardDescription>Your complete donation history</CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1 max-w-sm">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -445,28 +441,32 @@ export default function DonationHistory() {
                     className="pl-9"
                   />
                 </div>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-[180px]">
-                    <Filter className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="scheduled">Scheduled</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => handleExport('csv')} disabled={exporting}>
-                    <FileSpreadsheet className="mr-2 h-4 w-4" />
-                    CSV
-                  </Button>
-                  <Button variant="outline" onClick={() => handleExport('pdf')} disabled={exporting}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    PDF
-                  </Button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-full sm:w-[180px]">
+                      <Filter className="mr-2 h-4 w-4" />
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => handleExport('csv')} disabled={exporting} className="flex-1 sm:flex-initial">
+                      <FileSpreadsheet className="mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">CSV</span>
+                      <span className="sm:hidden">Export CSV</span>
+                    </Button>
+                    <Button variant="outline" onClick={() => handleExport('pdf')} disabled={exporting} className="flex-1 sm:flex-initial">
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">PDF</span>
+                      <span className="sm:hidden">Export PDF</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -630,6 +630,7 @@ export default function DonationHistory() {
             </p>
           </Card>
         )}
+      </div>
       </div>
 
       {/* Donation Details Dialog - Comprehensive Information */}

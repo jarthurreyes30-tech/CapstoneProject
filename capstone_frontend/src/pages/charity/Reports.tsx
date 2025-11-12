@@ -154,168 +154,172 @@ export default function CharityReports() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Reports</h1>
-          <p className="text-muted-foreground">Submit and track reports related to donors, campaigns, or users</p>
-        </div>
-        <Dialog open={isCreateOpen} onOpenChange={(open) => { setIsCreateOpen(open); if (open && donors.length === 0) initDonorsList(); }}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Submit Report
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Submit a Report</DialogTitle>
-              <DialogDescription>
-                Report suspicious activities, fraud, or inappropriate content
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="text-sm font-medium">Donor</label>
-                  <Select
-                    value={formData.donor_id}
-                    onValueChange={(val) => setFormData({ ...formData, donor_id: val })}
-                  >
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Reports</h1>
+            <p className="text-muted-foreground">Submit and track reports related to donors, campaigns, or users</p>
+          </div>
+          <Dialog open={isCreateOpen} onOpenChange={(open) => { setIsCreateOpen(open); if (open && donors.length === 0) initDonorsList(); }}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Submit Report
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Submit a Report</DialogTitle>
+                <DialogDescription>
+                  Report suspicious activities, fraud, or inappropriate content
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <label className="text-sm font-medium">Donor</label>
+                    <Select
+                      value={formData.donor_id}
+                      onValueChange={(val) => setFormData({ ...formData, donor_id: val })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={charityId ? "Select a donor who donated to your charity" : "Login as charity to load donors"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {donors.map((d) => (
+                          <SelectItem key={d.id} value={String(d.id)}>{d.name} ({d.email}) #{d.id}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Reason</label>
+                  <Select value={formData.reason} onValueChange={(value) => setFormData({ ...formData, reason: value })}>
                     <SelectTrigger>
-                      <SelectValue placeholder={charityId ? "Select a donor who donated to your charity" : "Login as charity to load donors"} />
+                      <SelectValue placeholder="Select reason" />
                     </SelectTrigger>
                     <SelectContent>
-                      {donors.map((d) => (
-                        <SelectItem key={d.id} value={String(d.id)}>{d.name} ({d.email}) #{d.id}</SelectItem>
-                      ))}
+                      <SelectItem value="fraud">Fraud</SelectItem>
+                      <SelectItem value="fake_proof">Fake Proof</SelectItem>
+                      <SelectItem value="inappropriate_content">Inappropriate Content</SelectItem>
+                      <SelectItem value="scam">Scam</SelectItem>
+                      <SelectItem value="fake_charity">Fake Charity</SelectItem>
+                      <SelectItem value="misuse_of_funds">Misuse of Funds</SelectItem>
+                      <SelectItem value="spam">Spam</SelectItem>
+                      <SelectItem value="harassment">Harassment</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Reason</label>
-                <Select value={formData.reason} onValueChange={(value) => setFormData({ ...formData, reason: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select reason" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fraud">Fraud</SelectItem>
-                    <SelectItem value="fake_proof">Fake Proof</SelectItem>
-                    <SelectItem value="inappropriate_content">Inappropriate Content</SelectItem>
-                    <SelectItem value="scam">Scam</SelectItem>
-                    <SelectItem value="fake_charity">Fake Charity</SelectItem>
-                    <SelectItem value="misuse_of_funds">Misuse of Funds</SelectItem>
-                    <SelectItem value="spam">Spam</SelectItem>
-                    <SelectItem value="harassment">Harassment</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Description</label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Provide detailed information about the issue..."
-                  rows={4}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Evidence (Optional)</label>
-                <Input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.pdf"
-                  onChange={(e) => setFormData({ ...formData, evidence: e.target.files?.[0] || null })}
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Upload screenshots or documents as evidence (JPG, PNG, PDF - Max 5MB)
-                </p>
-              </div>
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={submitReport}>
-                  Submit Report
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      {/* Reports List */}
-      <div className="space-y-4">
-        {(reports || []).map((report) => (
-          <Card key={report.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    <CardTitle className="text-lg">Report #{report.id}</CardTitle>
-                    {getStatusBadge(report.status)}
-                  </div>
-                  <CardDescription>
-                    {formatReason(report.reason)} • {report.reported_entity_type} #{report.reported_entity_id}
-                  </CardDescription>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {new Date(report.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-sm bg-gray-50 p-3 rounded">
-                {report.description}
-              </p>
-              {report.evidence_path && (
                 <div>
-                  <p className="text-sm font-medium">Evidence:</p>
-                  <a
-                    href={`${import.meta.env.VITE_API_URL}/storage/${report.evidence_path}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    View Evidence File
-                  </a>
+                  <label className="text-sm font-medium">Description</label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Provide detailed information about the issue..."
+                    rows={4}
+                  />
                 </div>
-              )}
-              {report.admin_notes && (
                 <div>
-                  <p className="text-sm font-medium">Admin Response:</p>
-                  <p className="text-sm bg-blue-50 p-3 rounded">
-                    {report.admin_notes}
+                  <label className="text-sm font-medium">Evidence (Optional)</label>
+                  <Input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={(e) => setFormData({ ...formData, evidence: e.target.files?.[0] || null })}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upload screenshots or documents as evidence (JPG, PNG, PDF - Max 5MB)
                   </p>
-                  {report.action_taken && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Action taken: {report.action_taken.replace("_", " ")}
-                    </p>
-                  )}
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-        {(reports?.length ?? 0) === 0 && (
-          <Card>
-            <CardContent className="text-center py-8">
-              <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">No reports submitted yet.</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Help keep our platform safe by reporting suspicious activities.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={submitReport}>
+                    Submit Report
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Reports List */}
+        <div className="space-y-4">
+          {(reports || []).map((report) => (
+            <Card key={report.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                      <CardTitle className="text-lg">Report #{report.id}</CardTitle>
+                      {getStatusBadge(report.status)}
+                    </div>
+                    <CardDescription>
+                      {formatReason(report.reason)} • {report.reported_entity_type} #{report.reported_entity_id}
+                    </CardDescription>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(report.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm bg-gray-50 p-3 rounded">
+                  {report.description}
+                </p>
+                {report.evidence_path && (
+                  <div>
+                    <p className="text-sm font-medium">Evidence:</p>
+                    <a
+                      href={`${import.meta.env.VITE_API_URL}/storage/${report.evidence_path}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      View Evidence File
+                    </a>
+                  </div>
+                )}
+                {report.admin_notes && (
+                  <div>
+                    <p className="text-sm font-medium">Admin Response:</p>
+                    <p className="text-sm bg-blue-50 p-3 rounded">
+                      {report.admin_notes}
+                    </p>
+                    {report.action_taken && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Action taken: {report.action_taken.replace("_", " ")}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+          {(reports?.length ?? 0) === 0 && (
+            <Card>
+              <CardContent className="text-center py-8">
+                <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No reports submitted yet.</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Help keep our platform safe by reporting suspicious activities.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -332,7 +332,7 @@ export default function CampaignManagement() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
@@ -341,9 +341,9 @@ export default function CampaignManagement() {
             Create and manage your fundraising campaigns
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 justify-start md:justify-end">
           {/* View Toggle */}
-          <div className="flex gap-1 border rounded-md p-1">
+          <div className="flex gap-1 border rounded-md p-1 shrink-0">
             <Button
               variant={viewMode === "cards" ? "default" : "ghost"}
               size="sm"
@@ -362,7 +362,7 @@ export default function CampaignManagement() {
           
           {/* Action Buttons */}
           <Button 
-            className="bg-primary hover:bg-primary/90 h-10"
+            className="bg-primary hover:bg-primary/90 h-10 w-full sm:w-auto shrink-0"
             onClick={() => setIsCreateDialogOpen(true)}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -370,7 +370,7 @@ export default function CampaignManagement() {
           </Button>
           <Button
             variant="outline"
-            className="h-10"
+            className="h-10 w-full sm:w-auto shrink-0"
             onClick={() => setIsDonationChannelModalOpen(true)}
           >
             <Wallet className="mr-2 h-4 w-4" />
@@ -380,7 +380,7 @@ export default function CampaignManagement() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Total Campaigns</CardTitle>
@@ -412,46 +412,52 @@ export default function CampaignManagement() {
       </div>
 
       {/* Filters & Sort */}
-      <div className="flex flex-wrap items-center gap-3 bg-card border rounded-lg p-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-muted-foreground">Filter:</span>
-          <div className="flex rounded-md border overflow-hidden">
-            {[
-              { value: "all", label: "All" },
-              { value: "published", label: "Active" },
-              { value: "closed", label: "Completed" },
-              { value: "draft", label: "Pending" },
-            ].map((filter) => (
-              <button
-                key={filter.value}
-                onClick={() => setStatusFilter(filter.value)}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${
-                  statusFilter === filter.value
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background hover:bg-accent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
+      <Card className="p-4">
+        <div className="flex flex-col gap-4">
+          {/* Filter Buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <span className="text-sm font-medium text-muted-foreground flex-shrink-0">Filter:</span>
+            <div className="-mx-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]">
+              <div className="inline-flex items-center gap-2 whitespace-nowrap px-1">
+              {[
+                { value: "all", label: "All" },
+                { value: "published", label: "Active" },
+                { value: "closed", label: "Completed" },
+                { value: "draft", label: "Pending" },
+              ].map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => setStatusFilter(filter.value)}
+                  className={`px-3 sm:px-4 py-2 h-9 text-xs sm:text-sm font-medium rounded-lg transition-colors ${
+                    statusFilter === filter.value
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted hover:bg-muted/80 text-foreground"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+              </div>
+            </div>
+          </div>
+          
+          {/* Sort Dropdown */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <span className="text-sm font-medium text-muted-foreground flex-shrink-0">Sort:</span>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger id="sort-by" className="w-full sm:w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="oldest">Oldest</SelectItem>
+                <SelectItem value="highest">Highest Target</SelectItem>
+                <SelectItem value="progress">Most Funded</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-        
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-sm font-medium text-muted-foreground">Sort:</span>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger id="sort-by" className="w-[150px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="oldest">Oldest</SelectItem>
-              <SelectItem value="highest">Highest Target</SelectItem>
-              <SelectItem value="progress">Most Funded</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      </Card>
 
       {/* Campaigns View */}
       {viewMode === "table" ? (
@@ -529,7 +535,7 @@ export default function CampaignManagement() {
       ) : (
         /* Card View */
         loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <CampaignCardSkeleton key={i} />
             ))}
@@ -554,7 +560,7 @@ export default function CampaignManagement() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {getFilteredAndSortedCampaigns().map((campaign) => (
               <CampaignCard
                 key={campaign.id}

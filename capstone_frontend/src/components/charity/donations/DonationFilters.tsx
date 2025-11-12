@@ -105,7 +105,12 @@ export default function DonationFilters({
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent 
+                position="popper" 
+                className="w-56 max-w-[95vw] z-[60]" 
+                side="bottom" 
+                align="start"
+              >
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
@@ -129,7 +134,13 @@ export default function DonationFilters({
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-96" align="end">
+              <PopoverContent 
+                className="w-[min(95vw,24rem)] max-h-[75vh] overflow-auto z-[60]"
+                align="center" 
+                side="bottom" 
+                sideOffset={8}
+                avoidCollisions={false}
+              >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold">Advanced Filters</h4>

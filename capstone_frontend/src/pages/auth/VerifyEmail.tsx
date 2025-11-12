@@ -229,33 +229,33 @@ export default function VerifyEmail() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-3 sm:p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-            <Mail className="w-8 h-8 text-primary" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 mb-3 sm:mb-4">
+            <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">Verify Your Email</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1.5 sm:mb-2">Verify Your Email</h1>
           <p className="text-muted-foreground">
             We sent a 6-digit code to <strong>{email}</strong>
           </p>
         </div>
 
-        <div className="auth-card space-y-6">
+        <div className="auth-card space-y-5 sm:space-y-6">
           {/* Success State */}
           {status === 'success' && (
             <div className="text-center space-y-4">
-              <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-green-600" />
+              <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold">Email Verified!</h2>
+              <div className="space-y-1.5 sm:space-y-2">
+                <h2 className="text-xl sm:text-2xl font-bold">Email Verified!</h2>
                 <p className="text-muted-foreground">
                   Your account has been successfully verified.
                 </p>
               </div>
-              <Button onClick={() => navigate('/auth/login')} className="w-full" size="lg">
+              <Button onClick={() => navigate('/auth/login')} className="w-full h-11 sm:h-12" size="lg">
                 Continue to Login
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -275,7 +275,7 @@ export default function VerifyEmail() {
             <>
               {/* Code Input Fields */}
               <div className="space-y-4">
-                <div className="flex justify-center gap-2" onPaste={handlePaste}>
+                <div className="flex justify-center gap-1.5 sm:gap-2" onPaste={handlePaste}>
                   {code.map((digit, index) => (
                     <Input
                       key={index}
@@ -286,7 +286,7 @@ export default function VerifyEmail() {
                       value={digit}
                       onChange={(e) => handleCodeChange(index, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-12 h-14 text-center text-2xl font-bold"
+                      className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-bold"
                       autoFocus={index === 0}
                       disabled={isVerifying}
                     />
@@ -324,7 +324,7 @@ export default function VerifyEmail() {
                 <Button
                   onClick={() => handleVerifyCode()}
                   disabled={code.some(d => !d) || isVerifying}
-                  className="w-full"
+                  className="w-full h-11 sm:h-12"
                   size="lg"
                 >
                   {isVerifying ? (

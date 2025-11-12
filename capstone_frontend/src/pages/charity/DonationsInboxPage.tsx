@@ -196,7 +196,7 @@ const DonationsInboxPage = () => {
   }
 
   return (
-    <div className="p-lg space-y-lg">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Donations Inbox</CardTitle>
@@ -224,7 +224,7 @@ const DonationsInboxPage = () => {
           )}
 
           {/* Table */}
-          <div className="border rounded-md">
+          <div className="border rounded-md overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Edit, MessageSquare, Target, Share2, MoreVertical } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { charityService } from "@/services/charity";
@@ -11,10 +11,11 @@ import { ProfileTabs } from "@/components/charity/ProfileTabs";
 import { ProfileSidebar } from "@/components/charity/ProfileSidebar";
 import { UpdatesSidebar } from "@/components/charity/UpdatesSidebar";
 import { CampaignsSidebar } from "@/components/charity/CampaignsSidebar";
-import { ActionBar } from "@/components/charity/ActionBar";
 import { ImageViewerModal } from "@/components/charity/ImageViewerModal";
 import { FollowersModal } from "@/components/charity/FollowersModal";
 import { updatesService } from "@/services/updates";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // Interface definitions moved to separate section for clarity
 interface CharityData {
@@ -385,7 +386,7 @@ export default function CharityProfilePage() {
   const isOwner = (user?.role === 'charity_admin') && (!!displayCharity?.id && user?.charity?.id === displayCharity.id);
 
   return (
-    <div className="min-h-screen bg-background pb-20 lg:pb-8">
+    <div className="min-h-screen bg-background pb-8">
       {/* Profile Header */}
       <ProfileHeader
         charity={displayCharity}
@@ -395,10 +396,50 @@ export default function CharityProfilePage() {
         onBack={() => navigate('/charity/updates')}
         onProfileClick={handleProfileClick}
         onCoverClick={handleCoverClick}
+        actionButtons={
+          <>
+            {/* Mobile: compact 3-dot menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="sm:hidden h-8 w-8 rounded-md p-0 text-muted-foreground hover:text-foreground hover:bg-accent"
+                  aria-label="More actions"
+                >
+                  <MoreVertical className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44 z-[60]">
+                <DropdownMenuItem onClick={() => navigate('/charity/edit-profile')}>
+                  <Edit className="h-4 w-4 mr-2" /> Edit Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/charity/updates')}>
+                  <MessageSquare className="h-4 w-4 mr-2" /> Post Update
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/charity/campaigns')}>
+                  <Target className="h-4 w-4 mr-2" /> Create Campaign
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Desktop: keep Share button */}
+            <div className="hidden sm:flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleShare}
+                className="shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 bg-card/50 backdrop-blur-sm"
+                aria-label="Share profile"
+              >
+                <Share2 className="h-4 w-4 mr-2" /> Share
+              </Button>
+            </div>
+          </>
+        }
       />
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 lg:px-8 pt-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         {/* Stats - Proper spacing from profile */}
         <ProfileStats 
           stats={statsData} 
@@ -409,7 +450,7 @@ export default function CharityProfilePage() {
           onUpdatesClick={handleUpdatesClick}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content Area - 8 columns */}
           <div className="lg:col-span-8">
             <ProfileTabs
@@ -452,14 +493,6 @@ export default function CharityProfilePage() {
           </div>
         </div>
       </div>
-
-      {/* Action Bar */}
-      <ActionBar
-        onEdit={() => navigate('/charity/edit-profile')}
-        onPostUpdate={() => navigate('/charity/updates?create=1')}
-        onCreateCampaign={() => navigate('/charity/campaigns')}
-      />
-
       {/* Image Viewer & Upload Modal */}
       <ImageViewerModal
         open={imageViewerOpen}

@@ -15,6 +15,7 @@ interface TopCampaign {
 }
 
 interface CampaignsSidebarProps {
+  viewMode?: 'admin' | 'donor';
   totalCampaigns: number;
   activeCampaigns: number;
   totalRaised: number;
@@ -22,7 +23,7 @@ interface CampaignsSidebarProps {
   topCampaign?: TopCampaign | null;
 }
 
-export function CampaignsSidebar({ totalCampaigns, activeCampaigns, totalRaised, avgCompletion, topCampaign }: CampaignsSidebarProps) {
+export function CampaignsSidebar({ viewMode = 'admin', totalCampaigns, activeCampaigns, totalRaised, avgCompletion, topCampaign }: CampaignsSidebarProps) {
   const navigate = useNavigate();
   const [tipIndex, setTipIndex] = useState(0);
   const tips = [
@@ -101,33 +102,35 @@ export function CampaignsSidebar({ totalCampaigns, activeCampaigns, totalRaised,
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <Card className="hover:shadow-lg hover:scale-[1.01] transition-all duration-200 animate-in fade-in-50">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
-          <CardDescription>Manage your campaigns</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <Button
-            className="w-full justify-start h-10 hover:shadow-sm"
-            onClick={() => window.dispatchEvent(new Event('open-campaign-create'))}
-            aria-label="Create Campaign"
-          >
-            <Plus className="h-4 w-4 mr-2" /> Create Campaign
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full justify-start h-10 hover:bg-muted/50 cursor-pointer"
-            onClick={() => navigate('/charity/reports')}
-            aria-label="View Analytics"
-          >
-            <BarChart3 className="h-4 w-4 mr-2" /> View Analytics
-          </Button>
-          <Button variant="outline" className="w-full justify-start h-10 hover:bg-muted/50" onClick={() => navigate('/charity/donations')} aria-label="Manage Donations">
-            <ChevronRight className="h-4 w-4 mr-2" /> Manage Donations
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Quick Actions - Only for Admin */}
+      {viewMode === 'admin' && (
+        <Card className="hover:shadow-lg hover:scale-[1.01] transition-all duration-200 animate-in fade-in-50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <CardDescription>Manage your campaigns</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button
+              className="w-full justify-start h-10 hover:shadow-sm"
+              onClick={() => window.dispatchEvent(new Event('open-campaign-create'))}
+              aria-label="Create Campaign"
+            >
+              <Plus className="h-4 w-4 mr-2" /> Create Campaign
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start h-10 hover:bg-muted/50 cursor-pointer"
+              onClick={() => navigate('/charity/reports')}
+              aria-label="View Analytics"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" /> View Analytics
+            </Button>
+            <Button variant="outline" className="w-full justify-start h-10 hover:bg-muted/50" onClick={() => navigate('/charity/donations')} aria-label="Manage Donations">
+              <ChevronRight className="h-4 w-4 mr-2" /> Manage Donations
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tips */}
       <Card className="hover:shadow-lg hover:scale-[1.01] transition-all duration-200 animate-in fade-in-50 bg-gradient-to-br from-indigo-500/10 via-amber-500/5 to-transparent border-border/40">

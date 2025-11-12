@@ -185,18 +185,17 @@ export default function RecurringDonations() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto p-6">
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
-            <Repeat className="h-6 w-6 text-purple-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold">Recurring Donations</h1>
-            <p className="text-muted-foreground">Manage your automatic recurring contributions</p>
-          </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Recurring Donations
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">
+            Manage your automatic recurring contributions
+          </p>
         </div>
-      </div>
 
       {donations.length === 0 ? (
         <Card>
@@ -416,6 +415,7 @@ export default function RecurringDonations() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

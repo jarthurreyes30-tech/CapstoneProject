@@ -45,10 +45,15 @@ export default function LocationFilters({
       <div className="flex flex-col sm:flex-row gap-3 flex-1">
         {/* Region Filter */}
         <Select value={selectedRegion || undefined} onValueChange={(val) => onRegionChange(val || '')}>
-          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200">
+          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 shrink-0 w-full sm:w-[200px]">
             <SelectValue placeholder="All Regions" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent 
+            position="popper" 
+            side="bottom" 
+            align="start" 
+            className="max-w-[95vw] w-[220px] z-[60]"
+          >
             {regions.map((region) => (
               <SelectItem key={region} value={region}>
                 {region}
@@ -63,10 +68,15 @@ export default function LocationFilters({
           onValueChange={(val) => onProvinceChange(val || '')}
           disabled={!selectedRegion && provinces.length === 0}
         >
-          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200">
+          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 shrink-0 w-full sm:w-[200px]">
             <SelectValue placeholder="All Provinces" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent 
+            position="popper" 
+            side="bottom" 
+            align="start" 
+            className="max-w-[95vw] w-[220px] z-[60]"
+          >
             {provinces.map((province) => (
               <SelectItem key={province} value={province}>
                 {province}
@@ -81,10 +91,15 @@ export default function LocationFilters({
           onValueChange={(val) => onCityChange(val || '')}
           disabled={!selectedProvince && cities.length === 0}
         >
-          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200">
+          <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-200 shrink-0 w-full sm:w-[200px]">
             <SelectValue placeholder="All Cities" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent 
+            position="popper" 
+            side="bottom" 
+            align="start" 
+            className="max-w-[95vw] w-[220px] z-[60]"
+          >
             {cities.map((city) => (
               <SelectItem key={city} value={city}>
                 {city}

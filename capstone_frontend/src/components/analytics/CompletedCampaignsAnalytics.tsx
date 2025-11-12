@@ -117,21 +117,21 @@ export default function CompletedCampaignsAnalytics() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <CheckCircle className="h-6 w-6 text-green-600" />
-            Completed Campaigns Still Receiving Donations
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+            <span className="truncate">Completed Campaigns Still Receiving Donations</span>
           </h2>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             Analysis of closed/completed campaigns that continue to receive donations
           </p>
         </div>
         <Select value={days.toString()} onValueChange={(v) => setDays(parseInt(v))}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="h-10 w-[160px] sm:w-40 shrink-0 text-sm">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper" side="bottom" align="start" className="w-56 max-w-[95vw] z-[60]">
             <SelectItem value="30">Last 30 days</SelectItem>
             <SelectItem value="60">Last 60 days</SelectItem>
             <SelectItem value="90">Last 90 days</SelectItem>

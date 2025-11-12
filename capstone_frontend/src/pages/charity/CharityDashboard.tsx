@@ -449,7 +449,7 @@ export default function CharityDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Cover Photo Section */}
       <div className="relative h-64 md:h-80 overflow-hidden">
         {coverImageUrl ? (
@@ -465,7 +465,7 @@ export default function CharityDashboard() {
       </div>
 
       {/* Header Section Below Cover */}
-      <div className="max-w-7xl mx-auto px-4 -mt-16 relative z-10">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
         <Card className="border-2 shadow-xl bg-card/95 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -486,7 +486,7 @@ export default function CharityDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
         
         {/* 1. Actionable Alerts & To-Do Card */}
         <Card className="border-2 border-primary/30 shadow-xl bg-gradient-to-br from-primary/5 via-background to-background">
@@ -501,7 +501,7 @@ export default function CharityDashboard() {
             {/* Pending Donations */}
             <button
               onClick={() => navigate('/charity/donations')}
-              className="flex flex-col items-start p-5 rounded-xl border-2 border-orange-300 dark:border-orange-700 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 hover:border-orange-500 hover:shadow-xl hover:scale-105 transition-all duration-300 text-left group"
+              className="flex flex-col items-start p-5 rounded-xl border-2 border-orange-300 dark:border-orange-700 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 hover:border-orange-500 hover:shadow-xl md:hover:scale-105 transition-all duration-300 text-left group"
             >
               <div className="flex items-center justify-between w-full mb-3">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500/30 to-amber-500/30 shadow-md">
@@ -537,7 +537,7 @@ export default function CharityDashboard() {
             {/* New Interactions */}
             <button
               onClick={() => navigate('/charity/updates')}
-              className="flex flex-col items-start p-5 rounded-xl border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 hover:border-blue-500 hover:shadow-xl hover:scale-105 transition-all duration-300 text-left group"
+              className="flex flex-col items-start p-5 rounded-xl border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 hover:border-blue-500 hover:shadow-xl md:hover:scale-105 transition-all duration-300 text-left group"
             >
               <div className="flex items-center justify-between w-full mb-3">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/30 to-cyan-500/30 shadow-md">
@@ -639,15 +639,15 @@ export default function CharityDashboard() {
         {analyticsData && (
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-xl lg:text-2xl leading-8 font-bold flex items-center gap-2">
                   <BarChart3 className="h-6 w-6 text-primary" />
-                  Analytics Insights
+                  <span className="truncate">Analytics Insights</span>
                 </h2>
-                <p className="text-sm text-muted-foreground mt-1">Real-time performance metrics and trends</p>
+                <p className="text-sm sm:text-base text-muted-foreground mt-1">Real-time performance metrics and trends</p>
               </div>
-              <Button onClick={() => navigate('/charity/reports')} size="lg" className="shadow-lg">
+              <Button onClick={() => navigate('/charity/reports')} className="h-10 w-full sm:w-auto rounded-lg shadow-lg">
                 View Detailed Analytics
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -672,7 +672,7 @@ export default function CharityDashboard() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {/* Top-Performing Campaign */}
               {analyticsData.topCampaign && (
-                <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-amber-500/50 cursor-pointer bg-card/80 backdrop-blur">
+                <Card className="group hover:shadow-xl md:hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-amber-500/50 cursor-pointer bg-card/80 backdrop-blur">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 group-hover:from-amber-500/30 group-hover:to-orange-500/30 transition-colors">
@@ -702,7 +702,7 @@ export default function CharityDashboard() {
               )}
 
               {/* Recent Donations Summary */}
-              <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-green-500/50 bg-card/80 backdrop-blur">
+              <Card className="group hover:shadow-xl md:hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-green-500/50 bg-card/80 backdrop-blur">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-colors">
@@ -739,7 +739,7 @@ export default function CharityDashboard() {
               </Card>
 
               {/* Donor Engagement */}
-              <Card className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-blue-500/50 bg-card/80 backdrop-blur">
+              <Card className="group hover:shadow-xl md:hover:scale-[1.02] transition-all duration-300 border-border/50 hover:border-blue-500/50 bg-card/80 backdrop-blur">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-colors">

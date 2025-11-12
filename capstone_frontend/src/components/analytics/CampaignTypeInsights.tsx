@@ -114,18 +114,23 @@ export default function CampaignTypeInsights() {
   return (
     <div className="space-y-6">
       {/* Header with Period Selector */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold">Campaign Type Analysis</h2>
-          <p className="text-muted-foreground mt-1">
+          <h2 className="text-xl sm:text-2xl font-bold">Campaign Type Analysis</h2>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             Comprehensive insights into campaign types, creation patterns, and performance
           </p>
         </div>
         <Select value={period} onValueChange={(val) => setPeriod(val as 'weekly' | 'monthly')}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="h-10 w-[160px] sm:w-[180px] shrink-0 text-sm">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent 
+            position="popper" 
+            side="bottom" 
+            align="start" 
+            className="w-56 max-w-[95vw] z-[60]"
+          >
             <SelectItem value="weekly">Weekly View</SelectItem>
             <SelectItem value="monthly">Monthly View</SelectItem>
           </SelectContent>

@@ -41,13 +41,13 @@ export default function ForgotPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
         <div className="w-full max-w-md">
-          <div className="auth-card text-center space-y-6">
-            <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+          <div className="auth-card text-center space-y-5 sm:space-y-6">
+            <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
             </div>
             
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold">Check your email</h2>
+            <div className="space-y-1.5 sm:space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold">Check your email</h2>
               <p className="text-muted-foreground">
                 We've sent password reset instructions to
               </p>
@@ -73,7 +73,7 @@ export default function ForgotPassword() {
             </div>
 
             <Link to="/auth/login">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full h-10 sm:h-11">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to login
               </Button>
@@ -85,22 +85,22 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-3 sm:p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-            <Mail className="h-8 w-8 text-primary" />
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 mb-3 sm:mb-4">
+            <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">Forgot password?</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1.5 sm:mb-2">Forgot password?</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             No worries, we'll send you reset instructions
           </p>
         </div>
 
         {/* Form Card */}
         <div className="auth-card">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {error && (
               <div className="p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20 rounded-lg">
                 {error}
@@ -125,7 +125,7 @@ export default function ForgotPassword() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-10 sm:h-11" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -137,7 +137,7 @@ export default function ForgotPassword() {
             </Button>
 
             <Link to="/auth/login">
-              <Button variant="ghost" className="w-full" type="button">
+              <Button variant="ghost" className="w-full h-10 sm:h-11" type="button">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to login
               </Button>

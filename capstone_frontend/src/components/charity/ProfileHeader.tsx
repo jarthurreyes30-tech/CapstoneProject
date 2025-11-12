@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface ProfileHeaderProps {
+  viewMode?: 'admin' | 'donor';
   charity: {
     name: string;
     acronym?: string;
@@ -27,43 +28,48 @@ interface ProfileHeaderProps {
   coverUrl: string | null;
   onShare: () => void;
   onBack: () => void;
+  backButtonText?: string;
   onProfileClick?: () => void;
   onCoverClick?: () => void;
+  actionButtons?: React.ReactNode;
 }
 
 export function ProfileHeader({ 
+  viewMode = 'admin',
   charity, 
   logoUrl, 
   coverUrl, 
   onShare, 
   onBack,
+  backButtonText = 'Back',
   onProfileClick,
-  onCoverClick
+  onCoverClick,
+  actionButtons
 }: ProfileHeaderProps) {
   return (
     <div className="relative bg-gradient-to-br from-orange-50/30 via-pink-50/20 to-blue-50/30 dark:from-orange-950/10 dark:via-pink-950/10 dark:to-blue-950/10">
-      {/* Breadcrumb / Back Button */}
+      {/* Breadcrumb / Back Button (hidden on small screens) */}
       <div className="container mx-auto px-4 lg:px-8 pt-4">
         <Button
           variant="ghost"
           size="sm"
           onClick={onBack}
-          className="hover:bg-card/80 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md backdrop-blur-sm"
-          aria-label="Back to Updates"
+          className="hidden sm:inline-flex hover:bg-card/80 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md backdrop-blur-sm"
+          aria-label={backButtonText}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Updates
+          {backButtonText}
         </Button>
       </div>
 
       {/* Cover Photo with Side Margins - Personal Profile Style */}
-      <div className="container mx-auto px-4 lg:px-8 pt-4 pb-16">
+      <div className="container mx-auto px-4 lg:px-8 pt-4 pb-12 sm:pb-16">
         <div 
-          className="relative h-[280px] lg:h-[340px] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-orange-100/50 via-pink-100/40 to-blue-100/50 dark:from-orange-900/20 dark:via-pink-900/20 dark:to-blue-900/20 cursor-pointer group transition-transform hover:scale-[1.01] duration-200"
-          onClick={onCoverClick}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && onCoverClick?.()}
+          className={`relative h-[200px] sm:h-[280px] lg:h-[340px] rounded-xl sm:rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-orange-100/50 via-pink-100/40 to-blue-100/50 dark:from-orange-900/20 dark:via-pink-900/20 dark:to-blue-900/20 ${viewMode === 'admin' ? 'cursor-pointer group transition-transform hover:scale-[1.01] duration-200' : ''}`}
+          onClick={viewMode === 'admin' ? onCoverClick : undefined}
+          role={viewMode === 'admin' ? 'button' : undefined}
+          tabIndex={viewMode === 'admin' ? 0 : undefined}
+          onKeyDown={viewMode === 'admin' ? (e) => e.key === 'Enter' && onCoverClick?.() : undefined}
         >
           {coverUrl ? (
             <img 
@@ -88,65 +94,83 @@ export function ProfileHeader({
             </div>
           )}
           
-          {/* Subtle gradient overlay - lighter than before */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent dark:from-gray-900/40 group-hover:from-white/50 transition-colors" />
+          {/* Subtle gradient overlay for readability on mobile */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent dark:from-black/60 group-hover:from-black/50 transition-colors" />
           
-          {/* Hover hint */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-medium">
-              Click to view or change cover photo
+          {/* Hover hint - Only for admin */}
+          {viewMode === 'admin' && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Click to view or change cover photo
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Profile Content - Logo overlaps cover slightly */}
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="relative -mt-24 lg:-mt-28">
-          <div className="flex flex-row items-end gap-4 lg:gap-6">
+        <div className="relative -mt-6 sm:-mt-14 lg:-mt-28">
+          <div className="flex flex-row items-end gap-3 sm:gap-4 lg:gap-6">
             {/* Logo - Slightly overlapping cover bottom */}
             <Avatar 
-              className="h-32 w-32 lg:h-40 lg:w-40 ring-6 ring-background shadow-2xl transition-transform duration-200 hover:scale-105 bg-card cursor-pointer group flex-shrink-0"
-              onClick={onProfileClick}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && onProfileClick?.()}
+              className={`h-24 w-24 sm:h-32 sm:w-32 lg:h-40 lg:w-40 ring-4 sm:ring-6 ring-background shadow-2xl bg-card flex-shrink-0 ${viewMode === 'admin' ? 'transition-transform duration-200 hover:scale-105 cursor-pointer group' : ''}`}
+              onClick={viewMode === 'admin' ? onProfileClick : undefined}
+              role={viewMode === 'admin' ? 'button' : undefined}
+              tabIndex={viewMode === 'admin' ? 0 : undefined}
+              onKeyDown={viewMode === 'admin' ? (e) => e.key === 'Enter' && onProfileClick?.() : undefined}
             >
               <AvatarImage src={logoUrl || undefined} alt={charity.name} />
               <AvatarFallback className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-[#F2A024] to-orange-500 text-white">
                 {charity.acronym || charity.name?.substring(0, 2).toUpperCase() || 'HK'}
               </AvatarFallback>
-              {/* Hover hint overlay */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm rounded-full">
-                <span className="text-white text-xs font-medium text-center px-2">Click to view</span>
-              </div>
+              {/* Hover hint overlay - Only for admin */}
+              {viewMode === 'admin' && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm rounded-full">
+                  <span className="text-white text-xs font-medium text-center px-2">Click to view</span>
+                </div>
+              )}
             </Avatar>
 
             {/* Info & Actions - Always beside logo */}
-            <div className="flex-1 pb-2 min-w-0">
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2 lg:gap-4">
+            <div className="relative flex-1 pb-1 sm:pb-2 min-w-0 pr-12 sm:pr-0 mt-1">
+              {/* Actions - pinned top-right of info column */}
+              <div className="absolute right-0 top-1 z-[2]">
+                {actionButtons || (
+                  <Button 
+                    variant="outline" 
+                    onClick={onShare}
+                    className="hidden sm:inline-flex shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 bg-card/50 backdrop-blur-sm"
+                    aria-label="Share profile"
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                )}
+              </div>
+              <div className="flex items-start justify-start gap-2 sm:gap-3 lg:gap-4 w-full">
                 {/* Left: Name & Info */}
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-tight mb-1 truncate">
+                  <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-snug mb-0.5 whitespace-normal break-words">
                     {charity.name}
                   </h1>
                   
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap mb-1">
                     {(charity.verification_status === 'approved' || charity.is_verified) && (
-                      <Badge className="bg-green-500 hover:bg-green-600 text-white border-0 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium">
-                        <CheckCircle className="h-4 w-4" />
+                      <Badge className="bg-green-500 hover:bg-green-600 text-white border-0 flex items-center gap-1 sm:gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-medium">
+                        <CheckCircle className="h-3 w-3" />
                         Verified
                       </Badge>
                     )}
-                    <Badge className="bg-blue-500 hover:bg-blue-600 text-white border-0 px-3 py-1.5 text-sm font-medium">
+                    <Badge className="bg-blue-500 hover:bg-blue-600 text-white border-0 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-medium">
                       Community Development
                     </Badge>
                   </div>
                   
                   {charity.municipality && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                      <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary shrink-0" />
+                      <span className="truncate">
                         {charity.municipality}
                         {charity.province && `, ${charity.province}`}
                       </span>
@@ -154,37 +178,7 @@ export function ProfileHeader({
                   )}
                 </div>
 
-                {/* Right: Action Buttons */}
-                <div className="flex items-center gap-2 pt-2">
-                  <Button 
-                    variant="outline" 
-                    onClick={onShare}
-                    className="shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 focus:ring-2 focus:ring-offset-2 focus:ring-ring bg-card/50 backdrop-blur-sm"
-                    aria-label="Share profile"
-                  >
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        className="shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 bg-card/50 backdrop-blur-sm"
-                        aria-label="More options"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={onShare}>
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Share Profile
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                {/* Right actions moved to absolute container above */}
               </div>
             </div>
           </div>

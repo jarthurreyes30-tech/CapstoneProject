@@ -28,7 +28,7 @@ export default function ResetPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
         <div className="w-full max-w-md auth-card text-center space-y-4">
-          <h2 className="text-2xl font-bold">Invalid Reset Link</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Invalid Reset Link</h2>
           <p className="text-muted-foreground">
             This password reset link is invalid or has expired.
           </p>
@@ -74,19 +74,19 @@ export default function ResetPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
         <div className="w-full max-w-md">
-          <div className="auth-card text-center space-y-6">
-            <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+          <div className="auth-card text-center space-y-5 sm:space-y-6">
+            <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
             </div>
             
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold">Password reset successful</h2>
+            <div className="space-y-1.5 sm:space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold">Password reset successful</h2>
               <p className="text-muted-foreground">
                 Your password has been successfully reset
               </p>
             </div>
 
-            <Button onClick={() => navigate('/auth/login')} className="w-full">
+            <Button onClick={() => navigate('/auth/login')} className="w-full h-10 sm:h-11">
               Continue to login
             </Button>
           </div>
@@ -96,11 +96,11 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-3 sm:p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Reset your password</h1>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1.5 sm:mb-2">Reset your password</h1>
           <p className="text-muted-foreground">
             Enter your new password below
           </p>
@@ -108,7 +108,7 @@ export default function ResetPassword() {
 
         {/* Form Card */}
         <div className="auth-card">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {errors.general && (
               <div className="p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20 rounded-lg">
                 {errors.general}
@@ -186,7 +186,7 @@ export default function ResetPassword() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-10 sm:h-11" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -198,7 +198,7 @@ export default function ResetPassword() {
             </Button>
 
             <Link to="/auth/login">
-              <Button variant="ghost" className="w-full" type="button">
+              <Button variant="ghost" className="w-full h-10 sm:h-11" type="button">
                 Back to login
               </Button>
             </Link>

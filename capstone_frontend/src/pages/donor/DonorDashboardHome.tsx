@@ -9,9 +9,9 @@ import {
   Sparkles,
   Target,
   MessageCircle,
-  Loader2,
   BarChart3,
-  Search
+  Search,
+  Loader2
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { buildStorageUrl } from "@/lib/api";
 import { CampaignCard, type Campaign as CharityCampaign } from "@/components/charity/CampaignCard";
 import { authService } from "@/services/auth";
+import { DonorDashboardSkeleton } from "@/components/ui/skeleton/DonorDashboardSkeleton";
 
 export default function DonorDashboardHome() {
   const navigate = useNavigate();
@@ -212,21 +213,14 @@ export default function DonorDashboardHome() {
   });
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading your dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DonorDashboardSkeleton />;
   }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero / Welcome Section */}
       <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-background border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-12 md:py-16">
           <div className="flex items-center gap-3 mb-4">
             <Sparkles className="h-8 w-8 text-primary" />
             <h1 className="text-3xl md:text-5xl font-bold">
@@ -236,7 +230,7 @@ export default function DonorDashboardHome() {
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
             See the incredible impact you're making in the community.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
             <Button size="lg" onClick={() => navigate('/donor/donate')} className="shadow-lg">
               <Heart className="mr-2 h-5 w-5" />
               Make a Donation
@@ -253,14 +247,14 @@ export default function DonorDashboardHome() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-12">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10 space-y-6">
         {/* Your Impact At-a-Glance */}
         <section>
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-primary" />
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             Your Impact At-a-Glance
           </h2>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Total Donated Card */}
             <Card className="group hover:shadow-xl transition-all duration-300 border-border/40 hover:border-primary/50">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -320,8 +314,8 @@ export default function DonorDashboardHome() {
         {/* Analytics Preview */}
         {analyticsPreview && (
           <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <BarChart3 className="h-6 w-6 text-primary" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               Your Giving Analytics
             </h2>
             <Card className="border-2 border-primary/20">
@@ -331,13 +325,13 @@ export default function DonorDashboardHome() {
                     <CardTitle>Donation Insights</CardTitle>
                     <CardDescription>See how your giving makes a difference</CardDescription>
                   </div>
-                  <Button onClick={() => navigate('/donor/analytics')}>
+                  <Button onClick={() => navigate('/donor/analytics')} size="sm" className="text-xs sm:text-sm">
                     View Detailed Analytics
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-3">
+              <CardContent className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Favorite Campaign Type */}
                 {analyticsPreview.donations_by_type && analyticsPreview.donations_by_type.length > 0 && (
                   <div className="flex flex-col items-start p-4 rounded-lg border-2 border-primary/20 bg-primary/5">
@@ -345,7 +339,7 @@ export default function DonorDashboardHome() {
                       <Target className="h-5 w-5 text-primary" />
                     </div>
                     <div className="text-sm font-medium text-muted-foreground mb-1">Favorite Cause</div>
-                    <div className="text-2xl font-bold capitalize">
+                    <div className="text-xl sm:text-2xl font-bold capitalize">
                       {analyticsPreview.donations_by_type[0].type.replace('_', ' ')}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
@@ -361,7 +355,7 @@ export default function DonorDashboardHome() {
                       <Calendar className="h-5 w-5 text-green-600" />
                     </div>
                     <div className="text-sm font-medium text-muted-foreground mb-1">Avg per Month</div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-xl sm:text-2xl font-bold text-green-600">
                       ₱{Math.round(analyticsPreview.stats.total_amount / 12).toLocaleString()}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
@@ -377,7 +371,7 @@ export default function DonorDashboardHome() {
                       <Heart className="h-5 w-5 text-blue-600" />
                     </div>
                     <div className="text-sm font-medium text-muted-foreground mb-1">Causes Supported</div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-xl sm:text-2xl font-bold text-blue-600">
                       {analyticsPreview.donations_by_type.length}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
@@ -393,8 +387,8 @@ export default function DonorDashboardHome() {
         {/* Your Giving Journey */}
         {stats.first_donation_date && (
           <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Award className="h-6 w-6 text-primary" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2">
+              <Award className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               Your Giving Journey
             </h2>
             <Card className="overflow-hidden">
@@ -479,13 +473,14 @@ export default function DonorDashboardHome() {
 
         {/* Latest Updates from Charities You Support */}
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <MessageCircle className="h-6 w-6 text-primary" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               Latest Updates from Charities You Support
             </h2>
-            <Button variant="ghost" onClick={() => navigate('/donor/news-feed')}>
-              View All Updates
+            <Button variant="ghost" onClick={() => navigate('/donor/news-feed')} className="self-start sm:self-auto">
+              <span className="hidden sm:inline">View All Updates</span>
+              <span className="sm:hidden">View All</span>
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -495,7 +490,7 @@ export default function DonorDashboardHome() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : updates.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-2 sm:gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-2">
               {updates.map((update) => (
                 <Card key={update.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
                   <CardHeader className="pb-3">
@@ -564,13 +559,14 @@ export default function DonorDashboardHome() {
 
         {/* Suggested Campaigns for You */}
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <Target className="h-6 w-6 text-primary" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+              <Target className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               Causes You Might Care About
             </h2>
-            <Button variant="ghost" onClick={() => navigate('/donor/charities')}>
-              Discover More Campaigns
+            <Button variant="ghost" onClick={() => navigate('/donor/charities')} className="self-start sm:self-auto">
+              <span className="hidden sm:inline">Discover More Campaigns</span>
+              <span className="sm:hidden">Discover More</span>
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -580,7 +576,7 @@ export default function DonorDashboardHome() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : suggestedCampaigns.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:gap-3 lg:gap-4 xl:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {suggestedCampaigns.map((c) => (
                 <CampaignCard
                   key={c.id}

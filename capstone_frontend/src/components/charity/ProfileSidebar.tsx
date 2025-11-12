@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProfileSidebarProps {
+  viewMode?: 'admin' | 'donor';
   charity: {
     name?: string;
     email?: string;
@@ -61,7 +62,7 @@ interface ProfileSidebarProps {
   onEditSocial?: () => void;
 }
 
-export function ProfileSidebar({ charity, onEditContact, onEditSocial }: ProfileSidebarProps) {
+export function ProfileSidebar({ viewMode = 'admin', charity, onEditContact, onEditSocial }: ProfileSidebarProps) {
   const navigate = useNavigate();
   // Check all possible field name variations (registration uses primary_email/primary_phone)
   const email = charity.email || (charity as any).contact_email || (charity as any).primary_email;
@@ -88,55 +89,57 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
   });
   
   return (
-    <aside className="space-y-6">
+    <aside className="space-y-4 sm:space-y-6">
       {/* Contact Information */}
       <Card className="hover:shadow-md transition-shadow duration-200">
-        <CardHeader>
+        <CardHeader className="pb-3 sm:pb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-lg">Contact Information</h3>
-              <CardDescription>Get in touch with us</CardDescription>
+              <h3 className="font-bold text-base sm:text-lg">Contact Information</h3>
+              <CardDescription className="text-xs sm:text-sm">Get in touch with us</CardDescription>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
-              aria-label="Edit Contact Information"
-              onClick={() => {
-                if (onEditContact) {
-                  onEditContact();
-                } else {
-                  window.dispatchEvent(new CustomEvent('open-contact-edit'));
-                }
-              }}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            {viewMode === 'admin' && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                aria-label="Edit Contact Information"
+                onClick={() => {
+                  if (onEditContact) {
+                    onEditContact();
+                  } else {
+                    window.dispatchEvent(new CustomEvent('open-contact-edit'));
+                  }
+                }}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           {/* Admin Name */}
           {adminName && (
-            <div className="flex items-start gap-3">
-              <User className="h-5 w-5 text-primary mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Admin Name</p>
-                <p className="text-sm font-medium break-words">{adminName}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Admin Name</p>
+                <p className="text-xs sm:text-sm font-medium break-words">{adminName}</p>
               </div>
             </div>
           )}
           {/* Charity Name */}
           {charity.name && (
-            <div className="flex items-start gap-3">
-              <Avatar className="h-5 w-5 mt-0.5">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <Avatar className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 shrink-0">
                 <AvatarImage src={charity.logo_path || ''} />
-                <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                <AvatarFallback className="text-[8px] sm:text-[10px] bg-primary/10 text-primary">
                   {(charity.name || 'CH').substring(0,2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Charity Name</p>
-                <p className="text-sm font-medium break-words">{charity.name}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Charity Name</p>
+                <p className="text-xs sm:text-sm font-medium break-words">{charity.name}</p>
               </div>
             </div>
           )}
@@ -145,29 +148,29 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
           {email && (
             <a 
               href={`mailto:${email}`}
-              className="flex items-start gap-3 group hover:text-primary transition-colors"
+              className="flex items-start gap-2 sm:gap-3 group hover:text-primary transition-colors"
             >
-              <Mail className="h-5 w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform" />
+              <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-xs text-muted-foreground mb-1">Email address</p>
+                <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Email address</p>
                   {charity.is_email_verified && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400 font-medium">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            Verified
+                          <span className="inline-flex items-center gap-0.5 sm:gap-1 text-[9px] sm:text-[11px] text-green-600 dark:text-green-400 font-medium">
+                            <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <span className="hidden xs:inline">Verified</span>
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>This contact detail has been verified by the platform.</p>
+                          <p className="text-xs">Verified by platform</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
                 </div>
-                <p className="text-sm font-medium break-words group-hover:underline">
+                <p className="text-xs sm:text-sm font-medium break-words group-hover:underline">
                   {email}
                 </p>
               </div>
@@ -178,40 +181,40 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
           {phone && (
             <a 
               href={`tel:${phone}`}
-              className="flex items-start gap-3 group hover:text-primary transition-colors"
+              className="flex items-start gap-2 sm:gap-3 group hover:text-primary transition-colors"
             >
-              <Phone className="h-5 w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform" />
+              <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-xs text-muted-foreground mb-1">Contact number</p>
+                <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Contact number</p>
                   {charity.is_phone_verified && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400 font-medium">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            Verified
+                          <span className="inline-flex items-center gap-0.5 sm:gap-1 text-[9px] sm:text-[11px] text-green-600 dark:text-green-400 font-medium">
+                            <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            <span className="hidden xs:inline">Verified</span>
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>This contact detail has been verified by the platform.</p>
+                          <p className="text-xs">Verified by platform</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
                 </div>
-                <p className="text-sm font-medium group-hover:underline">{phone}</p>
+                <p className="text-xs sm:text-sm font-medium group-hover:underline">{phone}</p>
               </div>
             </a>
           )}
           
           {/* Address */}
           {(charity.address || (charity as any).full_address) && (
-            <div className="flex items-start gap-3">
-              <MapPin className="h-5 w-5 text-primary mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Address</p>
-                <p className="text-sm font-medium leading-relaxed">
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Address</p>
+                <p className="text-xs sm:text-sm font-medium leading-relaxed">
                   {charity.address || (charity as any).full_address}
                 </p>
               </div>
@@ -220,11 +223,11 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
 
           {/* Operating hours */}
           {charity.operating_hours && (
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="h-5 w-5 text-primary mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Operating hours</p>
-                <p className="text-sm font-medium leading-relaxed">
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Operating hours</p>
+                <p className="text-xs sm:text-sm font-medium leading-relaxed">
                   {charity.operating_hours}
                 </p>
               </div>
@@ -237,12 +240,12 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
               href={(website || '').startsWith('http') ? website : `https://${website}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-3 group hover:text-primary transition-colors"
+              className="flex items-start gap-2 sm:gap-3 group hover:text-primary transition-colors"
             >
-              <Globe className="h-5 w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform" />
+              <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 group-hover:scale-110 transition-transform shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Website</p>
-                <p className="text-sm font-medium break-all group-hover:underline">
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5 sm:mb-1">Website</p>
+                <p className="text-xs sm:text-sm font-medium break-all group-hover:underline">
                   {website}
                 </p>
               </div>
@@ -253,30 +256,32 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
 
       {/* Social Profiles (placed between Contact and Verification) */}
       <Card className="hover:shadow-md transition-shadow duration-200">
-        <CardHeader>
+        <CardHeader className="pb-3 sm:pb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-bold text-lg">Social Profiles</h3>
-              <CardDescription>Connect with us</CardDescription>
+              <h3 className="font-bold text-base sm:text-lg">Social Profiles</h3>
+              <CardDescription className="text-xs sm:text-sm">Connect with us</CardDescription>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
-              aria-label="Edit Social Profiles"
-              onClick={() => {
-                if (onEditSocial) {
-                  onEditSocial();
-                } else {
-                  window.dispatchEvent(new CustomEvent('open-social-edit'));
-                }
-              }}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            {viewMode === 'admin' && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                aria-label="Edit Social Profiles"
+                onClick={() => {
+                  if (onEditSocial) {
+                    onEditSocial();
+                  } else {
+                    window.dispatchEvent(new CustomEvent('open-social-edit'));
+                  }
+                }}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </CardHeader>
-        <CardContent className="space-y-2.5">
+        <CardContent className="space-y-2 sm:space-y-2.5">
           {charity.facebook_url || charity.instagram_url || charity.twitter_url || charity.linkedin_url || charity.youtube_url ? (
             <>
               {charity.facebook_url && (
@@ -284,16 +289,16 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
                   href={charity.facebook_url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="flex items-center gap-3 group transition-all duration-200 rounded-xl px-4 py-3 bg-gradient-to-r from-blue-500/10 to-blue-600/10 hover:from-blue-500/20 hover:to-blue-600/20 border border-blue-500/20 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10"
+                  className="flex items-center gap-2 sm:gap-3 group transition-all duration-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 bg-gradient-to-r from-blue-500/10 to-blue-600/10 hover:from-blue-500/20 hover:to-blue-600/20 border border-blue-500/20 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-white group-hover:scale-110 transition-transform">
-                    <Facebook className="h-5 w-5" />
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md sm:rounded-lg bg-blue-500 text-white group-hover:scale-110 transition-transform shrink-0">
+                    <Facebook className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-blue-500 transition-colors">Facebook</p>
-                    <p className="text-xs text-muted-foreground truncate">{charity.facebook_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-blue-500 transition-colors">Facebook</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{charity.facebook_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </a>
               )}
               {charity.instagram_url && (
@@ -301,16 +306,16 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
                   href={charity.instagram_url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="flex items-center gap-3 group transition-all duration-200 rounded-xl px-4 py-3 bg-gradient-to-r from-pink-500/10 to-purple-600/10 hover:from-pink-500/20 hover:to-purple-600/20 border border-pink-500/20 hover:border-pink-500/40 hover:shadow-lg hover:shadow-pink-500/10"
+                  className="flex items-center gap-2 sm:gap-3 group transition-all duration-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 bg-gradient-to-r from-pink-500/10 to-purple-600/10 hover:from-pink-500/20 hover:to-purple-600/20 border border-pink-500/20 hover:border-pink-500/40 hover:shadow-lg hover:shadow-pink-500/10"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white group-hover:scale-110 transition-transform">
-                    <Instagram className="h-5 w-5" />
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md sm:rounded-lg bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white group-hover:scale-110 transition-transform shrink-0">
+                    <Instagram className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-pink-500 transition-colors">Instagram</p>
-                    <p className="text-xs text-muted-foreground truncate">{charity.instagram_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-pink-500 transition-colors">Instagram</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{charity.instagram_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-pink-500 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-pink-500 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </a>
               )}
               {charity.twitter_url && (
@@ -318,18 +323,18 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
                   href={charity.twitter_url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="flex items-center gap-3 group transition-all duration-200 rounded-xl px-4 py-3 bg-gradient-to-r from-slate-700/10 to-slate-900/10 hover:from-slate-700/20 hover:to-slate-900/20 border border-slate-600/20 hover:border-slate-600/40 hover:shadow-lg hover:shadow-slate-600/10"
+                  className="flex items-center gap-2 sm:gap-3 group transition-all duration-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 bg-gradient-to-r from-slate-700/10 to-slate-900/10 hover:from-slate-700/20 hover:to-slate-900/20 border border-slate-600/20 hover:border-slate-600/40 hover:shadow-lg hover:shadow-slate-600/10"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black text-white group-hover:scale-110 transition-transform">
-                    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md sm:rounded-lg bg-black text-white group-hover:scale-110 transition-transform shrink-0">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 sm:h-5 sm:w-5 fill-current" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">X (Twitter)</p>
-                    <p className="text-xs text-muted-foreground truncate">{charity.twitter_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">X (Twitter)</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{charity.twitter_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-slate-700 dark:group-hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-slate-700 dark:group-hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </a>
               )}
               {charity.linkedin_url && (
@@ -337,16 +342,16 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
                   href={charity.linkedin_url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="flex items-center gap-3 group transition-all duration-200 rounded-xl px-4 py-3 bg-gradient-to-r from-blue-600/10 to-blue-800/10 hover:from-blue-600/20 hover:to-blue-800/20 border border-blue-600/20 hover:border-blue-600/40 hover:shadow-lg hover:shadow-blue-600/10"
+                  className="flex items-center gap-2 sm:gap-3 group transition-all duration-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 bg-gradient-to-r from-blue-600/10 to-blue-800/10 hover:from-blue-600/20 hover:to-blue-800/20 border border-blue-600/20 hover:border-blue-600/40 hover:shadow-lg hover:shadow-blue-600/10"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white group-hover:scale-110 transition-transform">
-                    <Linkedin className="h-5 w-5" />
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md sm:rounded-lg bg-blue-600 text-white group-hover:scale-110 transition-transform shrink-0">
+                    <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-blue-600 transition-colors">LinkedIn</p>
-                    <p className="text-xs text-muted-foreground truncate">{charity.linkedin_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-blue-600 transition-colors">LinkedIn</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{charity.linkedin_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </a>
               )}
               {charity.youtube_url && (
@@ -354,28 +359,28 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
                   href={charity.youtube_url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="flex items-center gap-3 group transition-all duration-200 rounded-xl px-4 py-3 bg-gradient-to-r from-red-500/10 to-red-700/10 hover:from-red-500/20 hover:to-red-700/20 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10"
+                  className="flex items-center gap-2 sm:gap-3 group transition-all duration-200 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 bg-gradient-to-r from-red-500/10 to-red-700/10 hover:from-red-500/20 hover:to-red-700/20 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg hover:shadow-red-500/10"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-600 text-white group-hover:scale-110 transition-transform">
-                    <Youtube className="h-5 w-5" />
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-md sm:rounded-lg bg-red-600 text-white group-hover:scale-110 transition-transform shrink-0">
+                    <Youtube className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-red-600 transition-colors">YouTube</p>
-                    <p className="text-xs text-muted-foreground truncate">{charity.youtube_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-red-600 transition-colors">YouTube</p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{charity.youtube_url.replace(/^https?:\/\/(www\.)?/, '')}</p>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground group-hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </a>
               )}
             </>
           ) : (
-            <div className="text-center py-8">
-              <div className="flex justify-center gap-2 mb-3 opacity-30">
-                <Facebook className="h-6 w-6" />
-                <Instagram className="h-6 w-6" />
-                <Linkedin className="h-6 w-6" />
+            <div className="text-center py-6 sm:py-8">
+              <div className="flex justify-center gap-2 mb-2 sm:mb-3 opacity-30">
+                <Facebook className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Instagram className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Linkedin className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <p className="text-sm text-muted-foreground">No social profiles added yet</p>
-              <p className="text-xs text-muted-foreground/70 mt-1">Connect your social media to reach more donors</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">No social profiles added yet</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground/70 mt-1">Connect your social media to reach more donors</p>
             </div>
           )}
         </CardContent>
@@ -383,32 +388,32 @@ export function ProfileSidebar({ charity, onEditContact, onEditSocial }: Profile
 
       {/* Verification & Compliance */}
       <Card className="hover:shadow-md transition-shadow duration-200">
-        <CardHeader>
-          <h3 className="font-bold text-lg">Verification & Compliance</h3>
-          <CardDescription>Trust and transparency</CardDescription>
+        <CardHeader className="pb-3 sm:pb-6">
+          <h3 className="font-bold text-base sm:text-lg">Verification & Compliance</h3>
+          <CardDescription className="text-xs sm:text-sm">Trust and transparency</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2.5 sm:space-y-3">
           {(charity.is_verified || charity.verification_status === 'approved') && (
             <div className="flex items-center gap-2 text-green-500">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">Verified Organization</span>
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="text-xs sm:text-sm font-medium">Verified Organization</span>
             </div>
           )}
           {charity.registration_number && (
-            <div className="flex items-start gap-3">
-              <FileText className="h-4 w-4 text-primary mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <FileText className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-muted-foreground mb-0.5">Registration Number</p>
-                <p className="text-sm font-medium">{charity.registration_number}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">Registration Number</p>
+                <p className="text-xs sm:text-sm font-medium break-words">{charity.registration_number}</p>
               </div>
             </div>
           )}
           {charity.created_at && (
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="h-4 w-4 text-primary mt-0.5" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <ShieldCheck className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs text-muted-foreground mb-0.5">On Platform Since</p>
-                <p className="text-sm font-medium">{new Date(charity.created_at).toLocaleDateString()}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">On Platform Since</p>
+                <p className="text-xs sm:text-sm font-medium">{new Date(charity.created_at).toLocaleDateString()}</p>
               </div>
             </div>
           )}

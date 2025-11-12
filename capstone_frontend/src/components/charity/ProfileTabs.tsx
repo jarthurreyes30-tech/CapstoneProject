@@ -135,6 +135,7 @@ interface Officer {
 }
 
 interface ProfileTabsProps {
+  viewMode?: 'admin' | 'donor';
   charity: {
     id?: number;
     name?: string;
@@ -178,6 +179,7 @@ interface ProfileTabsProps {
 }
 
 export function ProfileTabs({ 
+  viewMode = 'admin',
   charity, 
   recentUpdates, 
   campaigns,
@@ -350,7 +352,11 @@ export function ProfileTabs({
   }, [charity?.id, activeTab]);
 
   const canManageOfficers = () => {
-    return user?.role === 'charity_admin' && user?.charity?.id && user.charity.id === charity?.id;
+    return viewMode === 'admin' && user?.role === 'charity_admin' && user?.charity?.id && user.charity.id === charity?.id;
+  };
+
+  const isAdminView = () => {
+    return viewMode === 'admin' && user?.role === 'charity_admin' && user?.charity?.id && user.charity.id === charity?.id;
   };
 
   const openAddOfficer = () => {
@@ -849,13 +855,13 @@ export function ProfileTabs({
           className="bg-transparent p-0"
           role="tablist"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
             <TabsTrigger 
               value="about"
               role="tab"
               aria-selected="true"
               aria-controls="about-panel"
-              className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+              className="rounded-md sm:rounded-lg px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
               About
             </TabsTrigger>
@@ -863,11 +869,11 @@ export function ProfileTabs({
               value="updates"
               role="tab"
               aria-controls="updates-panel"
-              className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+              className="rounded-md sm:rounded-lg px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              <span className="mr-2">Updates</span>
+              <span className="mr-1 sm:mr-2">Updates</span>
               {recentUpdates.length > 0 && (
-                <span className="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-sky-600 text-white text-xs font-semibold">
+                <span className="inline-flex items-center justify-center min-w-4 h-4 sm:min-w-5 sm:h-5 px-1 rounded-full bg-sky-600 text-white text-[10px] sm:text-xs font-semibold">
                   {recentUpdates.length}
                 </span>
               )}
@@ -876,11 +882,11 @@ export function ProfileTabs({
               value="campaigns"
               role="tab"
               aria-controls="campaigns-panel"
-              className="rounded-lg px-5 py-2 text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+              className="rounded-md sm:rounded-lg px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 text-sm sm:text-base text-muted-foreground hover:bg-white/10 transition-colors data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              <span className="mr-2">Campaigns</span>
+              <span className="mr-1 sm:mr-2">Campaigns</span>
               {campaigns.length > 0 && (
-                <span className="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full bg-indigo-600 text-white text-xs font-semibold">
+                <span className="inline-flex items-center justify-center min-w-4 h-4 sm:min-w-5 sm:h-5 px-1 rounded-full bg-indigo-600 text-white text-[10px] sm:text-xs font-semibold">
                   {campaigns.length}
                 </span>
               )}
@@ -895,7 +901,7 @@ export function ProfileTabs({
         <Card className="hover:shadow-md transition-shadow duration-200">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold">Founders & Board</h2>
+              <h2 className="text-lg sm:text-xl font-bold">Founders & Board</h2>
               {canManageOfficers() && (
                 <Button variant="outline" size="sm" onClick={openAddOfficer}>
                   <Plus className="h-4 w-4 mr-1" /> Add
@@ -911,9 +917,9 @@ export function ProfileTabs({
             ) : officers.length === 0 ? (
               <p className="text-sm text-muted-foreground">No officers listed.</p>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {officers.map((o) => (
-                  <div key={o.id} className="flex items-center gap-3 p-3 rounded-lg border">
+                  <div key={o.id} className="flex flex-wrap items-start gap-3 p-3 rounded-lg border">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={(o.profile_image_url || (o.profile_image_path ? getStorageUrl(o.profile_image_path) : '')) || ''} />
                       <AvatarFallback>{(o.name || 'OF').substring(0,2).toUpperCase()}</AvatarFallback>
@@ -925,11 +931,11 @@ export function ProfileTabs({
                       {o.phone && <p className="text-xs text-muted-foreground truncate">{o.phone}</p>}
                     </div>
                     {canManageOfficers() && (
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => openEditOfficer(o)} aria-label="Edit officer">
+                      <div className="flex gap-1 w-full sm:w-auto justify-end sm:justify-start mt-1 sm:mt-0">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditOfficer(o)} aria-label="Edit officer">
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeleteOfficerId(o.id)} aria-label="Delete officer">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDeleteOfficerId(o.id)} aria-label="Delete officer">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -947,15 +953,17 @@ export function ProfileTabs({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Mission</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
-                  aria-label="Edit Mission"
-                  onClick={handleOpenMissionModal}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                {isAdminView() && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    aria-label="Edit Mission"
+                    onClick={handleOpenMissionModal}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -970,15 +978,17 @@ export function ProfileTabs({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Vision</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
-                  aria-label="Edit Vision"
-                  onClick={handleOpenVisionModal}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                {isAdminView() && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    aria-label="Edit Vision"
+                    onClick={handleOpenVisionModal}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -993,15 +1003,17 @@ export function ProfileTabs({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">About Us</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
-                  aria-label="Edit About Us"
-                  onClick={handleOpenAboutUsModal}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                {isAdminView() && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                    aria-label="Edit About Us"
+                    onClick={handleOpenAboutUsModal}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -1019,11 +1031,15 @@ export function ProfileTabs({
           <Card className="p-12 text-center border-dashed">
             <MessageSquare className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
             <h3 className="font-semibold text-lg mb-2">No updates yet</h3>
-            <p className="text-muted-foreground text-sm mb-4">Share your first update with your supporters</p>
-            <Button onClick={() => navigate('/charity/updates')}>
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Post Your First Update
-            </Button>
+            <p className="text-muted-foreground text-sm mb-4">
+              {isAdminView() ? "Share your first update with your supporters" : "This charity hasn't posted any updates yet"}
+            </p>
+            {isAdminView() && (
+              <Button onClick={() => navigate('/charity/updates')}>
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Post Your First Update
+              </Button>
+            )}
           </Card>
         ) : (
           <>
@@ -1057,43 +1073,45 @@ export function ProfileTabs({
                           <p className="text-xs text-muted-foreground mt-0">{getTimeAgo(update.created_at)}</p>
                         </div>
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setEditingUpdate(update);
-                              setEditContent(update.content);
-                              setIsEditModalOpen(true);
-                            }}
-                          >
-                            <Edit2 className="mr-2 h-4 w-4" />
-                            Edit Post
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleTogglePin(update.id, !!update.is_pinned)}>
-                            {update.is_pinned ? (
-                              <>
-                                <PinOff className="mr-2 h-4 w-4" />
-                                Unpin from Top
-                              </>
-                            ) : (
-                              <>
-                                <Pin className="mr-2 h-4 w-4" />
-                                Pin to Top
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <Separator className="my-1" />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(update.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete Post
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {isAdminView() && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingUpdate(update);
+                                setEditContent(update.content);
+                                setIsEditModalOpen(true);
+                              }}
+                            >
+                              <Edit2 className="mr-2 h-4 w-4" />
+                              Edit Post
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleTogglePin(update.id, !!update.is_pinned)}>
+                              {update.is_pinned ? (
+                                <>
+                                  <PinOff className="mr-2 h-4 w-4" />
+                                  Unpin from Top
+                                </>
+                              ) : (
+                                <>
+                                  <Pin className="mr-2 h-4 w-4" />
+                                  Pin to Top
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                            <Separator className="my-1" />
+                            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(update.id)}>
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete Post
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2 pt-0 p-6">
@@ -1280,52 +1298,58 @@ export function ProfileTabs({
       </TabsContent>
 
       {/* Campaigns Tab */}
-      <TabsContent value="campaigns" id="campaigns-panel" role="tabpanel" className="space-y-4">
+      <TabsContent value="campaigns" id="campaigns-panel" role="tabpanel" className="space-y-3 sm:space-y-4">
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <h2 className="text-xl font-bold">Your Campaigns</h2>
-          <div className="flex items-center gap-3">
-            <Button className="bg-primary hover:bg-primary/90 h-10 transition-transform hover:scale-[1.01]" onClick={() => setIsCreateOpen(true)} aria-label="Create New Campaign">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Campaign
-            </Button>
-            <Button
-              variant="outline"
-              className="h-10 transition-transform hover:scale-[1.01]"
-              onClick={() => setIsDonationChannelModalOpen(true)}
-              aria-label="Add Donation Channel"
-            >
-              <Wallet className="h-4 w-4 mr-2" />
-              Add Donation Channel
-            </Button>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight">{isAdminView() ? "Your Campaigns" : "Campaigns"}</h2>
+          {isAdminView() && (
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              <Button className="bg-primary hover:bg-primary/90 h-9 px-3 text-sm transition-transform hover:scale-[1.01]" onClick={() => setIsCreateOpen(true)} aria-label="Create New Campaign">
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="sm:hidden">Create</span>
+                <span className="hidden sm:inline">Create Campaign</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="h-9 px-3 text-sm transition-transform hover:scale-[1.01]"
+                onClick={() => setIsDonationChannelModalOpen(true)}
+                aria-label="Add Donation Channel"
+              >
+                <Wallet className="h-4 w-4 mr-2" />
+                <span className="sm:hidden">Add Channel</span>
+                <span className="hidden sm:inline">Add Donation Channel</span>
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Filters & Sort */}
-        <div className="flex flex-wrap items-center gap-3 bg-card border rounded-lg p-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Filter:</span>
-            <div className="flex rounded-lg border border-border/50 overflow-hidden">
-              {(['all','active','completed','pending'] as const).map(f => (
-                <button
-                  key={f}
-                  role="tab"
-                  aria-pressed={campaignFilter===f}
-                  onClick={() => setCampaignFilter(f)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${campaignFilter===f ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-accent text-muted-foreground hover:text-foreground'}`}
-                >
-                  {f === 'all' ? 'All' : f.charAt(0).toUpperCase()+f.slice(1)}
-                </button>
-              ))}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 bg-card border rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground">Filter:</span>
+            <div className="flex-1 sm:flex-none overflow-x-auto whitespace-nowrap [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="inline-flex rounded-lg border border-border/50 overflow-hidden">
+                {(['all','active','completed','pending'] as const).map(f => (
+                  <button
+                    key={f}
+                    role="tab"
+                    aria-pressed={campaignFilter===f}
+                    onClick={() => setCampaignFilter(f)}
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors shrink-0 ${campaignFilter===f ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-accent text-muted-foreground hover:text-foreground'}`}
+                  >
+                    {f === 'all' ? 'All' : f.charAt(0).toUpperCase()+f.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="text-sm font-medium text-muted-foreground">Sort:</span>
+          <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-auto justify-start sm:justify-end">
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground">Sort:</span>
             <Select value={campaignSort} onValueChange={(v: any) => setCampaignSort(v)}>
-              <SelectTrigger className="w-[150px]" aria-label="Sort campaigns">
+              <SelectTrigger className="h-9 w-[120px] sm:w-[150px]" aria-label="Sort campaigns">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" side="bottom" align="start" className="max-w-[95vw] w-[150px] sm:w-[180px] z-[60]">
                 <SelectItem value="newest">Newest</SelectItem>
                 <SelectItem value="most_funded">Most Funded</SelectItem>
                 <SelectItem value="ending_soon">Ending Soon</SelectItem>
@@ -1336,7 +1360,7 @@ export function ProfileTabs({
 
         {/* Content */}
         {campaignsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
             <CampaignCardSkeleton />
             <CampaignCardSkeleton />
             <CampaignCardSkeleton />
@@ -1346,14 +1370,18 @@ export function ProfileTabs({
           <Card className="p-12 text-center border-dashed">
             <Target className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
             <h3 className="font-semibold text-lg mb-2">No campaigns yet</h3>
-            <p className="text-muted-foreground text-sm mb-4">Create your first campaign to start raising funds</p>
-            <Button className="transition-transform hover:scale-[1.01]" onClick={() => setIsCreateOpen(true)} aria-label="Create Your First Campaign">
-              <Target className="h-4 w-4 mr-2" />
-              Create Your First Campaign
-            </Button>
+            <p className="text-muted-foreground text-sm mb-4">
+              {isAdminView() ? "Create your first campaign to start raising funds" : "This charity hasn't created any campaigns yet"}
+            </p>
+            {isAdminView() && (
+              <Button className="transition-transform hover:scale-[1.01]" onClick={() => setIsCreateOpen(true)} aria-label="Create Your First Campaign">
+                <Target className="h-4 w-4 mr-2" />
+                Create Your First Campaign
+              </Button>
+            )}
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
             {filteredCampaigns.map((c) => {
               const mapped: DashboardCampaign = {
                 id: c.id,
@@ -1372,8 +1400,10 @@ export function ProfileTabs({
                 <CampaignCard
                   key={c.id}
                   campaign={mapped}
-                  viewMode="admin"
-                  onEdit={(id) => navigate(`/charity/campaigns/${id}/edit`)}
+                  viewMode={viewMode}
+                  {...(viewMode === 'admin' && {
+                    onEdit: (id) => navigate(`/charity/campaigns/${id}/edit`)
+                  })}
                   onShare={(id) => {
                     const shareUrl = `${window.location.origin}/campaigns/${id}`;
                     if (navigator.share) {
