@@ -22,13 +22,15 @@ class StorageCors
             'http://127.0.0.1:3000',
             'http://localhost:5173',
             'http://127.0.0.1:5173',
+            'http://192.168.1.7:8080',  // Network IP for mobile access
+            'http://192.168.1.11:8080',
         ];
 
         $origin = $request->headers->get('Origin');
-        $allowOrigin = null;
-        if ($origin && in_array($origin, $allowedOrigins, true)) {
-            $allowOrigin = $origin;
-        }
+        $allowOrigin = '*';  // Allow all origins for storage files
+        // if ($origin && in_array($origin, $allowedOrigins, true)) {
+        //     $allowOrigin = $origin;
+        // }
 
         // Handle preflight requests early
         if ($request->getMethod() === 'OPTIONS') {

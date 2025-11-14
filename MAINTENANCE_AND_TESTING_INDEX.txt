@@ -1,0 +1,218 @@
+MAINTENANCE, TESTING, AND SETUP TOOLS INDEX
+=========================================
+
+This file summarizes the testing, setup, and maintenance tools that previously existed
+in the CapstoneProject folder before deployment cleanup. The actual scripts and SQL
+files referenced here may have been removed from this deployment copy.
+
+If you need to re-create these tools, use the descriptions below as a guide.
+
+
+1. DATABASE CHECK / CLEANUP SQL SCRIPTS
+---------------------------------------
+
+- CHECK_CHARITY_2_DATA.sql
+  Checks data consistency for charity-related tables.
+
+- CHECK_DATABASE_NOW.sql
+  General database consistency/health check script.
+
+- FIXED_DATABASE_CHECK.sql
+  Improved/updated database consistency check.
+
+- TEST_CHARITY_QUERY.sql
+  Test query for charity-related data.
+
+- clean-activity-logs.sql
+  Cleans invalid or orphaned rows from the activity_logs table by removing
+  entries whose related donation, user, or campaign records no longer exist.
+
+- verify-action-logs-statistics.sql
+  Verifies statistics or aggregates based on activity_logs.
+
+- verify-activity-logs-integrity.sql
+  Checks for inconsistent or orphaned activity_logs entries.
+
+- create-individual-donation-logs.sql
+  Creates or rebuilds log entries for individual donations.
+
+- check-approved-refunds.sql
+  Verifies correctness of approved refund records.
+
+- check-individual-donations.sql
+  Verifies individual donations data consistency.
+
+- check-refund-database.ps1 / check-refunds-now.ps1 / check-screenshot-refunds.ps1
+  PowerShell helpers to check refund data, screenshots, and related records.
+
+- clean-and-setup.ps1 / clean-and-verify-activity-logs.ps1 / clean-non-admin.ps1
+  PowerShell helpers to clean database tables, reset data, and verify logs.
+
+- cleanup_duplicates.ps1
+  Removes duplicate records based on predefined criteria.
+
+- clear-seeded-data.ps1
+  Clears seed/demo data from the database.
+
+
+2. MIGRATIONS, SETUP, AND ENVIRONMENT SCRIPTS
+---------------------------------------------
+
+- RUN_MIGRATIONS.ps1
+  Runs backend database migrations.
+
+- RUN_MIGRATIONS_AND_TEST.ps1
+  Runs backend migrations and then executes tests.
+
+- setup-backend-db.ps1
+  Sets up the backend database schema and initial data.
+
+- setup-database.ps1
+  General database setup script for the project.
+
+- migrate-to-mysql.ps1
+  Helper script to migrate or configure the project for MySQL.
+
+- enable-zip-extension.ps1
+  Ensures PHP zip extension is enabled (required for some features).
+
+
+3. BACKEND/FRONTEND SERVICE HELPERS
+-----------------------------------
+
+- START-ALL-SERVICES.ps1
+  Starts all core services (backend, frontend, queues) from one script.
+
+- restart-backend.ps1 / restart_backend.ps1 / restart_backend.bat
+  Restarts the backend application or related services.
+
+- run-fix.ps1 / fix-and-restart.ps1
+  Applies specific fixes and restarts services.
+
+- start-email-queue.ps1 / start-queue-worker.ps1
+  Starts background queue workers, including email or job queues.
+
+
+4. DIAGNOSTIC / FIX SCRIPTS
+---------------------------
+
+- COMPREHENSIVE_DIAGNOSIS.ps1
+  Runs a comprehensive diagnostic over logs, configuration, and services.
+
+- diagnose-and-fix.ps1
+  Runs a sequence of checks and applies automated fixes where possible.
+
+- quick-check.ps1 / quick-fix.ps1
+  Quick health check and automatic minor fixes.
+
+- find-hardcoded-colors.ps1
+  Scans frontend code for hardcoded color values.
+
+- fix-404-errors.ps1
+  Helps fix or verify 404-related routing/config issues.
+
+- fix-individual-donations.ps1
+  Fixes data issues for individual donations.
+
+- fix-posts.ps1 / fix-posts-complete.ps1
+  Fixes posts-related data or content issues.
+
+- fix-refund-donations.ps1
+  Fixes data issues related to refund donations.
+
+- fix-password.php / verify-password.php
+  Password-related diagnostic/fix scripts.
+
+- verify-audit-fixes.ps1 / verify-backend-fixes.ps1
+  Verifies that previously applied fixes are still valid and effective.
+
+- verify-cleanup.php
+  Verifies that cleanup operations completed successfully.
+
+- verify-deactivation-feature.ps1 / verify-retrieval-feature.ps1 / verify-support-feature.ps1
+  Verifies specific application features and workflows.
+
+
+5. REFUND, DONATION, AND LOG MAINTENANCE
+----------------------------------------
+
+- check-approved-refunds.sql
+  Verifies the correctness and consistency of approved refunds.
+
+- check-stats-accuracy.ps1
+  Checks that high-level statistics match underlying data.
+
+- direct-cleanup.php
+  Performs direct cleanup actions on specific tables or records.
+
+- regenerate-donation-logs.php
+  Rebuilds or regenerates donation log records.
+
+- clean-activity-logs.sql (see above)
+  Cleans out invalid activity_logs entries.
+
+
+6. FRONTEND/BACKEND TESTING & UTILITY SCRIPTS (ROOT)
+----------------------------------------------------
+
+- quick-email-test.ps1
+  Sends a quick test email using the configured email system.
+
+- test_frontend.ps1
+  Runs a basic set of checks/tests against the frontend.
+
+- test_api_endpoints.ps1
+  Tests various API endpoints for expected responses.
+
+- test_fund_tracking.ps1
+  Tests fund tracking logic and reporting.
+
+- test-profile-api.html
+  HTML helper for testing profile-related backend APIs.
+
+- scripts/ (folder)
+  Contains additional testing and diagnostic scripts, such as:
+  - API endpoint tests
+  - campaign/charity-specific tests
+  - notification/email verification scripts
+
+
+7. DATA / CONTENT HELPERS AND REPORTS
+-------------------------------------
+
+- COMPLETE_LOCATIONS_DATASET.json
+  Dataset of locations used for seeding or testing location-related features.
+
+- QUICK_START_EMAILS.txt / email-test-results.txt
+  Email templates or test result summaries for email flows.
+
+- TEMP_UPDATES_COMPONENT.txt
+  Notes or temporary updates related to frontend components.
+
+- TEST_RESULTS_SUMMARY.txt
+  Summary of automated or manual test runs.
+
+- lint-admin.json / lint-report.json
+  JSON reports from linting tools, used to clean up frontend/admin code.
+
+
+8. DOCUMENTATION / NOTES
+------------------------
+
+- READ_ME_FIRST.txt
+  High-level project notes and quickstart instructions.
+
+- docs/ (folder)
+  Project documentation, bug fix notes, or additional references.
+
+- commit_message.txt
+  Template or example commit message used during development.
+
+
+USAGE NOTES
+-----------
+
+- In the deployment copy, these tools are documented here for reference but may
+  not be present as runnable scripts/SQL files.
+- In a full development environment, you may want to restore or recreate these
+  tools from version control so they can be executed directly.

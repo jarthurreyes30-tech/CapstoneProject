@@ -150,6 +150,8 @@ Route::get('/charities/{charity}/donation-channels', [\App\Http\Controllers\Dona
 
 // Public statistics
 Route::get('/public/stats', [DashboardController::class,'publicStats']);
+Route::get('/public/campaigns', [CampaignController::class,'publicIndex']);
+Route::get('/public/charities', [CharityController::class,'publicIndex']);
 
 // Public leaderboards
 Route::get('/leaderboard/donors', [LeaderboardController::class,'topDonors']);

@@ -168,6 +168,11 @@ class CharityController extends Controller
         ]);
     }
 
+    // Alias for public/charities route
+    public function publicIndex(Request $r){
+        return $this->index($r);
+    }
+
     public function show(Request $r, Charity $charity){
         // Calculate total received from completed donations
         $totalReceived = $charity->donations()
