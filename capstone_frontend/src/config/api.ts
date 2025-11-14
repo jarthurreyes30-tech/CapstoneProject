@@ -7,7 +7,7 @@
 export const API_URL = import.meta.env.VITE_API_URL;
 
 // Base URL for the backend server (without /api)
-export const BASE_URL = API_URL?.replace('/api', '') || 'http://127.0.0.1:8000';
+export const BASE_URL = API_URL?.replace('/api', '') || 'https://backend-production-3c74.up.railway.app';
 
 // Storage URL for accessing uploaded files
 export const STORAGE_URL = `${BASE_URL}/storage`;

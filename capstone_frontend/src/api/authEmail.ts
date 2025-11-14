@@ -1,7 +1,9 @@
 // Authentication Email API Utilities
 // These functions handle all authentication-related email operations
 
-const API_BASE_URL = "http://127.0.0.1:8000/api";
+import { getApiUrl } from '../lib/api';
+
+const API_BASE_URL = getApiUrl();
 
 interface ApiResponse {
   success: boolean;

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import { Upload, X, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { getApiUrl } from '../lib/api';
 
 interface Video {
   id: number;
@@ -92,7 +93,7 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:8000/api/campaigns/${campaignId}/videos`,
+        `${getApiUrl()}/campaigns/${campaignId}/videos`,
         formData,
         {
           headers: {
@@ -141,7 +142,7 @@ export const VideoUploader: React.FC<VideoUploaderProps> = ({
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get(
-          `http://localhost:8000/api/videos/${videoId}`,
+          `${getApiUrl()}/videos/${videoId}`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
           }
