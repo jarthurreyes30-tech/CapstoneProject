@@ -12,8 +12,10 @@ import { cn } from '@/lib/utils';
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token') || '';
+  const emailFromUrl = searchParams.get('email') || '';
 
+  const [email, setEmail] = useState(emailFromUrl);
+  const [code, setCode] = useState('');
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
@@ -23,17 +25,18 @@ export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
 
-  if (!token) {
+  if (!emailFromUrl) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
         <div className="w-full max-w-md auth-card text-center space-y-4">
-          <h2 className="text-xl sm:text-2xl font-bold">Invalid Reset Link</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Email Required</h2>
           <p className="text-muted-foreground">
-            This password reset link is invalid or has expired.
+            Please request a password reset code first.
           </p>
-          <Link to="/auth/forgot">
-            <Button>Request new link</Button>
+          <Link to="/auth/forgot-password">
+            <Button>Request reset code</Button>
           </Link>
         </div>
       </div>
@@ -43,8 +46,24 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    setRemainingAttempts(null);
 
-    // Validate passwords match
+    // Validate form
+    if (!email) {
+      setErrors({ email: 'Email is required' });
+      return;
+    }
+
+    if (!code || code.length !== 6) {
+      setErrors({ code: 'Please enter the 6-digit code' });
+      return;
+    }
+
+    if (!formData.password || formData.password.length < 8) {
+      setErrors({ password: 'Password must be at least 8 characters' });
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setErrors({ confirmPassword: 'Passwords do not match' });
       return;
@@ -53,18 +72,23 @@ export default function ResetPassword() {
     setIsLoading(true);
 
     try {
-      await authService.resetPassword(token, formData.password, formData.confirmPassword);
+      await authService.resetPassword(email, code, formData.password, formData.confirmPassword);
       setIsSuccess(true);
       toast.success('Password reset successful!', {
         description: 'You can now sign in with your new password.',
       });
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrors({ general: error.message });
-        toast.error('Failed to reset password', {
-          description: error.message,
-        });
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to reset password';
+      
+      // Check for remaining attempts in error
+      if (error.response?.data?.remaining_attempts !== undefined) {
+        setRemainingAttempts(error.response.data.remaining_attempts);
       }
+      
+      setErrors({ general: errorMessage });
+      toast.error('Failed to reset password', {
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +126,7 @@ export default function ResetPassword() {
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold mb-1.5 sm:mb-2">Reset your password</h1>
           <p className="text-muted-foreground">
-            Enter your new password below
+            Enter the 6-digit code from your email and your new password
           </p>
         </div>
 
@@ -111,9 +135,56 @@ export default function ResetPassword() {
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {errors.general && (
               <div className="p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20 rounded-lg">
-                {errors.general}
+                <div>{errors.general}</div>
+                {remainingAttempts !== null && remainingAttempts > 0 && (
+                  <div className="mt-2 text-xs">
+                    {remainingAttempts} {remainingAttempts === 1 ? 'attempt' : 'attempts'} remaining
+                  </div>
+                )}
               </div>
             )}
+
+            {/* Email (read-only) */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                readOnly
+                className="bg-muted cursor-not-allowed"
+              />
+            </div>
+
+            {/* Verification Code */}
+            <div className="space-y-2">
+              <Label htmlFor="code">Verification Code</Label>
+              <Input
+                id="code"
+                type="text"
+                placeholder="Enter 6-digit code"
+                value={code}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                  setCode(value);
+                  setErrors({ ...errors, code: '' });
+                }}
+                required
+                maxLength={6}
+                autoComplete="one-time-code"
+                autoFocus
+                className={cn(
+                  'text-center text-2xl tracking-widest font-mono',
+                  errors.code && 'border-destructive'
+                )}
+              />
+              {errors.code && (
+                <p className="text-sm text-destructive">{errors.code}</p>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Enter the 6-digit code sent to your email
+              </p>
+            </div>
 
             {/* New Password */}
             <div className="space-y-2">

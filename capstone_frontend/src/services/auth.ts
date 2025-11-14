@@ -229,6 +229,76 @@ class AuthService {
   }
 
   /**
+   * Send password reset code to email
+   */
+  async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await this.apiClient.post('/auth/forgot-password', { email });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to send reset code. Please try again.');
+    }
+  }
+
+  /**
+   * Resend password reset code
+   */
+  async resendResetCode(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await this.apiClient.post('/auth/resend-reset-code', { email });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to resend reset code. Please try again.');
+    }
+  }
+
+  /**
+   * Verify password reset code (optional step)
+   */
+  async verifyResetCode(email: string, code: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await this.apiClient.post('/auth/verify-reset-code', { email, code });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Invalid or expired code. Please try again.');
+    }
+  }
+
+  /**
+   * Reset password using 6-digit code
+   */
+  async resetPassword(
+    email: string,
+    code: string,
+    password: string,
+    passwordConfirmation: string
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await this.apiClient.post('/auth/reset-password', {
+        email,
+        code,
+        password,
+        password_confirmation: passwordConfirmation,
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to reset password. Please try again.');
+    }
+  }
+
+  /**
    * Register a new donor.
    */
   async registerDonor(data: any): Promise<AuthResponse> {

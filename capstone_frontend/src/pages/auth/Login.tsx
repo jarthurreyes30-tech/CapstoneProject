@@ -275,7 +275,7 @@ export default function Login() {
                 </div>
 
                 <Link
-                  to="/auth/forgot"
+                  to="/auth/forgot-password"
                   className="text-sm text-primary hover:underline self-start sm:self-auto"
                 >
                   Forgot password?

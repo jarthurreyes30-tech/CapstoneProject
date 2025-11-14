@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Mail, Loader2, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Mail, Loader2, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,10 +9,22 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 export default function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [canResend, setCanResend] = useState(true);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [countdown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,15 +32,42 @@ export default function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      await authService.forgotPassword(email);
+      const response = await authService.forgotPassword(email);
       setIsSuccess(true);
-      toast.success('Email sent!', {
-        description: 'Check your inbox for password reset instructions.',
+      setCountdown(60);
+      setCanResend(false);
+      toast.success('Verification code sent!', {
+        description: response.message || 'Check your email for the 6-digit code.',
       });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
-        toast.error('Failed to send email', {
+        toast.error('Failed to send code', {
+          description: err.message,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!canResend || isLoading) return;
+    
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await authService.resendResetCode(email);
+      setCountdown(60);
+      setCanResend(false);
+      toast.success('Code resent!', {
+        description: response.message || 'Check your email for the new code.',
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        toast.error('Failed to resend code', {
           description: err.message,
         });
       }
@@ -56,21 +95,29 @@ export default function ForgotPassword() {
 
             <div className="space-y-3 text-sm text-muted-foreground">
               <p>
-                Click the link in the email to reset your password. The link will expire in 1 hour.
+                Enter the 6-digit verification code from your email to reset your password. The code will expire in 15 minutes.
               </p>
               <p>
-                Didn't receive the email? Check your spam folder or{' '}
+                Didn't receive the code? Check your spam folder or{' '}
                 <button
-                  onClick={() => {
-                    setIsSuccess(false);
-                    setEmail('');
-                  }}
-                  className="text-primary hover:underline"
+                  onClick={handleResend}
+                  disabled={!canResend || isLoading}
+                  className={cn(
+                    'text-primary hover:underline font-medium',
+                    (!canResend || isLoading) && 'opacity-50 cursor-not-allowed'
+                  )}
                 >
-                  try again
+                  {!canResend ? `resend in ${countdown}s` : 'resend now'}
                 </button>
               </p>
             </div>
+
+            <Button 
+              onClick={() => navigate(`/auth/reset-password?email=${encodeURIComponent(email)}`)} 
+              className="w-full h-10 sm:h-11"
+            >
+              Enter Code
+            </Button>
 
             <Link to="/auth/login">
               <Button variant="outline" className="w-full h-10 sm:h-11">
@@ -129,10 +176,13 @@ export default function ForgotPassword() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
+                  Sending code...
                 </>
               ) : (
-                'Send reset link'
+                <>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Send verification code
+                </>
               )}
             </Button>
 
