@@ -85,20 +85,18 @@ class AnalyticsDemoSeeder extends Seeder
                         'role' => 'charity_admin',
                     ]
                 );
-                
-                // Create charity
+
+                // Create charity aligned with current schema
                 $charity = Charity::create([
-                    'user_id' => $user->id,
+                    'owner_id' => $user->id,
                     'name' => $data['name'],
-                    'email' => $data['email'],
-                    'contact_number' => '09' . rand(100000000, 999999999),
-                    'address' => 'Sample Address, Manila',
                     'mission' => 'Dedicated to ' . $data['focus'] . ' initiatives',
                     'vision' => 'A better future through ' . $data['focus'],
-                    'about' => 'We are committed to making a difference in ' . $data['focus'] . '.',
-                    'registration_number' => 'REG-' . strtoupper(substr($data['focus'], 0, 3)) . '-' . rand(1000, 9999),
+                    'website' => null,
+                    'contact_email' => $data['email'],
+                    'contact_phone' => '09' . rand(100000000, 999999999),
                     'verification_status' => 'approved',
-                    'date_registered' => now()->subYears(rand(1, 5)),
+                    'verified_at' => now()->subYears(rand(1, 5)),
                 ]);
             }
             
