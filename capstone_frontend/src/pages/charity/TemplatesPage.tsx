@@ -246,7 +246,7 @@ const TemplatesPage = () => {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-3xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>
               {selectedTemplate ? "Edit Template" : "New Template"}
@@ -304,7 +304,7 @@ const TemplatesPage = () => {
       {/* Preview Dialog */}
       {selectedTemplate && (
         <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-3xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
             <DialogHeader>
               <DialogTitle>Preview: {selectedTemplate.name}</DialogTitle>
               <DialogDescription>

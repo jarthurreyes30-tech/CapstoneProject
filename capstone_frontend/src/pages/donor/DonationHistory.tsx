@@ -635,7 +635,7 @@ export default function DonationHistory() {
 
       {/* Donation Details Dialog - Comprehensive Information */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-4xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
@@ -886,7 +886,7 @@ export default function DonationHistory() {
 
       {/* Refund Request Dialog */}
       <Dialog open={refundDialog} onOpenChange={setRefundDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Request Refund</DialogTitle>
             <DialogDescription>

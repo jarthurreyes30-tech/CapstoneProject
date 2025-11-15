@@ -294,7 +294,7 @@ export default function TwoFactorAuth() {
           if (!open) handleCloseSetup();
         }
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Shield className="h-6 w-6 text-yellow-500" />

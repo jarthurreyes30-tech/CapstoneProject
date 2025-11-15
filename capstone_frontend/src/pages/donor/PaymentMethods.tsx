@@ -216,7 +216,7 @@ export default function PaymentMethods() {
 
       {/* Add Payment Method Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-md p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Add Payment Method</DialogTitle>
             <DialogDescription>Add a new payment method for donations</DialogDescription>

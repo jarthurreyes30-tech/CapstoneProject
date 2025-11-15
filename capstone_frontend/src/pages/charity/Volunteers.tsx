@@ -361,7 +361,7 @@ export default function CharityVolunteers() {
 
       {/* Create Volunteer Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Add New Volunteer</DialogTitle>
             <DialogDescription>
@@ -493,7 +493,7 @@ export default function CharityVolunteers() {
 
       {/* Edit Volunteer Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Edit Volunteer</DialogTitle>
             <DialogDescription>

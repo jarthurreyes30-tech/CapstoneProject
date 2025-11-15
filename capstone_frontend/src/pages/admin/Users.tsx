@@ -244,7 +244,7 @@ export default function Users() {
 
       {/* View User Details Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-2xl lg:max-w-4xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-2xl">User Profile Details</DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">

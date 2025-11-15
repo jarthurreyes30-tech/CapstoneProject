@@ -773,7 +773,7 @@ export default function DonorProfilePage() {
 
       {/* Edit Profile Dialog - Enhanced */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-3xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-2xl">Edit Profile</DialogTitle>
             <DialogDescription>
