@@ -1,4 +1,4 @@
-import { Heart, Shield, TrendingUp, Users, CheckCircle, ArrowRight } from "lucide-react";
+import { Heart, Shield, TrendingUp, Users, CheckCircle, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -62,15 +62,37 @@ export default function PublicAbout() {
       <PublicNavbar />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-16 sm:pt-20 lg:pt-24">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-20 sm:pt-20 lg:pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16 text-center">
-          <Badge className="mb-3 sm:mb-4 text-xs sm:text-sm">About CharityHub</Badge>
+          <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <div className="relative group">
+              {/* Outer glow rings */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 rounded-xl sm:rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-yellow-400 to-orange-600 rounded-xl sm:rounded-2xl blur-lg opacity-40 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              
+              {/* Main logo container with 3D effect */}
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 flex items-center justify-center shadow-2xl transform group-hover:scale-105 transition-all duration-300">
+                {/* Inner gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl sm:rounded-2xl"></div>
+                
+                {/* Main heart icon */}
+                <Heart className="relative h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-white fill-white drop-shadow-lg" />
+                
+                {/* Decorative sparkles */}
+                <Sparkles className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 h-4 w-4 sm:h-5 sm:w-5 text-yellow-300 fill-yellow-300 animate-pulse drop-shadow-lg" />
+                <Zap className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2 h-3 w-3 sm:h-4 sm:w-4 text-orange-300 fill-orange-300 animate-pulse" style={{ animationDelay: '0.3s' }} />
+              </div>
+            </div>
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm">
+              GiveOra
+            </h2>
+          </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2">
             Connecting Generous Hearts with Worthy Causes
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
-            CharityHub is a transparent donation platform that connects donors with verified charities,
-            ensuring your contributions make a real difference.
+            GiveOra is a transparent donation platform that connects donors with verified charities,
+            ensuring your contributions make a real difference in communities across the Philippines.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Button size="lg" onClick={() => navigate('/auth/register')} className="w-full sm:w-auto h-11 sm:h-12">
@@ -140,7 +162,7 @@ export default function PublicAbout() {
       {/* Features */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-2">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Why Choose CharityHub?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Why Choose GiveOra?</h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
             We make charitable giving transparent, secure, and impactful
           </p>
@@ -234,18 +256,72 @@ export default function PublicAbout() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-primary text-primary-foreground py-12 sm:py-14 lg:py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Ready to Make a Difference?</h2>
-          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 opacity-90">
-            Join our community of donors and start supporting verified charities today
-          </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate('/auth/register')} className="h-11 sm:h-12">
-            Get Started
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative p-6 sm:p-10 md:p-12 lg:p-16 rounded-xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white text-center overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+            <div className="relative z-10">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-6">Ready to Make a Difference?</h2>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-5 sm:mb-8 lg:mb-10 max-w-2xl mx-auto px-2">
+                Join thousands of donors and charities making a real difference. Start your journey today.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center">
+                <Button size="lg" onClick={() => navigate('/auth/register')} className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600">
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+                <Button size="lg" variant="secondary" onClick={() => navigate('/auth/login')} className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold bg-white text-slate-900 hover:bg-gray-100 hover:text-slate-900 border-0">
+                  Sign In
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t mt-8 sm:mt-16 lg:mt-20 bg-muted/30">
+        <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
+              <div className="sm:col-span-2 md:col-span-2">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="relative group">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg sm:rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                    {/* Main logo */}
+                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 flex items-center justify-center shadow-lg">
+                      <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-white fill-white" />
+                      <Sparkles className="absolute -top-0.5 -right-0.5 h-2 w-2 sm:h-2.5 sm:w-2.5 text-yellow-300 fill-yellow-300" />
+                    </div>
+                  </div>
+                  <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent">GiveOra</span>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground mb-4">
+                  Connecting donors with verified charities to create lasting impact in communities.
+                </p>
+              </div>
+              <div>
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4">Platform</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/charities" className="hover:text-primary transition-colors">Browse Charities</a></li>
+                  <li><a href="/about" className="hover:text-primary transition-colors">About Us</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4">Get Started</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/auth/register/donor" className="hover:text-primary transition-colors">Donor Registration</a></li>
+                  <li><a href="/auth/register/charity" className="hover:text-primary transition-colors">Charity Registration</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t pt-6 sm:pt-8 text-center text-xs sm:text-sm text-muted-foreground">
+              <p>&copy; 2025 GiveOra. Built with purpose for a better tomorrow.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

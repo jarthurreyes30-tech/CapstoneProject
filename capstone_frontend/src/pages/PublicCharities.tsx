@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Heart, MapPin, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Search, Heart, MapPin, CheckCircle, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,7 +77,7 @@ export default function PublicCharities() {
       <PublicNavbar />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-16">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b pt-20">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <h1 className="text-4xl font-bold mb-4">Verified Charities</h1>
           <p className="text-xl text-muted-foreground mb-8">
@@ -193,19 +193,71 @@ export default function PublicCharities() {
         )}
 
         {/* CTA Section */}
-        <Card className="mt-12 bg-primary/5 border-primary/20">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4">Ready to Make a Difference?</h3>
-            <p className="text-muted-foreground mb-6">
-              Join thousands of donors supporting verified charities
-            </p>
-            <Button size="lg" onClick={() => navigate('/auth/register/donor')}>
-              Register as Donor
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="mt-12">
+          <div className="relative p-6 sm:p-10 md:p-12 lg:p-16 rounded-xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white text-center overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+            <div className="relative z-10">
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-6">Ready to Make a Difference?</h2>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-5 sm:mb-8 lg:mb-10 max-w-2xl mx-auto px-2">
+                Join thousands of donors supporting verified charities
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center">
+                <Button size="lg" onClick={() => navigate('/auth/register/donor')} className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600">
+                  Register as Donor
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+                <Button size="lg" variant="secondary" onClick={() => navigate('/auth/login')} className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold bg-white text-slate-900 hover:bg-gray-100 hover:text-slate-900 border-0">
+                  Sign In
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t mt-8 sm:mt-16 lg:mt-20 bg-muted/30">
+        <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
+              <div className="sm:col-span-2 md:col-span-2">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="relative group">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg sm:rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                    {/* Main logo */}
+                    <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 flex items-center justify-center shadow-lg">
+                      <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-white fill-white" />
+                      <Sparkles className="absolute -top-0.5 -right-0.5 h-2 w-2 sm:h-2.5 sm:w-2.5 text-yellow-300 fill-yellow-300" />
+                    </div>
+                  </div>
+                  <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 bg-clip-text text-transparent">GiveOra</span>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground mb-4">
+                  Connecting donors with verified charities to create lasting impact in communities.
+                </p>
+              </div>
+              <div>
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4">Platform</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/charities" className="hover:text-primary transition-colors">Browse Charities</a></li>
+                  <li><a href="/about" className="hover:text-primary transition-colors">About Us</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4">Get Started</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li><a href="/auth/register/donor" className="hover:text-primary transition-colors">Donor Registration</a></li>
+                  <li><a href="/auth/register/charity" className="hover:text-primary transition-colors">Charity Registration</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t pt-6 sm:pt-8 text-center text-xs sm:text-sm text-muted-foreground">
+              <p>&copy; 2025 GiveOra. Built with purpose for a better tomorrow.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

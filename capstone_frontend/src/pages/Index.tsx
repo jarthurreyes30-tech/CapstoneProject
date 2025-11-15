@@ -54,9 +54,11 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Navbar */}
       <PublicNavbar />
+      {/* Spacer to account for fixed navbar height */}
+      <div className="h-20" />
       
       {/* Hero Section */}
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 pt-16 sm:pt-24 lg:pt-28">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 pt-6 sm:pt-8 lg:pt-10">
         <div className="max-w-6xl mx-auto text-center space-y-4 sm:space-y-8">
           {/* Logo/Brand Area */}
           <div className="inline-flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4 animate-in fade-in slide-in-from-top-4 duration-1000">
@@ -85,17 +87,17 @@ const Index = () => {
 
           {/* Hero Content */}
           <div className="space-y-3 sm:space-y-6 animate-in fade-in slide-in-from-top-6 duration-1000 delay-150">
-            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight px-3 sm:px-2">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight">
               Making a difference,
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500"> together</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 pb-1">together</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Connect with verified charities. Support meaningful causes. Create lasting impact in your community through transparent and secure giving.
             </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 pt-3 sm:pt-6 animate-in fade-in slide-in-from-top-8 duration-1000 delay-300 px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 pt-3 sm:pt-6 animate-in fade-in slide-in-from-top-8 duration-1000 delay-300">
             <Link to="/auth/register" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:min-w-[200px] lg:min-w-[220px] h-11 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-lg hover:shadow-xl transition-all">
                 Get Started
@@ -113,19 +115,19 @@ const Index = () => {
       </div>
 
       {/* Statistics Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-6 sm:mb-10 lg:mb-12">
-            <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-2 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 mb-2 sm:mb-4">
+          <div className="text-center mb-10 sm:mb-12 lg:mb-14">
+            <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-2 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 mb-3 sm:mb-5">
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="text-xs sm:text-sm font-semibold">Real-time Impact</span>
             </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 px-3">Our Growing Community</h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground px-3">Together, we're making a real difference</p>
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-5">Our Growing Community</h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground">Together, we're making a real difference</p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-6">
-            <div className="col-span-1 sm:col-span-2 p-4 sm:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8">
+            <div className="col-span-1 sm:col-span-2 p-6 sm:p-8 lg:p-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-1.5 sm:mb-3">
                 <div className="p-2 sm:p-3 bg-white/20 rounded-lg sm:rounded-xl backdrop-blur-sm">
                   <TrendingUp className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -140,7 +142,7 @@ const Index = () => {
               <p className="text-xs sm:text-sm opacity-80 mt-1.5 sm:mt-2">From {formatNumber(stats.total_donation_count)} donations</p>
             </div>
 
-            <div className="p-3 sm:p-6 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
+            <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
               <div className="flex flex-col items-center text-center">
                 <div className="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 mb-1.5 sm:mb-3 group-hover:scale-110 transition-transform">
                   <Building2 className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -150,7 +152,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="p-3 sm:p-6 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
+            <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
               <div className="flex flex-col items-center text-center">
                 <div className="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400 mb-1.5 sm:mb-3 group-hover:scale-110 transition-transform">
                   <Target className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -160,7 +162,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="p-3 sm:p-6 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
+            <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
               <div className="flex flex-col items-center text-center">
                 <div className="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 mb-1.5 sm:mb-3 group-hover:scale-110 transition-transform">
                   <Users className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -170,7 +172,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="p-3 sm:p-6 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
+            <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-lg group">
               <div className="flex flex-col items-center text-center">
                 <div className="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 mb-1.5 sm:mb-3 group-hover:scale-110 transition-transform">
                   <Heart className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -184,17 +186,17 @@ const Index = () => {
       </div>
 
       {/* Why Choose Us Section */}
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-6 sm:mb-12 lg:mb-16">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 px-3">Why Choose GiveOra?</h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-3">
+          <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">Why Choose GiveOra?</h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
               A platform built on trust, transparency, and meaningful impact
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-            <div className="p-5 sm:p-8 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12">
+            <div className="p-8 sm:p-10 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
                 <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
@@ -218,7 +220,7 @@ const Index = () => {
               </ul>
             </div>
 
-            <div className="p-5 sm:p-8 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
+            <div className="p-8 sm:p-10 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
@@ -242,7 +244,7 @@ const Index = () => {
               </ul>
             </div>
 
-            <div className="p-5 sm:p-8 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
+            <div className="p-8 sm:p-10 rounded-xl sm:rounded-2xl bg-card border-2 border-border hover:border-orange-500 transition-all hover:shadow-xl group">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
                 <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white fill-white" />
               </div>
@@ -270,11 +272,11 @@ const Index = () => {
       </div>
 
       {/* Call to Action Cards */}
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-8">
+          <div className="grid md:grid-cols-2 gap-10 sm:gap-12">
             {/* For Donors */}
-            <div className="relative p-5 sm:p-8 lg:p-10 rounded-xl sm:rounded-3xl bg-gradient-to-br from-orange-500 to-amber-600 text-white overflow-hidden group hover:shadow-2xl transition-all">
+            <div className="relative p-8 sm:p-10 lg:p-12 rounded-xl sm:rounded-3xl bg-gradient-to-br from-orange-500 to-amber-600 text-white overflow-hidden group hover:shadow-2xl transition-all">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-700"></div>
               <div className="relative z-10">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-lg sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 sm:mb-6">
@@ -312,7 +314,7 @@ const Index = () => {
             </div>
 
             {/* For Charities */}
-            <div className="relative p-5 sm:p-8 lg:p-10 rounded-xl sm:rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden group hover:shadow-2xl transition-all">
+            <div className="relative p-8 sm:p-10 lg:p-12 rounded-xl sm:rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden group hover:shadow-2xl transition-all">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-700"></div>
               <div className="relative z-10">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-lg sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 sm:mb-6">
@@ -353,13 +355,13 @@ const Index = () => {
       </div>
 
       {/* Final CTA Section */}
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-20">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-14 py-12 sm:py-16 lg:py-20">
+        <div className="max-w-6xl mx-auto">
           <div className="relative p-6 sm:p-10 md:p-12 lg:p-16 rounded-xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white text-center overflow-hidden">
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
             <div className="relative z-10">
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-6">Ready to Make an Impact?</h2>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-5 sm:mb-8 lg:mb-10 max-w-2xl mx-auto px-2">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-9 lg:mb-12 max-w-3xl mx-auto">
                 Join thousands of donors and charities making a real difference. Start your journey today.
               </p>
               <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center">
@@ -370,7 +372,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Link to="/auth/login" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold border-2 border-white/20 hover:bg-white/10 text-white">
+                  <Button size="lg" variant="secondary" className="w-full sm:min-w-[200px] h-10 sm:h-11 lg:h-12 text-sm sm:text-base lg:text-lg font-semibold bg-white text-slate-900 hover:bg-gray-100 hover:text-slate-900 border-0">
                     Sign In
                   </Button>
                 </Link>
@@ -382,7 +384,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t mt-8 sm:mt-16 lg:mt-20 bg-muted/30">
-        <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
               <div className="sm:col-span-2 md:col-span-2">

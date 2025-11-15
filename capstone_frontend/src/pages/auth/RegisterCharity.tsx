@@ -897,39 +897,53 @@ export default function RegisterCharity() {
               <div className="space-y-6">
                 <div className="p-4 bg-muted/50 rounded-lg space-y-3">
                   <h3 className="font-semibold">Organization Details</h3>
-                  <dl className="grid grid-cols-2 gap-2 text-sm">
-                    <dt className="text-muted-foreground">Organization:</dt>
-                    <dd className="font-medium">{formData.organization_name}</dd>
-                    <dt className="text-muted-foreground">Registration #:</dt>
-                    <dd className="font-medium">{formData.registration_number}</dd>
-                    <dt className="text-muted-foreground">Tax ID:</dt>
-                    <dd className="font-medium">{formData.tax_id}</dd>
-                    <dt className="text-muted-foreground">Category:</dt>
-                    <dd className="font-medium">{formData.nonprofit_category}</dd>
+                  <dl className="space-y-2 text-sm">
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Organization:</dt>
+                      <dd className="font-medium break-words">{formData.organization_name}</dd>
+                    </div>
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Registration #:</dt>
+                      <dd className="font-medium break-all">{formData.registration_number}</dd>
+                    </div>
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Tax ID:</dt>
+                      <dd className="font-medium break-all">{formData.tax_id}</dd>
+                    </div>
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Category:</dt>
+                      <dd className="font-medium break-words">{formData.nonprofit_category}</dd>
+                    </div>
                   </dl>
                 </div>
 
                 <div className="p-4 bg-muted/50 rounded-lg space-y-3">
                   <h3 className="font-semibold">Contact Information</h3>
-                  <dl className="grid grid-cols-2 gap-2 text-sm">
-                    <dt className="text-muted-foreground">Contact person:</dt>
-                    <dd className="font-medium">
-                      {[
-                        formData.primary_first_name,
-                        formData.primary_middle_initial,
-                        formData.primary_last_name
-                      ].filter(Boolean).join(' ')}
-                    </dd>
+                  <dl className="space-y-2 text-sm">
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Contact person:</dt>
+                      <dd className="font-medium break-words">
+                        {[
+                          formData.primary_first_name,
+                          formData.primary_middle_initial,
+                          formData.primary_last_name
+                        ].filter(Boolean).join(' ')}
+                      </dd>
+                    </div>
                     {formData.primary_position && (
-                      <>
+                      <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
                         <dt className="text-muted-foreground">Position:</dt>
-                        <dd className="font-medium">{formData.primary_position}</dd>
-                      </>
+                        <dd className="font-medium break-words">{formData.primary_position}</dd>
+                      </div>
                     )}
-                    <dt className="text-muted-foreground">Email:</dt>
-                    <dd className="font-medium">{formData.primary_email}</dd>
-                    <dt className="text-muted-foreground">Phone:</dt>
-                    <dd className="font-medium">{formData.primary_phone}</dd>
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Email:</dt>
+                      <dd className="font-medium break-all">{formData.primary_email}</dd>
+                    </div>
+                    <div className="flex flex-col sm:grid sm:grid-cols-[140px_1fr] gap-1">
+                      <dt className="text-muted-foreground">Phone:</dt>
+                      <dd className="font-medium break-all">{formData.primary_phone}</dd>
+                    </div>
                   </dl>
                 </div>
 
@@ -1046,10 +1060,10 @@ export default function RegisterCharity() {
           )}
 
           {/* Navigation */}
-          <div className="flex items-center justify-between pt-6 border-t mt-8">
-            <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-6 border-t mt-8">
+            <div className="flex flex-col xs:flex-row gap-2">
               {currentStep > 1 && (
-                <Button type="button" variant="outline" onClick={prevStep}>
+                <Button type="button" variant="outline" onClick={prevStep} className="w-full xs:w-auto">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
@@ -1059,6 +1073,7 @@ export default function RegisterCharity() {
                 variant="ghost"
                 onClick={handleSaveDraft}
                 disabled={isSavingDraft}
+                className="w-full xs:w-auto"
               >
                 {isSavingDraft ? (
                   <>
@@ -1075,12 +1090,12 @@ export default function RegisterCharity() {
             </div>
 
             {currentStep < STEPS.length ? (
-              <Button type="button" onClick={nextStep}>
+              <Button type="button" onClick={nextStep} className="w-full sm:w-auto">
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button type="button" onClick={handleSubmit} disabled={isLoading}>
+              <Button type="button" onClick={handleSubmit} disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

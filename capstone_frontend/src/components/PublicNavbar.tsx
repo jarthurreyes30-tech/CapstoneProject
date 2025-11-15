@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Heart, Moon, Sun, Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
@@ -7,12 +7,13 @@ import { useState, useEffect } from "react";
 export const PublicNavbar = () => {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, [navigate]);
+  }, [location.pathname]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -110,65 +111,72 @@ export const PublicNavbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <>
-          {/* Backdrop */}
+          {/* Full Screen Backdrop */}
           <div
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[999] md:hidden"
             onClick={() => setMobileMenuOpen(false)}
+            style={{ top: '64px' }}
           />
-          
-          {/* Drawer */}
-          <div className="fixed top-16 left-0 right-0 bottom-0 bg-background border-t z-50 md:hidden overflow-y-auto">
-            <div className="px-4 py-6 space-y-4">
-              {/* Navigation Links */}
-              <Link
-                to="/"
-                className="block px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                to="/charities"
-                className="block px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Charities
-              </Link>
-              <Link
-                to="/about"
-                className="block px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                About
-              </Link>
 
-              {/* Divider */}
-              <div className="border-t my-4"></div>
+          {/* Mobile Menu Panel */}
+          <div className="fixed top-16 left-0 right-0 z-[1000] md:hidden animate-in slide-in-from-top-4 duration-200">
+            <div className="bg-white dark:bg-slate-900 shadow-2xl">
+              <div className="px-6 py-4">
+                {/* Navigation Links */}
+                <div className="space-y-1">
+                  <Link
+                    to="/"
+                    className="block px-4 py-3.5 text-base font-semibold rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/charities"
+                    className="block px-4 py-3.5 text-base font-semibold rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Charities
+                  </Link>
+                  <Link
+                    to="/about"
+                    className="block px-4 py-3.5 text-base font-semibold rounded-lg hover:bg-orange-50 dark:hover:bg-orange-950 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    About
+                  </Link>
+                </div>
 
-              {/* Auth Buttons */}
-              <div className="space-y-3">
-                <Button
-                  variant="outline"
-                  className="w-full h-11 text-base"
-                  onClick={() => {
-                    navigate('/auth/login');
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  className="w-full h-11 text-base"
-                  onClick={() => {
-                    navigate('/auth/register');
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Get Started
-                </Button>
+                {/* Divider */}
+                <div className="border-t my-4" />
+
+                {/* Auth Buttons */}
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full h-12 text-base font-semibold border-2"
+                    onClick={() => {
+                      navigate('/auth/login');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    size="lg"
+                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg"
+                    onClick={() => {
+                      navigate('/auth/register');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
