@@ -322,10 +322,10 @@ export function DonationsModal({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-6xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Donations for: {campaignTitle}</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-xl lg:text-2xl">Donations for: {campaignTitle}</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Manage and review all donations for this campaign
             </DialogDescription>
           </DialogHeader>

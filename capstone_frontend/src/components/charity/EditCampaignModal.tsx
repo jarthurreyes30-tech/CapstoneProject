@@ -323,10 +323,10 @@ export function EditCampaignModal({ open, onOpenChange, campaign, onSuccess }: E
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-4xl max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Edit Campaign</DialogTitle>
-          <DialogDescription>Update your campaign details - Step {step} of 4</DialogDescription>
+          <DialogTitle className="text-base sm:text-lg">Edit Campaign</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">Update your campaign details - Step {step} of 4</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

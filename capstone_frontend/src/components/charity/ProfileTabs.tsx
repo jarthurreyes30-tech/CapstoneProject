@@ -1446,7 +1446,7 @@ export function ProfileTabs({
 
     {/* Post Modal */}
     <Dialog open={isPostModalOpen} onOpenChange={setIsPostModalOpen}>
-      <DialogContent className="max-w-[98vw] w-full h-[98vh] p-0 gap-0 overflow-hidden bg-black/95">
+      <DialogContent className="w-[95vw] max-w-[98vw] h-[90vh] max-h-[95vh] sm:h-[95vh] p-0 gap-0 overflow-hidden bg-black/95 rounded-xl sm:rounded-2xl">
         <VisuallyHidden>
           <DialogTitle>Post Details</DialogTitle>
           <DialogDescription>View post image and interact with comments</DialogDescription>

@@ -315,10 +315,10 @@ export function CreateCampaignModal({ open, onOpenChange, charityId, onSuccess }
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) reset(); }}>
-      <DialogContent className="sm:max-w-[820px] max-h-[90vh] overflow-y-auto animate-in fade-in-50 zoom-in-95">
+      <DialogContent className="w-[90vw] max-w-[95vw] sm:w-full sm:max-w-[820px] max-h-[85vh] sm:max-h-[90vh] p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Create New Campaign</DialogTitle>
-          <DialogDescription>Provide details for your fundraising campaign</DialogDescription>
+          <DialogTitle className="text-base sm:text-lg">Create New Campaign</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">Provide details for your fundraising campaign</DialogDescription>
         </DialogHeader>
 
         {/* Amount toggle */}
